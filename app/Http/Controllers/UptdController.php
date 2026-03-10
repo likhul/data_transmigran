@@ -13,9 +13,15 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class UptdController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $uptds = Uptd::with('kabupaten')->orderBy('tahun', 'desc')->get();
+        $uptds = Uptd::with('kabupaten')
+            ->when($request->search, function($query) use ($request) {
+                $query->where('nama_uptd', 'like', '%' . $request->search . '%');
+            })
+            ->orderBy('tahun', 'desc')
+            ->paginate(10) // <-- Ini trik cepatnya
+            ->appends($request->all());
         return view('uptd.index', compact('uptds'));
     }
 

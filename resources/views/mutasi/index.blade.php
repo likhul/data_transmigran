@@ -179,6 +179,9 @@
                     @endforelse
                 </tbody>
             </table>
+            <div class="d-flex justify-content-end mt-4">
+                {{ $mutasis->links() }}
+            </div>
         </div>
     </div>
 

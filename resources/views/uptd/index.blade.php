@@ -59,6 +59,20 @@
         </div>
     @endif
 
+    <div class="row mb-4">
+        <div class="col-md-6 offset-md-6">
+            <form action="{{ route('uptd.index') }}" method="GET">
+                <div class="input-group shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0;">
+                    <input type="text" name="search" class="form-control border-0 px-4" placeholder="Cari Nama UPTD..." value="{{ request('search') }}">
+                    <button type="submit" class="btn btn-primary px-4 fw-bold border-0">🔍 Cari</button>
+                    @if(request('search'))
+                        <a href="{{ route('uptd.index') }}" class="btn btn-danger px-3 fw-bold border-0" title="Reset Pencarian">✖</a>
+                    @endif
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="card-modern overflow-hidden border-0 mb-5">
         <div class="table-responsive">
             <table class="table table-custom table-hover align-middle mb-0">
@@ -112,6 +126,9 @@
                     @endforelse
                 </tbody>
             </table>
+            <div class="d-flex justify-content-end mt-4">
+                {{ $uptds->links() }}
+            </div>
         </div>
     </div>
 

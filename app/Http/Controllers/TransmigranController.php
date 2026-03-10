@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TransmigranExport;
 use App\Imports\TransmigranImport;
+use App\Models\LogAktivitas;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Transmigran;
 use App\Models\Kabupaten;
@@ -35,7 +37,8 @@ class TransmigranController extends Controller
                 $query->where('tahun_penempatan', $request->tahun);
             })
             ->latest()
-            ->get();
+            ->paginate(10) 
+            ->appends($request->all());
 
         return view('transmigran.index', compact('transmigrans', 'kabupatens'));
     }
@@ -71,8 +74,19 @@ class TransmigranController extends Controller
             'status' => $request->status,
         ]);
 
+                LogAktivitas::create([
+            'user_id' => Auth::id(),
+            'aksi' => 'Tambah',
+            'modul' => 'Data Transmigran',
+            'keterangan' => 'Menambahkan data Transmigran baru: ' . $request->nama // (Ganti 'nama' jika nama kolom Anda 'nama_kk' atau lainnya)
+        ]);
+
         // Kembalikan ke halaman daftar transmigran dengan pesan sukses
         return redirect()->route('transmigran.index')->with('success', 'Data Transmigran berhasil ditambahkan!');
+
+        // --- CCTV REKAM TAMBAH DATA ---
+
+        // ------------------------------
     }
 
     /**
@@ -115,13 +129,31 @@ class TransmigranController extends Controller
             'status' => $request->status,
         ]);
 
+                LogAktivitas::create([
+            'user_id' => Auth::id(),
+            'aksi' => 'Edit',
+            'modul' => 'Data Transmigran',
+            'keterangan' => 'Mengubah data Transmigran: ' . $request->nama
+        ]);
+
         return redirect()->route('transmigran.index')->with('success', 'Data Transmigran berhasil diperbarui!');
+
+        // --- CCTV REKAM EDIT DATA ---
+        // ------------------------------
     }
 
     // 5. Menghapus data (Soft Delete)
     public function destroy($id)
     {
         $transmigran = Transmigran::findOrFail($id);
+        
+        LogAktivitas::create([
+            'user_id' => Auth::id(),
+            'aksi' => 'Hapus',
+            'modul' => 'Data Transmigran',
+            'keterangan' => 'Menghapus data Transmigran: ' . $transmigran->nama_kepala_keluarga
+        ]);
+
         $transmigran->delete(); // Karena pakai SoftDeletes, data tidak hilang permanen
 
         return redirect()->route('transmigran.index')->with('success', 'Data Transmigran berhasil dihapus!');

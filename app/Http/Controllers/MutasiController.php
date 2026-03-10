@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LogAktivitas;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Mutasi;
 use App\Models\Transmigran;
 use App\Exports\MutasiExport;
@@ -12,10 +14,19 @@ use Maatwebsite\Excel\Facades\Excel;
 class MutasiController extends Controller
 {
     // Menampilkan halaman tabel daftar mutasi
-    public function index()
+    public function index(Request $request)
     {
-        // Mengambil data mutasi dan disambungkan dengan nama transmigrannya
-        $mutasis = Mutasi::with('transmigran')->orderBy('tanggal_mutasi', 'desc')->get();
+        $mutasis = \App\Models\Mutasi::with('transmigran')
+            ->when($request->search, function($query) use ($request) {
+                // Mencari nama dari tabel relasi (transmigran)
+                $query->whereHas('transmigran', function($q) use ($request) {
+                    $q->where('nama_kepala_keluarga', 'like', '%' . $request->search . '%');
+                });
+            })
+            ->latest()
+            ->paginate(10) // <-- Trik cepatnya di sini
+            ->appends($request->all());
+
         return view('mutasi.index', compact('mutasis'));
     }
 
@@ -46,7 +57,14 @@ class MutasiController extends Controller
             'keterangan' => $request->keterangan,
         ]);
 
-        
+        // --- CCTV REKAM TAMBAH DATA ---
+        LogAktivitas::create([
+            'user_id' => Auth::id(),
+            'aksi' => 'Tambah',
+            'modul' => 'Data Mutasi',
+            'keterangan' => 'Menambahkan riwayat Mutasi baru'
+        ]);
+        // ------------------------------
 
         return redirect()->route('mutasi.index')->with('success', 'Riwayat mutasi berhasil dicatat!');
     }
@@ -54,6 +72,16 @@ class MutasiController extends Controller
     public function destroy($id)
     {
         $mutasi = Mutasi::findOrFail($id);
+
+        // --- CCTV REKAM HAPUS DATA ---
+        LogAktivitas::create([
+            'user_id' => Auth::id(),
+            'aksi' => 'Hapus',
+            'modul' => 'Data Mutasi',
+            'keterangan' => 'Menghapus riwayat Mutasi ID: ' . $id
+        ]);
+        // ------------------------------
+
         $mutasi->delete();
 
         return redirect()->route('mutasi.index')->with('success', 'Riwayat mutasi berhasil dihapus!');
@@ -90,6 +118,15 @@ class MutasiController extends Controller
             'tanggal'        => $request->tanggal_mutasi, // Sesuaikan dengan kolom DB Anda
             'keterangan'     => $request->keterangan,
         ]);
+
+        // --- CCTV REKAM EDIT DATA ---
+        LogAktivitas::create([
+            'user_id' => Auth::id(),
+            'aksi' => 'Edit',
+            'modul' => 'Data Mutasi',
+            'keterangan' => 'Mengubah riwayat Mutasi ID: ' . $id
+        ]);
+        // ------------------------------
 
         return redirect()->route('mutasi.index')->with('success', 'Riwayat mutasi berhasil diperbarui! ✨');
     }

@@ -29,6 +29,7 @@
             @if(auth()->check() && auth()->user()->role === 'superadmin')
                 <a href="{{ url('/pengaturan-admin') }}" class="{{ request()->is('pengaturan-admin*') ? 'active' : '' }}">👥 Manajemen Admin</a>
                 <a href="{{ route('admin.log') }}" class="{{ request()->routeIs('admin.log') ? 'active' : '' }}">📹 Log Aktivitas</a>
+                <a href="{{ route('profil.edit') }}" class="{{ request()->routeIs('profil.edit') ? 'active' : '' }}">🌐 Pengaturan Website</a>
             @endif
         </div>
 

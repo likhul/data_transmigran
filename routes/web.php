@@ -6,10 +6,8 @@ use App\Http\Controllers\MutasiController;
 use App\Http\Controllers\UptdController;
 use Illuminate\Support\Facades\Route;
 
-// 1. Halaman Awal (Langsung arahkan ke halaman Login bawaan Breeze)
-Route::get('/', function () {
-    return redirect('/login');
-});
+
+Route::get('/', [App\Http\Controllers\FrontController::class, 'index'])->name('home');
 
 // 2. Halaman Dashboard (Hanya setelah login)
 Route::get('/dashboard', function () {
@@ -53,6 +51,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/pengaturan-admin/{id}', [App\Http\Controllers\AdminController::class, 'destroy'])->name('admin.destroy');
     
     Route::get('/log-aktivitas', [App\Http\Controllers\AdminController::class, 'log'])->name('admin.log');
+
+    // Rute Pengaturan Website (Hanya Super Admin)
+    Route::get('/pengaturan-website', [App\Http\Controllers\ProfilWebController::class, 'edit'])->name('profil.edit');
+    Route::put('/pengaturan-website', [App\Http\Controllers\ProfilWebController::class, 'update'])->name('profil.update');
+
+    Route::get('/manajemen-struktur', [App\Http\Controllers\StrukturController::class, 'index'])->name('struktur.index');
+    Route::post('/manajemen-struktur', [App\Http\Controllers\StrukturController::class, 'store'])->name('struktur.store');
+    Route::delete('/manajemen-struktur/{id}', [App\Http\Controllers\StrukturController::class, 'destroy'])->name('struktur.destroy');
 });
 
 require __DIR__.'/auth.php';
