@@ -6,19 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
+    public function up()
     {
         Schema::create('log_aktivitas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Siapa pelakunya?
-            $table->string('aksi'); // Ngapain dia? (Tambah, Edit, Hapus)
-            $table->string('modul'); // Di halaman mana? (Transmigran, UPTD, Mutasi)
-            $table->text('keterangan'); // Detailnya (Misal: "Menghapus data atas nama Budi")
-            $table->timestamps(); // Kapan kejadiannya? (Waktu persisnya)
+            $table->unsignedBigInteger('user_id')->nullable(); // Siapa yang melakukan
+            $table->string('aksi'); // Tambah, Edit, Hapus, dll
+            $table->string('modul'); // Nama menu/modul (Berita, UPTD, dll)
+            $table->text('keterangan'); // Detail aktivitas
+            $table->timestamps();
+
+            // Relasi ke tabel users
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('log_aktivitas');
     }

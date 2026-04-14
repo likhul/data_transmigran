@@ -3,179 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin | {{ config('app.name') }}</title>
+    <title>Login Admin | SI Transmigran Jambi</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            --glass-bg: rgba(255, 255, 255, 0.9);
+            --navy-dark: #0f172a;
+            --blue-primary: #2563eb;
+            --blue-hover: #1d4ed8;
+            --slate-400: #94a3b8;
+            --slate-100: #f1f5f9;
         }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: var(--primary-gradient);
+            background-color: #0f172a;
+            /* Mesh Gradient Background */
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(29, 78, 216, 0.1) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(15, 23, 42, 1) 0px, transparent 100%);
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0;
+            padding: 20px; /* Jarak agar tidak menyentuh pinggir layar di HP */
             overflow: hidden;
         }
 
-        /* Dekorasi Lingkaran Latar Belakang */
-        .circle-deco {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            z-index: -1;
-        }
-
         .login-card {
+            display: flex;
             width: 100%;
-            max-width: 420px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border-radius: 30px;
-            padding: 40px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.4);
-            animation: fadeInDown 0.8s ease-out;
+            max-width: 900px; /* Lebar persegi panjang yang ideal */
+            background: #ffffff;
+            border-radius: 32px; /* Lebih melengkung agar modern */
+            overflow: hidden;
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6);
+            animation: cardAppear 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes cardAppear {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        .brand-logo {
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 20px;
+        /* SISI KIRI: VISUAL BRANDING */
+        .brand-side {
+            flex: 1;
+            background: var(--navy-dark);
+            background-image: linear-gradient(145deg, #0f172a 0%, #1e3a8a 100%);
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            color: white;
+        }
+
+        .brand-logo-wrapper {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .brand-side h1 {
+            font-weight: 800;
+            font-size: 2.2rem;
+            letter-spacing: -1px;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .brand-side p {
+            font-size: 0.95rem;
+            opacity: 0.7;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        /* SISI KANAN: FORM LOGIN */
+        .form-side {
+            flex: 1.2;
+            padding: 50px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: white;
+        }
+
+        .form-side h2 {
+            font-weight: 800;
+            color: var(--navy-dark);
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--slate-400);
+            font-weight: 500;
+            margin-bottom: 35px;
+            font-size: 0.9rem;
         }
 
         .form-label {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #555;
-            margin-left: 5px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: var(--navy-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
         }
 
-        .form-control {
-            border-radius: 12px;
-            padding: 12px 15px;
-            border: 1px solid #e0e0e0;
-            background: #fdfdfd;
+        .input-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-box i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--slate-400);
+            font-size: 1.1rem;
             transition: 0.3s;
         }
 
-        .form-control:focus {
-            box-shadow: 0 0 0 4px rgba(30, 60, 114, 0.1);
-            border-color: #1e3c72;
+        .form-control-premium {
+            background: var(--slate-100);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 14px 20px 14px 52px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--navy-dark);
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .form-control-premium:focus {
+            background: white;
+            border-color: var(--blue-primary);
+            box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.08);
+            outline: none;
+        }
+
+        .form-control-premium:focus + i {
+            color: var(--blue-primary);
         }
 
         .btn-login {
-            background: var(--primary-gradient);
-            border: none;
-            border-radius: 12px;
-            padding: 12px;
-            font-weight: 700;
+            background: linear-gradient(135deg, var(--blue-primary) 0%, #1d4ed8 100%);
             color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 14px;
+            font-weight: 700;
+            font-size: 0.95rem;
             width: 100%;
             margin-top: 10px;
             transition: 0.3s;
+            box-shadow: 0 8px 20px -5px rgba(37, 99, 235, 0.4);
         }
 
         .btn-login:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(30, 60, 114, 0.3);
-            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(37, 99, 235, 0.5);
         }
 
-        .back-to-home {
-            display: inline-block;
-            margin-top: 25px;
+        .alert-modern {
+            background: #fff1f2;
+            border-radius: 14px;
+            color: #e11d48;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ffe4e6;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link a {
+            color: var(--slate-400);
             text-decoration: none;
-            color: #888;
             font-size: 0.85rem;
+            font-weight: 600;
             transition: 0.3s;
         }
 
-        .back-to-home:hover {
-            color: #1e3c72;
+        .back-link a:hover { color: var(--blue-primary); }
+
+        /* RESPONSIVE */
+        @media (max-width: 850px) {
+            .login-card { flex-direction: column; max-width: 420px; }
+            .brand-side { padding: 40px; text-align: center; align-items: center; }
+            .form-side { padding: 40px; }
+            .brand-side h1 { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="circle-deco" style="width: 300px; height: 300px; top: -50px; left: -50px;"></div>
-    <div class="circle-deco" style="width: 200px; height: 200px; bottom: -30px; right: -30px;"></div>
-
     <div class="login-card">
-        <div class="text-center mb-4">
-            <div class="brand-logo">
-                <i class="bi bi-shield-lock-fill text-primary fs-1"></i>
+        <div class="brand-side">
+            <div class="brand-logo-wrapper">
+                <i class="bi bi-compass-fill"></i>
             </div>
-            <h4 class="fw-bold text-dark mb-1">Login Admin</h4>
-            <p class="text-muted small">Silakan masuk untuk mengelola data</p>
+            <h1>SI-Trans Jambi</h1>
+            <p>Akses Portal Manajemen Strategis Transmigrasi Provinsi Jambi. Monitoring dan integrasi data dalam satu genggaman.</p>
         </div>
 
-        @if ($errors->any())
-            <div class="alert alert-danger py-2 small border-0 mb-4" style="border-radius: 10px;">
-                <i class="bi bi-exclamation-circle-fill me-2"></i> Email atau Password salah.
-            </div>
-        @endif
+        <div class="form-side">
+            <h2>Masuk</h2>
+            <p class="subtitle">Gunakan kredensial akun admin Anda</p>
 
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
-            
-            <div class="mb-3">
-                <label class="form-label">Email Address</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0" style="border-radius: 12px 0 0 12px;">
-                        <i class="bi bi-envelope text-muted"></i>
-                    </span>
-                    <input type="email" name="email" class="form-control border-start-0" 
-                           placeholder="nama@email.com" value="{{ old('email') }}" required autofocus style="border-radius: 0 12px 12px 0;">
+            @if ($errors->any())
+                <div class="alert-modern">
+                    <i class="bi bi-exclamation-circle-fill me-2"></i> Akun tidak ditemukan.
                 </div>
-            </div>
+            @endif
 
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0" style="border-radius: 12px 0 0 12px;">
-                        <i class="bi bi-lock text-muted"></i>
-                    </span>
-                    <input type="password" name="password" class="form-control border-start-0" 
-                           placeholder="••••••••" required style="border-radius: 0 12px 12px 0;">
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+                
+                <div class="input-box">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control-premium" 
+                           placeholder="admin@email.com" value="{{ old('email') }}" required autofocus>
+                    <i class="bi bi-envelope-at"></i>
                 </div>
-            </div>
 
-            <div class="mb-4 d-flex justify-content-between align-items-center">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="remember" id="remember">
-                    <label class="form-check-label small text-muted" for="remember">Ingat Saya</label>
+                <div class="input-box">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control-premium" 
+                           placeholder="••••••••" required>
+                    <i class="bi bi-key"></i>
                 </div>
+
+                <div class="d-flex align-items-center mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="remember" id="remember">
+                        <label class="form-check-label small fw-semibold text-muted" for="remember">
+                            Ingat Sesi
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    MASUK SEKARANG <i class="bi bi-arrow-right-short ms-1 fs-5 align-middle"></i>
+                </button>
+            </form>
+
+            <div class="back-link">
+                <a href="{{ url('/') }}">
+                    <i class="bi bi-house-door me-1"></i> Beranda Utama
+                </a>
             </div>
-
-            <button type="submit" class="btn btn-login shadow-sm">
-                MASUK SEKARANG <i class="bi bi-arrow-right-short ms-1"></i>
-            </button>
-        </form>
-
-        <div class="text-center">
-            <a href="{{ url('/') }}" class="back-to-home">
-                <i class="bi bi-house-door me-1"></i> Kembali ke Halaman Utama
-            </a>
         </div>
     </div>
 

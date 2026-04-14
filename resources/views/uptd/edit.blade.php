@@ -1,113 +1,164 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Rekap UPTD - SI Jambi')
-
-@push('css')
-<style>
-    .form-label { font-weight: 700; color: #475569; font-size: 0.9rem; margin-bottom: 0.6rem; }
-    .form-control, .form-select { 
-        border: 2px solid #e2e8f0; border-radius: 12px; padding: 0.75rem 1rem; 
-        background-color: #f8fafc; transition: 0.3s;
-    }
-    .form-control:focus, .form-select:focus { 
-        border-color: #0f766e; background-color: #ffffff; box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1); 
-    }
-    .stat-edit-group {
-        background: #f1f5f9; padding: 1.5rem; border-radius: 16px; border: 1px dashed #0f766e;
-    }
-</style>
-@endpush
-
 @section('content')
-<div class="row justify-content-center">
-    <div class="col-lg-7">
-        <div class="d-flex align-items-center mb-4">
-            <div class="bg-white shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; border-radius: 12px; margin-right: 15px;">
-                <span style="font-size: 1.5rem;">⚙️</span>
-            </div>
-            <div>
-                <h4 class="mb-0" style="font-weight: 800; color: #1e293b;">Edit Laporan Agregat UPTD</h4>
-                <p class="text-muted mb-0">Memperbarui data rekapitulasi untuk tahun {{ $uptd->tahun }}.</p>
-            </div>
+<div class="container py-4">
+    <div class="card border-0 shadow-lg" style="border-radius: 20px;">
+        <div class="card-header bg-white pt-4 border-0 text-center">
+            <h4 class="fw-bold" style="color: #0f766e;">EDIT DATA PENYERAHAN UPTD</h4>
+            <p class="text-muted small">Pastikan semua kolom administrasi terisi dengan benar.</p>
         </div>
-
-        <div class="card-modern p-4 p-md-5" style="border-top: 5px solid #0f766e !important;">
+        
+        <div class="card-body p-4">
             <form action="{{ route('uptd.update', $uptd->id) }}" method="POST">
                 @csrf
-                @method('PUT') <div class="mb-4">
-                    <label class="form-label">Kabupaten</label>
-                    <select name="kabupaten_id" id="kabupaten_id" class="form-select" required>
-                        @foreach($kabupatens as $k)
-                            <option value="{{ $k->id }}" {{ $uptd->kabupaten_id == $k->id ? 'selected' : '' }}>
-                                {{ $k->nama_kabupaten }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label">Nama UPTD</label>
-                    <select name="nama_uptd" id="nama_uptd" class="form-select" required>
-                        <option value="{{ $uptd->nama_uptd }}">{{ $uptd->nama_uptd }}</option>
-                    </select>
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label">Tahun Laporan</label>
-                    <input type="number" name="tahun" class="form-control" value="{{ $uptd->tahun }}" required>
-                </div>
-
-                <div class="stat-edit-group mb-5">
-                    <div class="row">
-                        <div class="col-md-6 mb-3 mb-md-0">
-                            <label class="form-label fw-bold text-success">Total KK</label>
-                            <input type="number" name="total_kk" class="form-control" value="{{ $uptd->total_kk }}" required>
+                @method('PUT')
+                
+                <div class="p-3 mb-4 rounded-4 bg-light border">
+                    <h6 class="fw-bold text-secondary mb-3 small">IDENTITAS WILAYAH</h6>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold small">Tahun Penyerahan</label>
+                            <input type="number" name="tahun_penyerahan" class="form-control" value="{{ $uptd->tahun_penyerahan }}" required>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold text-primary">Total Jiwa</label>
-                            <input type="number" name="total_jiwa" class="form-control" value="{{ $uptd->total_jiwa }}" required>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold small">Kabupaten</label>
+                            <select id="kabupaten_id" name="kabupaten_id" class="form-select" required>
+                                @foreach($kabupatens as $k)
+                                    <option value="{{ $k->id }}" {{ $uptd->kabupaten_id == $k->id ? 'selected' : '' }}>{{ $k->nama_kabupaten }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold small">Kecamatan</label>
+                            <select id="kecamatan_id" name="kecamatan_id" class="form-select" required>
+                                @foreach($kecamatans as $kec)
+                                    <option value="{{ $kec->id }}" {{ $uptd->kecamatan_id == $kec->id ? 'selected' : '' }}>{{ $kec->nama_kecamatan }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold small">Nama UPT</label>
+                            <select id="nama_upt" name="nama_upt" class="form-select" required>
+                                @foreach($master_uptds as $m)
+                                    <option value="{{ $m->nama_uptd }}" {{ $uptd->nama_upt == $m->nama_uptd ? 'selected' : '' }}>{{ $m->nama_uptd }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center">
-                    <a href="{{ route('uptd.index') }}" class="text-decoration-none fw-bold text-muted">← Kembali</a>
-                    <button type="submit" class="btn-utama px-5 py-3 shadow-sm">Simpan Perubahan</button>
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <div class="p-3 rounded-4 border-start border-4 border-primary h-100" style="background-color: #f0f9ff;">
+                            <h6 class="fw-bold text-primary small mb-3">PENEMPATAN AWAL</h6>
+                            <div class="mb-3">
+                                <label class="small fw-bold">Bulan/Tahun Penempatan</label>
+                                <input type="text" name="waktu_penempatan" class="form-control" value="{{ $uptd->waktu_penempatan }}" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="small fw-bold">KK Awal</label>
+                                    <input type="number" name="kk_awal" class="form-control" value="{{ $uptd->kk_awal }}" required>
+                                </div>
+                                <div class="col-6">
+                                    <label class="small fw-bold">Jiwa Awal</label>
+                                    <input type="number" name="jiwa_awal" class="form-control" value="{{ $uptd->jiwa_awal }}" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 rounded-4 border-start border-4 border-success h-100" style="background-color: #f0fdf4;">
+                            <h6 class="fw-bold text-success small mb-3">KONDISI DESA BARU</h6>
+                            <div class="mb-3">
+                                <label class="small fw-bold">Nama Desa Baru</label>
+                                <input type="text" name="nama_desa_baru" class="form-control" value="{{ $uptd->nama_desa_baru }}" required>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-4">
+                                    <label class="small fw-bold">Status</label>
+                                    <select name="status_desa" class="form-select">
+                                        <option value="DEF" {{ $uptd->status_desa == 'DEF' ? 'selected' : '' }}>DEF</option>
+                                        <option value="SEM" {{ $uptd->status_desa == 'SEM' ? 'selected' : '' }}>SEM</option>
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <label class="small fw-bold">KK</label>
+                                    <input type="number" name="kk_baru" class="form-control" value="{{ $uptd->kk_baru }}" required>
+                                </div>
+                                <div class="col-4">
+                                    <label class="small fw-bold">Jiwa</label>
+                                    <input type="number" name="jiwa_baru" class="form-control" value="{{ $uptd->jiwa_baru }}" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3 mb-4 rounded-4" style="background-color: #fff1f2; border: 1px solid #fecdd3;">
+                    <h6 class="fw-bold text-danger mb-3 small">DATA ADMINISTRASI & CATATAN</h6>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-5">
+                            <label class="small fw-bold">No. Berita Acara (BA) Penyerahan</label>
+                            <input type="text" name="no_ba_penyerahan" class="form-control" value="{{ $uptd->no_ba_penyerahan }}" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="small fw-bold">Pola</label>
+                            <input type="text" name="pola" class="form-control" value="{{ $uptd->pola }}">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="small fw-bold">Permasalahan / Keterangan</label>
+                            <input type="text" name="permasalahan" class="form-control" value="{{ $uptd->permasalahan }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-5">
+                    <button type="submit" class="btn btn-primary btn-lg px-5 shadow" style="border-radius: 12px; background: #0f766e; border: none;">
+                        <i class="bi bi-save me-2"></i> SIMPAN PERUBAHAN
+                    </button>
+                    <a href="{{ route('uptd.index') }}" class="btn btn-light btn-lg px-4 ms-2" style="border-radius: 12px;">Batal</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-@endsection
 
-@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-    // Fungsi untuk memuat UPTD
-    function loadUPTD(kabID, selectedName = null) {
+    $('#kabupaten_id').on('change', function() {
+        var kabID = $(this).val();
         if(kabID) {
             $.ajax({
-                url: '/get-uptd/' + kabID,
-                type: "GET",
-                dataType: "json",
-                success: function(data) {
-                    $('#nama_uptd').empty().append('<option value="">-- Pilih UPTD --</option>');
-                    $.each(data, function(key, value) {
-                        let isSelected = (value.nama_uptd == selectedName) ? 'selected' : '';
-                        $('#nama_uptd').append('<option value="'+ value.nama_uptd +'" '+ isSelected +'>'+ value.nama_uptd +'</option>');
+                url: '/get-kecamatan/' + kabID,
+                type: 'GET',
+                success: function(res) {
+                    $('#kecamatan_id').empty().append('<option value="">-- Pilih Kecamatan --</option>');
+                    $('#nama_upt').empty().append('<option value="">-- Pilih Kec. Dahulu --</option>');
+                    $.each(res, function(key, item) {
+                        $('#kecamatan_id').append('<option value="'+ item.id +'">'+ item.nama_kecamatan +'</option>');
                     });
                 }
             });
         }
-    }
+    });
 
-    // Jalankan saat pertama kali halaman dibuka (Page Load)
-    loadUPTD($('#kabupaten_id').val(), "{{ $uptd->nama_uptd }}");
-
-    // Jalankan saat Kabupaten diubah manual
-    $('#kabupaten_id').on('change', function() {
-        loadUPTD($(this).val());
+    $('#kecamatan_id').on('change', function() {
+        var kecID = $(this).val();
+        if(kecID) {
+            $.ajax({
+                url: '/get-uptd-by-kecamatan/' + kecID,
+                type: 'GET',
+                success: function(res) {
+                    $('#nama_upt').empty().append('<option value="">-- Pilih UPT --</option>');
+                    $.each(res, function(key, item) {
+                        $('#nama_upt').append('<option value="'+ item.nama_uptd +'">'+ item.nama_uptd +'</option>');
+                    });
+                }
+            });
+        }
     });
 });
 </script>
-@endpush
+@endsection

@@ -4,113 +4,169 @@
 
 @push('css')
 <style>
-    /* Desain Badge Status Kreatif */
-    .badge-status { padding: 0.5em 0.8em; border-radius: 8px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; }
-    .bg-aktif { background-color: #d1fae5; color: #065f46; }
-    .bg-pindah { background-color: #fef3c7; color: #92400e; }
-    .bg-meninggal { background-color: #fee2e2; color: #991b1b; }
-
-    /* Input & Search Styling */
-    .filter-card { border-radius: 16px; background: #ffffff; border: none; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-    .form-control-modern { 
-        border: 2px solid #e2e8f0; 
-        border-radius: 10px; 
-        padding: 0.6rem 1rem; 
-        transition: 0.3s; 
+    /* Konfigurasi Warna Tema Navy & Blue */
+    :root {
+        --blue-primary: #2563eb; 
+        --blue-hover: #1d4ed8;
+        --blue-light: #eff6ff;
+        --navy-dark: #0f172a; 
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --bg-body: #f8fafc;
+        --bg-surface: #ffffff;
+        --border-color: #f1f5f9;
     }
-    .form-control-modern:focus { border-color: #0f766e; box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1); }
+
+    /* Container Utama */
+    .premium-card {
+        background: var(--bg-surface);
+        border-radius: 24px;
+        box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.04), 0 4px 16px -4px rgba(0, 0, 0, 0.02);
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+    }
+
+    /* Header & Tombol */
+    .page-title { font-weight: 800; color: var(--navy-dark); letter-spacing: -0.5px; font-size: 1.5rem; }
     
-    /* Tombol Aksi */
-    .btn-aksi-circle { width: 35px; height: 35px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; border: none; }
-    .btn-edit-modern { background-color: #fef3c7; color: #d97706; }
-    .btn-edit-modern:hover { background-color: #d97706; color: white; }
-    .btn-delete-modern { background-color: #fee2e2; color: #dc2626; }
-    .btn-delete-modern:hover { background-color: #dc2626; color: white; }
-
-    /* Table Typography */
-    .table-modern thead th { 
-        background-color: #f8fafc; 
-        text-transform: uppercase; 
-        font-size: 0.75rem; 
-        letter-spacing: 0.05em; 
-        color: #64748b; 
-        border-bottom: 2px solid #e2e8f0;
+    .btn-premium {
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        padding: 10px 20px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-flex; align-items: center; gap: 8px;
+        text-decoration: none;
     }
-    .td-nama { font-weight: 700; color: #1e293b; font-size: 0.95rem; }
-    .td-sub { font-size: 0.8rem; color: #64748b; }
+    
+    /* Tombol Export (Biru Solid) */
+    .btn-blue { 
+        background: var(--blue-primary); color: white; border: 1px solid var(--blue-primary); 
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); 
+    }
+    .btn-blue:hover { 
+        background: var(--blue-hover); border-color: var(--blue-hover);
+        transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3); color: white; 
+    }
+    
+    /* Tombol Input (Putih Border Biru) */
+    .btn-outline-blue { 
+        background: white; color: var(--blue-primary); border: 2px solid var(--blue-primary); 
+    }
+    .btn-outline-blue:hover { 
+        background: var(--blue-light); color: var(--blue-hover); border-color: var(--blue-hover);
+        transform: translateY(-2px); 
+    }
+
+    /* Search Bar Kapsul (Full Width) */
+    .search-pill {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 50px;
+        padding: 6px 6px 6px 20px;
+        display: flex; align-items: center;
+        transition: 0.3s;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        width: 100%;
+    }
+    .search-pill:focus-within { border-color: var(--blue-primary); box-shadow: 0 0 0 4px var(--blue-light); }
+    .search-pill input { border: none; background: transparent; outline: none; box-shadow: none; font-size: 0.95rem; width: 100%; padding-left: 12px; color: var(--text-main); }
+    .search-pill button {
+        background: var(--navy-dark); color: white; border: none;
+        border-radius: 50px; padding: 10px 30px; font-weight: 600; font-size: 0.9rem; transition: 0.2s; white-space: nowrap;
+    }
+
+    /* Tabel Modern */
+    .table-responsive { border-radius: 16px; margin: 20px; border: 1px solid var(--border-color); }
+    .table-modern { margin-bottom: 0; white-space: nowrap; }
+    
+    .table-modern thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-weight: 700;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border-bottom: 2px solid #e2e8f0;
+        padding: 16px 12px;
+        vertical-align: middle;
+    }
+
+    .table-modern tbody td {
+        padding: 16px 12px;
+        vertical-align: middle;
+        color: var(--text-main);
+        font-size: 0.85rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .table-modern tbody tr:hover { background-color: #f1f5f9; }
+
+    /* Soft Badges */
+    .soft-badge {
+        padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 0.7rem; text-transform: uppercase;
+    }
+    .bg-aktif-soft { background: #d1fae5; color: #065f46; }
+    .bg-pindah-soft { background: #fef3c7; color: #92400e; }
+    .bg-meninggal-soft { background: #fee2e2; color: #991b1b; }
+
+    .action-btn {
+        width: 34px; height: 34px; border-radius: 10px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border: none; background: #f1f5f9; color: #64748b; transition: 0.2s;
+        text-decoration: none;
+    }
+    .action-btn.edit:hover { background: #eff6ff; color: #2563eb; transform: scale(1.05); }
+    .action-btn.delete:hover { background: #fef2f2; color: #dc2626; transform: scale(1.05); }
 </style>
 @endpush
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="container-fluid py-3">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h3 style="font-weight: 800; color: #1e293b; letter-spacing: -1px;">Daftar Transmigran</h3>
-            <p class="text-muted mb-0">Manajemen data individu dan penempatan wilayah Jambi.</p>
+            <h1 class="page-title mb-1">Daftar Transmigran</h1>
+            <p class="text-muted small mb-0"><i class="bi bi-people-fill me-1"></i>Manajemen data individu dan penempatan wilayah Jambi.</p>
         </div>
         <div class="d-flex gap-2">
-            <button type="button" class="btn btn-outline-success shadow-sm fw-bold" style="border-radius: 12px; padding: 10px 20px;" data-bs-toggle="modal" data-bs-target="#modalCetakPilihan">
-                <span class="me-1">🖨️</span> Cetak / Export
+            <button type="button" class="btn-premium btn-blue" data-bs-toggle="modal" data-bs-target="#modalCetakPilihan">
+                <i class="bi bi-printer-fill fs-5"></i> Cetak / Export
             </button>
-            
-            <button type="button" class="btn btn-warning shadow-sm fw-bold text-dark" style="border-radius: 12px; padding: 10px 20px;" data-bs-toggle="modal" data-bs-target="#modalImport">
-                <span class="me-1">📤</span> Import
-            </button>
-
-            <a href="{{ route('transmigran.create') }}" class="btn-utama text-decoration-none shadow-sm">
-                <span class="me-1">+</span> Tambah Data
+            <a href="{{ route('transmigran.create') }}" class="btn-premium btn-outline-blue">
+                <i class="bi bi-plus-circle-fill fs-5"></i> Tambah Data
             </a>
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success border-0 shadow-sm mb-4" style="border-radius: 12px;" role="alert">
-            <div class="d-flex align-items-center">
-                <span class="me-2">✅</span>
-                <span>{{ session('success') }}</span>
-            </div>
-        </div>
-    @endif
-
-    <div class="card filter-card mb-4">
-        <div class="card-body p-4">
-            <form action="/transmigran" method="GET" class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label small fw-bold text-uppercase" style="color: #94a3b8;">Cari Nama</label>
-                    <input type="text" name="search" class="form-control form-control-modern" placeholder="Masukkan nama kepala keluarga..." value="{{ request('search') }}">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label small fw-bold text-uppercase" style="color: #94a3b8;">Filter Kabupaten</label>
-                    <select name="kabupaten_id" class="form-select form-control-modern">
-                        <option value="">-- Semua Wilayah --</option>
-                        @foreach($kabupatens as $kab)
-                            <option value="{{ $kab->id }}" {{ request('kabupaten_id') == $kab->id ? 'selected' : '' }}>
-                                {{ $kab->nama_kabupaten }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label small fw-bold text-uppercase" style="color: #94a3b8;">Tahun</label>
-                    <input type="number" name="tahun" class="form-control form-control-modern" placeholder="202X" value="{{ request('tahun') }}">
-                </div>
-                <div class="col-md-3 d-flex align-items-end gap-2">
-                    <button type="submit" class="btn btn-utama w-100 py-2">
-                        🔍 Cari
-                    </button>
-                    <a href="/transmigran" class="btn btn-light w-100 py-2 border fw-bold" style="border-radius: 10px;">
-                        Reset
-                    </a>
+    <div class="premium-card mb-5">
+        
+        <div class="p-4 border-bottom border-light">
+            <form action="{{ route('transmigran.index') }}" method="GET" class="w-100">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="search-pill">
+                            <i class="bi bi-search text-muted fs-5"></i>
+                            <input type="text" name="search" placeholder="Cari nama kepala keluarga, asal daerah, atau tahun..." value="{{ request('search') }}">
+                            <button type="submit shadow-sm">Cari Data</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select name="kabupaten_id" class="form-select border-0 bg-light rounded-pill px-4 shadow-sm" style="font-size: 0.9rem;">
+                            <option value="">-- Semua Kabupaten --</option>
+                            @foreach($kabupatens as $kab)
+                                <option value="{{ $kab->id }}" {{ request('kabupaten_id') == $kab->id ? 'selected' : '' }}>{{ $kab->nama_kabupaten }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
             </form>
         </div>
-    </div>
 
-    <div class="card-modern overflow-hidden border-0 mb-5">
         <div class="table-responsive">
-            <table class="table table-modern table-hover align-middle mb-0">
+            <table class="table table-modern">
                 <thead>
                     <tr>
-                        <th class="text-center" width="50">No</th>
+                        <th class="text-center" width="5%">No</th>
                         <th>Profil Kepala Keluarga</th>
                         <th>Asal Daerah</th>
                         <th>Penempatan Jambi</th>
@@ -121,98 +177,107 @@
                 </thead>
                 <tbody>
                     @forelse($transmigrans as $index => $item)
-                        <tr>
-                            <td class="text-center text-muted small">{{ $index + 1 }}</td>
-                            <td>
-                                <div class="td-nama">{{ $item->nama_kepala_keluarga }}</div>
-                                <div class="td-sub">{{ $item->jumlah_anggota }} Anggota Keluarga</div>
-                            </td>
-                            <td class="td-nama" style="font-size: 0.85rem;">{{ $item->asal_daerah }}</td>
-                            <td>
-                                <div class="fw-bold" style="color: #0f766e;">{{ $item->kabupaten->nama_kabupaten }}</div>
-                                <div class="td-sub">{{ $item->uptd->nama_uptd ?? 'Umum' }}</div>
-                            </td>
-                            <td class="text-center">
-                                <span class="badge bg-light text-dark border px-3 py-2" style="border-radius: 8px;">{{ $item->tahun_penempatan }}</span>
-                            </td>
-                            <td class="text-center">
-                                @php
-                                    $statusClass = '';
-                                    if($item->status == 'Aktif') $statusClass = 'bg-aktif';
-                                    elseif($item->status == 'Pindah') $statusClass = 'bg-pindah';
-                                    else $statusClass = 'bg-meninggal';
-                                @endphp
-                                <span class="badge-status {{ $statusClass }}">{{ $item->status }}</span>
-                            </td>
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center gap-2">
-                                    <a href="{{ route('transmigran.edit', $item->id) }}" class="btn-aksi-circle btn-edit-modern" title="Edit Data">
-                                        ✏️
-                                    </a>
-                                    <form action="{{ route('transmigran.destroy', $item->id) }}" method="POST" class="form-hapus">
-                                        @csrf @method('DELETE')
-                                        <button type="button" class="btn-aksi-circle btn-delete-modern btn-konfirmasi-hapus">🗑️</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td class="text-center fw-bold text-muted">{{ $transmigrans->firstItem() + $index }}</td>
+                        <td>
+                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">{{ $item->nama_kepala_keluarga }}</div>
+                            <div class="text-muted small"><i class="bi bi-people me-1"></i>{{ $item->jumlah_anggota }} Anggota Keluarga</div>
+                        </td>
+                        <td>
+                            <div class="fw-bold" style="font-size: 0.85rem; color: var(--text-main);">{{ $item->asal_daerah }}</div>
+                        </td>
+                        <td>
+                            <div class="fw-bold" style="color: var(--blue-primary); font-size: 0.9rem;">{{ $item->kabupaten->nama_kabupaten }}</div>
+                            <div class="text-muted small"><i class="bi bi-geo-alt me-1"></i>{{ $item->uptd->nama_uptd ?? 'Umum' }}</div>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-light text-dark border px-3 py-2" style="border-radius: 8px;">{{ $item->tahun_penempatan }}</span>
+                        </td>
+                        <td class="text-center">
+                            @php
+                                $statusClass = $item->status == 'Aktif' ? 'bg-aktif-soft' : ($item->status == 'Pindah' ? 'bg-pindah-soft' : 'bg-meninggal-soft');
+                            @endphp
+                            <span class="soft-badge {{ $statusClass }}">{{ $item->status }}</span>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="{{ route('transmigran.edit', $item->id) }}" class="action-btn edit" title="Edit Data">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <form action="{{ route('transmigran.destroy', $item->id) }}" method="POST" class="m-0">
+                                    @csrf @method('DELETE')
+                                    <button type="button" class="action-btn delete btn-konfirmasi-hapus">
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
                     @empty
-                        <tr>
-                            <td colspan="7" class="text-center py-5">
-                                <div style="font-size: 3rem; margin-bottom: 1rem;">🔎</div>
-                                <h5 class="text-muted">Tidak ada data transmigran ditemukan.</h5>
-                                <p class="small text-muted">Coba ubah kata kunci pencarian atau filter Anda.</p>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <div class="mb-3"><i class="bi bi-search text-slate-200" style="font-size: 3rem;"></i></div>
+                            <h6 class="fw-bold text-slate-700">Data Tidak Ditemukan</h6>
+                            <p class="text-muted small">Coba sesuaikan filter atau tambahkan data transmigran baru.</p>
+                        </td>
+                    </tr>
                     @endforelse
                 </tbody>
             </table>
-            <div class="d-flex justify-content-end mt-4">
-                {{ $transmigrans->links() }}
-            </div>
         </div>
+        
+        @if($transmigrans->hasPages())
+        <div class="px-4 py-3 border-top border-light d-flex flex-column flex-md-row justify-content-between align-items-center bg-white">
+            <span class="text-muted small fw-bold mb-3 mb-md-0">Menampilkan {{ $transmigrans->firstItem() }} - {{ $transmigrans->lastItem() }} dari {{ $transmigrans->total() }} Data</span>
+            <div class="pagination-sm m-0">{{ $transmigrans->links('pagination::bootstrap-5') }}</div>
+        </div>
+        @endif
     </div>
+</div>
 
-    <div class="modal fade" id="modalCetakPilihan" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-                <div class="modal-header border-0 pb-0 text-center d-block position-relative">
-                    <h5 class="modal-title fw-bold w-100">Pilih Format Laporan</h5>
-                    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade" id="modalCetakPilihan" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content" style="border-radius: 24px; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+            <div class="modal-body p-4 text-center">
+                <div class="mb-3 bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="bi bi-file-earmark-arrow-down-fill fs-3 text-primary"></i>
                 </div>
-                <div class="modal-body text-center pb-4 pt-3">
-                    <p class="text-muted small mb-4">Laporan akan menyesuaikan dengan filter pencarian yang sedang aktif.</p>
-                    
-                    <div class="d-grid gap-3">
-                        <a href="{{ route('transmigran.pdf', request()->all()) }}" class="btn btn-danger py-3 fw-bold" style="border-radius: 12px;">
-                            <span style="font-size: 1.8rem; display: block; margin-bottom: 5px;">📄</span>
-                            Dokumen PDF (Resmi)
-                        </a>
-                        
-                        <a href="{{ route('transmigran.export', request()->all()) }}" class="btn btn-success py-3 fw-bold" style="border-radius: 12px;">
-                            <span style="font-size: 1.8rem; display: block; margin-bottom: 5px;">📊</span>
-                            Spreadsheet Excel (Data)
-                        </a>
-                    </div>
+                <h6 class="fw-bold mb-2">Export Laporan</h6>
+                <p class="text-muted small mb-4">Pilih format dokumen untuk data transmigran yang sedang difilter.</p>
+                <div class="d-grid gap-2">
+                    <a href="{{ route('transmigran.pdf', request()->all()) }}" class="btn btn-outline-danger py-2 fw-bold" style="border-radius: 12px; font-size: 0.9rem;">
+                        <i class="bi bi-file-pdf-fill me-1"></i> Dokumen PDF
+                    </a>
+                    <a href="{{ route('transmigran.export', request()->all()) }}" class="btn btn-outline-success py-2 fw-bold" style="border-radius: 12px; font-size: 0.9rem;">
+                        <i class="bi bi-file-excel-fill me-1"></i> Spreadsheet Excel
+                    </a>
                 </div>
             </div>
         </div>
     </div>
+</div>
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-$('.btn-konfirmasi-hapus').on('click', function(e) {
+$('.btn-konfirmasi-hapus').on('click', function() {
     let form = $(this).closest('form');
     Swal.fire({
-        title: 'Yakin ingin menghapus?',
-        text: "Data yang dihapus tidak bisa dikembalikan!",
+        title: 'Hapus Data?',
+        html: `Apakah Anda yakin ingin menghapus data transmigran ini?<br><span class="text-danger small">Tindakan ini tidak dapat diurungkan.</span>`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: 'Ya, Hapus!',
-        cancelButtonText: 'Batal'
+        cancelButtonColor: '#f1f5f9',
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: '<span class="text-dark">Batal</span>',
+        reverseButtons: true,
+        borderRadius: '16px',
+        customClass: {
+            confirmButton: 'rounded-pill px-4 shadow-sm',
+            cancelButton: 'rounded-pill px-4'
+        }
     }).then((result) => {
         if (result.isConfirmed) { form.submit(); }
     });

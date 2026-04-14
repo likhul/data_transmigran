@@ -6,15 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
+    public function up()
     {
         Schema::create('profil_webs', function (Blueprint $table) {
             $table->id();
-            $table->string('judul_website')->default('Sistem Informasi Transmigran Jambi');
+            $table->string('judul_website')->nullable();
             $table->text('deskripsi_singkat')->nullable();
-            $table->string('foto_struktur')->nullable(); // Untuk nyimpan nama file gambar
+            $table->string('logo_website')->nullable();
+            $table->string('favicon_website')->nullable();
             $table->string('alamat_kantor')->nullable();
             $table->string('nomor_telepon')->nullable();
+            $table->string('link_facebook')->nullable();
+            $table->string('link_instagram')->nullable();
+            $table->string('link_youtube')->nullable();
+            $table->text('google_maps')->nullable();
             $table->timestamps();
         });
     }

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes; // Memanggil fitur Soft Deletes
 
-class Transmigran extends Model
+class Transmigran extends BaseModel
 {
     use SoftDeletes; // Mengaktifkan fitur Soft Deletes
 

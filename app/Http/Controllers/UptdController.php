@@ -4,122 +4,183 @@ namespace App\Http\Controllers;
 
 use App\Models\Uptd;
 use App\Models\Kabupaten;
-use App\Exports\UptdExport;
-use App\Models\LogAktivitas; // <-- TAMBAHKAN INI
+use App\Models\Kecamatan;
+use App\Models\MasterUptd;
+use App\Models\LogAktivitas;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel; 
-
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf as PDF; // Pastikan package dompdf terinstall
 
 class UptdController extends Controller
 {
+    /**
+     * Menampilkan daftar penyerahan UPTD dengan fitur pencarian
+     */
     public function index(Request $request)
     {
-        $uptds = Uptd::with('kabupaten')
-            ->when($request->search, function($query) use ($request) {
-                $query->where('nama_uptd', 'like', '%' . $request->search . '%');
+        $search = $request->search;
+
+        $uptds = Uptd::with(['kabupaten', 'kecamatan'])
+            ->when($search, function($query) use ($search) {
+                $query->where('nama_upt', 'like', '%' . $search . '%')
+                    ->orWhere('no_ba_penyerahan', 'like', '%' . $search . '%')
+                    ->orWhereHas('kecamatan', function($q) use ($search) {
+                        $q->where('nama_kecamatan', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('kabupaten', function($q) use ($search) {
+                        $q->where('nama_kabupaten', 'like', '%' . $search . '%');
+                    });
             })
-            ->orderBy('tahun', 'desc')
-            ->paginate(10) // <-- Ini trik cepatnya
-            ->appends($request->all());
+            ->orderBy('tahun_penyerahan', 'desc') 
+            ->paginate(10)
+            ->appends(request()->query());
+
         return view('uptd.index', compact('uptds'));
     }
 
     public function create()
     {
-        $kabupatens = Kabupaten::all();
+        $kabupatens = Kabupaten::orderBy('nama_kabupaten', 'asc')->get();
         return view('uptd.create', compact('kabupatens'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'kabupaten_id' => 'required|exists:kabupatens,id',
-            'nama_uptd' => 'required|string|max:255',
-            'tahun' => 'required|integer|digits:4',
-            'total_kk' => 'required|integer|min:0',
-            'total_jiwa' => 'required|integer|min:0',
+            'tahun_penyerahan' => 'required|digits:4',
+            'kabupaten_id'     => 'required|exists:kabupatens,id',
+            'kecamatan_id'     => 'required|exists:kecamatans,id',
+            'nama_upt'         => 'required',
+            'waktu_penempatan' => 'required',
+            'kk_awal'          => 'required|numeric',
+            'jiwa_awal'        => 'required|numeric',
+            'status_desa'      => 'required|in:SEM,DEF',
+            'nama_desa_baru'   => 'required',
+            'kk_baru'          => 'required|numeric',
+            'jiwa_baru'        => 'required|numeric',
+            'no_ba_penyerahan' => 'required',
         ]);
 
-        Uptd::create($request->all());
+        $uptd = Uptd::create($request->all());
 
+        // Catat Log
         LogAktivitas::create([
             'user_id' => Auth::id(),
             'aksi' => 'Tambah',
             'modul' => 'Data UPTD',
-            'keterangan' => 'Menambahkan UPTD baru: ' . $request->nama_uptd
+            'keterangan' => 'Menambahkan data penyerahan UPT: ' . $request->nama_upt
         ]);
 
-        return redirect()->route('uptd.index')->with('success', 'Data UPTD berhasil ditambahkan!');
+        return redirect()->route('uptd.index')->with('success', 'Data penyerahan berhasil disimpan!');
     }
-
-    public function destroy($id)
-    {
-        Uptd::findOrFail($id)->delete();
-
-        LogAktivitas::create([
-            'user_id' => Auth::id(),
-            'aksi' => 'Hapus',
-            'modul' => 'Data UPTD',
-            'keterangan' => 'Menghapus UPTD: ' . $uptd->nama_uptd
-        ]);
-
-        return redirect()->route('uptd.index')->with('success', 'Data UPTD berhasil dihapus!');
-    }
-
-    public function getUptdByKabupaten($kabupaten_id)
-    {
-        // Mencari semua UPTD yang memiliki kabupaten_id tersebut
-        $uptds = \App\Models\MasterUptd::where('kabupaten_id', $kabupaten_id)->get();
-        
-        return response()->json($uptds);
-        
-    }
-
-    // Tambahkan ini di dalam class UptdController
 
     public function edit($id)
     {
-        // Cari data rekap UPTD berdasarkan ID
-        $uptd = \App\Models\Uptd::findOrFail($id); 
+        $uptd = Uptd::findOrFail($id);
+        $kabupatens = Kabupaten::orderBy('nama_kabupaten', 'asc')->get();
         
-        // Ambil data kabupaten untuk dropdown
-        $kabupatens = \App\Models\Kabupaten::all(); 
-        
-        return view('uptd.edit', compact('uptd', 'kabupatens'));
+        // Data pendukung dropdown agar saat edit posisi dropdown langsung terisi benar
+        $kecamatans = Kecamatan::where('kabupaten_id', $uptd->kabupaten_id)->get();
+        $master_uptds = MasterUptd::where('kecamatan_id', $uptd->kecamatan_id)->get();
+
+        return view('uptd.edit', compact('uptd', 'kabupatens', 'kecamatans', 'master_uptds'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'kabupaten_id' => 'required',
-            'nama_uptd'    => 'required',
-            'tahun'        => 'required|numeric',
-            'total_kk'     => 'required|numeric',
-            'total_jiwa'   => 'required|numeric',
+            'tahun_penyerahan' => 'required|digits:4',
+            'kabupaten_id'     => 'required',
+            'kecamatan_id'     => 'required',
+            'nama_upt'         => 'required',
+            'kk_awal'          => 'required|numeric',
+            'jiwa_awal'        => 'required|numeric',
+            'nama_desa_baru'   => 'required',
+            'kk_baru'          => 'required|numeric',
+            'jiwa_baru'        => 'required|numeric',
         ]);
 
-        $uptd = \App\Models\Uptd::findOrFail($id);
-        $uptd->update($request->all()); // Simpan perubahan
+        $uptd = Uptd::findOrFail($id);
+        $uptd->update($request->all());
 
+        // Catat Log
         LogAktivitas::create([
             'user_id' => Auth::id(),
             'aksi' => 'Edit',
             'modul' => 'Data UPTD',
-            'keterangan' => 'Mengubah data UPTD ID: ' . $uptd->id
+            'keterangan' => 'Memperbarui data penyerahan UPT: ' . $uptd->nama_upt
         ]);
-        return redirect()->route('uptd.index')->with('success', 'Laporan agregat berhasil diperbarui!');
+
+        return redirect()->route('uptd.index')->with('success', 'Data berhasil diperbarui!');
     }
 
-    public function cetakPdf(Request $request)
+    public function destroy($id)
     {
-        $uptds = \App\Models\Uptd::with('kabupaten')->latest()->get();
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('uptd.pdf', compact('uptds'));
-        return $pdf->stream('Laporan_UPTD_' . date('Ymd') . '.pdf');
+        $uptd = Uptd::findOrFail($id);
+        $nama_upt = $uptd->nama_upt;
+        $uptd->delete();
+
+        // Catat Log
+        LogAktivitas::create([
+            'user_id' => Auth::id(),
+            'aksi' => 'Hapus',
+            'modul' => 'Data UPTD',
+            'keterangan' => 'Menghapus data penyerahan UPT: ' . $nama_upt
+        ]);
+
+        return redirect()->route('uptd.index')->with('success', 'Data UPTD berhasil dihapus!');
     }
 
-    public function exportExcel(Request $request)
+    /**
+     * Export ke PDF dengan filter pencarian yang sama
+     */
+    public function pdf(Request $request)
     {
-        return Excel::download(new UptdExport($request), 'Data_UPTD.xlsx');
+        $search = $request->search;
+
+        $uptds = Uptd::with(['kabupaten', 'kecamatan'])
+            ->when($search, function($query) use ($search) {
+                $query->where('nama_upt', 'like', '%' . $search . '%')
+                    ->orWhereHas('kecamatan', function($q) use ($search) {
+                        $q->where('nama_kecamatan', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('kabupaten', function($q) use ($search) {
+                        $q->where('nama_kabupaten', 'like', '%' . $search . '%');
+                    });
+            })
+            ->orderBy('tahun_penyerahan', 'asc')
+            ->get();
+
+        $pdf = PDF::loadView('uptd.pdf', compact('uptds'))->setPaper('a4', 'landscape');
+        return $pdf->stream('Laporan_Penyerahan_UPTD.pdf');
+    }
+
+    /**
+     * Export ke Excel
+     */
+    public function excel(Request $request)
+    {
+        return Excel::download(new \App\Exports\UptdExport($request->search), 'Laporan_Penyerahan_UPTD.xlsx');
+    }
+
+    /* |--------------------------------------------------------------------------
+    | API ENDPOINTS (Untuk Dependent Dropdown / AJAX)
+    |--------------------------------------------------------------------------
+    */
+
+    // Ambil Kecamatan berdasarkan Kabupaten
+    public function getKecamatan($kabupaten_id)
+    {
+        $data = Kecamatan::where('kabupaten_id', $kabupaten_id)->orderBy('nama_kecamatan', 'asc')->get();
+        return response()->json($data);
+    }
+    
+
+    // Ambil Master UPTD berdasarkan Kecamatan
+    public function getMasterUptd($kecamatan_id)
+    {
+        $data = MasterUptd::where('kecamatan_id', $kecamatan_id)->orderBy('nama_uptd', 'asc')->get(); 
+        return response()->json($data);
     }
 }

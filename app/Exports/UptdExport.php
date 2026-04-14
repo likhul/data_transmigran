@@ -3,39 +3,36 @@
 namespace App\Exports;
 
 use App\Models\Uptd;
-use Illuminate\Http\Request;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class UptdExport implements FromCollection, WithHeadings, WithMapping
+class UptdExport implements FromView, ShouldAutoSize
 {
-    protected $request;
+    protected $search;
 
-    public function __construct(Request $request)
+    // Menangkap kata kunci dari Controller
+    public function __construct($search = null)
     {
-        $this->request = $request;
+        $this->search = $search;
     }
 
-    public function collection()
+    public function view(): View
     {
-        return Uptd::with('kabupaten')->latest()->get();
-    }
+        // Logika pencarian yang SAMA PERSIS
+        $uptds = Uptd::with(['kabupaten', 'kecamatan'])
+            ->when($this->search, function($query) {
+                $query->where('nama_upt', 'like', '%' . $this->search . '%')
+                      ->orWhereHas('kecamatan', function($q) {
+                          $q->where('nama_kecamatan', 'like', '%' . $this->search . '%');
+                      })
+                      ->orWhereHas('kabupaten', function($q) {
+                          $q->where('nama_kabupaten', 'like', '%' . $this->search . '%');
+                      });
+            })
+            ->orderBy('tahun_penyerahan', 'asc')
+            ->get();
 
-    public function headings(): array
-    {
-        return ['ID', 'Nama UPTD', 'Kabupaten', 'Tahun', 'Kapasitas (KK)', 'Keterangan'];
-    }
-
-    public function map($uptd): array
-    {
-        return [
-            $uptd->id,
-            $uptd->nama_uptd,
-            $uptd->kabupaten->nama_kabupaten ?? '-',
-            $uptd->tahun,
-            $uptd->kapasitas_kk ?? '-',
-            $uptd->keterangan,
-        ];
+        return view('uptd.excel', compact('uptds'));
     }
 }

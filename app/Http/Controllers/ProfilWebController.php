@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\ProfilWeb;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Models\LogAktivitas; // Memanggil CCTV kita
+use App\Models\LogAktivitas; 
+use App\Models\Berita; 
+use App\Models\Galeri; // 👈 1. Tambahkan import model Galeri di sini
+
 
 class ProfilWebController extends Controller
 {
@@ -22,42 +25,55 @@ class ProfilWebController extends Controller
             'deskripsi_singkat' => 'Selamat datang di portal resmi informasi transmigrasi daerah Jambi.',
         ]);
 
-        return view('profil_web.edit', compact('profil'));
+        // Ambil data berita terbaru
+        $beritas = Berita::latest()->get();
+
+        // 👈 2. Tambahkan pemanggilan data galeri di sini agar variabel $galeris tersedia di view
+        $galeris = Galeri::latest()->get();
+
+        // 👈 3. Masukkan 'galeris' ke dalam compact
+        return view('profil_web.edit', compact('profil', 'beritas', 'galeris'));
     }
 
     public function update(Request $request)
     {
-        $request->validate([
-            'judul_website' => 'required|string|max:255',
-            'deskripsi_singkat' => 'nullable|string',
-            'alamat_kantor' => 'nullable|string|max:255',
-            'nomor_telepon' => 'nullable|string|max:50',
-            'foto_struktur' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Max 2MB
-        ]);
+        // Ambil data profil pertama (atau buat baru jika database masih kosong)
+        $profil = ProfilWeb::first() ?? new ProfilWeb();
 
-        $profil = ProfilWeb::first();
-        $data = $request->except('foto_struktur');
+        // Simpan data teks
+        $profil->judul_website = $request->judul_website;
+        $profil->deskripsi_singkat = $request->deskripsi_singkat;
+        $profil->alamat_kantor = $request->alamat_kantor;
+        $profil->nomor_telepon = $request->nomor_telepon;
+        $profil->link_facebook = $request->link_facebook;
+        $profil->link_instagram = $request->link_instagram;
+        $profil->link_youtube = $request->link_youtube;
+        $profil->google_maps = $request->google_maps;
 
-        if ($request->hasFile('foto_struktur')) {
-            $file = $request->file('foto_struktur');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            
-            // PINDAHKAN LANGSUNG KE FOLDER PUBLIC/STRUKTUR (Anti Ribet)
-            $file->move(public_path('struktur'), $fileName);
-            
-            $data['foto_struktur'] = $fileName;
+        // Proses Upload Logo Instansi
+        if ($request->hasFile('logo_website')) {
+            if ($profil->logo_website && file_exists(public_path('logo/' . $profil->logo_website))) {
+                unlink(public_path('logo/' . $profil->logo_website));
+            }
+            $file = $request->file('logo_website');
+            $nama_file = time() . "_logo." . $file->getClientOriginalExtension();
+            $file->move(public_path('logo'), $nama_file);
+            $profil->logo_website = $nama_file;
         }
 
-        $profil->update($data);
+        // Proses Upload Favicon (Ikon Tab Browser)
+        if ($request->hasFile('favicon_website')) {
+            if ($profil->favicon_website && file_exists(public_path('logo/' . $profil->favicon_website))) {
+                unlink(public_path('logo/' . $profil->favicon_website));
+            }
+            $file = $request->file('favicon_website');
+            $nama_file = time() . "_favicon." . $file->getClientOriginalExtension();
+            $file->move(public_path('logo'), $nama_file);
+            $profil->favicon_website = $nama_file;
+        }
 
-        // Rekam di CCTV
-        LogAktivitas::create([
-            'user_id' => auth()->id(),
-            'aksi' => 'Edit',
-            'modul' => 'Profil Website',
-            'keterangan' => 'Mengubah informasi & tampilan website publik'
-        ]);
+        $profil->save();
 
-        return redirect()->back()->with('success', 'Profil Website berhasil diperbarui!');
+        return redirect()->back()->with('success', 'Pengaturan website berhasil diperbarui!');
     }
 }

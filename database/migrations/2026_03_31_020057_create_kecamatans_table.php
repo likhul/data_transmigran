@@ -6,22 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('master_uptds', function (Blueprint $table) {
-            $table->id();
+        Schema::create('kecamatans', function (Blueprint $table) {
+            $table->id(); // Harus begini
             $table->foreignId('kabupaten_id')->constrained('kabupatens')->onDelete('cascade');
-            $table->string('nama_uptd'); // Contoh: Hitam Ulu
+            $table->string('nama_kecamatan');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('master_uptds');
