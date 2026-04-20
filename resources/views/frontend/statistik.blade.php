@@ -3,79 +3,114 @@
 
 @push('css')
 <style>
-    /* Hero Section Animasi Gradasi */
-    .hero-mini {
-        background: linear-gradient(-45deg, #0f172a, #1e3a8a, #3b82f6, #0f172a);
-        background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
-        padding: clamp(100px, 15vw, 140px) 15px clamp(60px, 10vw, 80px);
-        position: relative;
-    }
-    @keyframes gradientBG {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    
-    /* Ukuran Judul Dinamis */
-    .hero-title-main {
-        font-weight: 900; 
-        font-size: clamp(1.8rem, 5vw, 3rem); 
-        letter-spacing: -1px;
-    }
-    .hero-subtitle {
-        font-size: clamp(0.9rem, 2vw, 1.1rem);
-        line-height: 1.6; max-width: 600px;
+    /* VARIABEL WARNA MATERIAL DESIGN 3 & NEUMORPHISM */
+    :root {
+        --md-surface: #ffffff;
+        --md-background: #f8fafc;
+        --md-primary: #2563eb;
+        --soft-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        --hover-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
     }
 
-    /* Kartu Statistik Glowing (Padding & Ikon dikalibrasi untuk Mobile) */
-    .stat-card-modern {
-        background: #ffffff; border-radius: 20px; 
-        padding: clamp(15px, 3vw, 30px) clamp(10px, 2vw, 15px); /* Padding dinamis yang lebih aman */
-        text-align: center; cursor: pointer;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(255,255,255,0.5);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; height: 100%;
+    body { background-color: var(--md-background); font-size: 14px; }
+
+    /* 1. HERO SECTION (Micro-Clean MD3) */
+    .hero-mini {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(37, 99, 235, 0.75) 100%), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=2000');
+        background-size: cover;
+        background-position: center;
+        /* Padding atas dipangkas, padding bawah diberi ruang ekstra untuk overlapping kartu */
+        padding-top: clamp(80px, 12vh, 120px);
+        padding-bottom: clamp(60px, 10vh, 100px); 
+        position: relative;
+        border-bottom-left-radius: clamp(16px, 4vw, 32px);
+        border-bottom-right-radius: clamp(16px, 4vw, 32px);
+        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
     }
-    .stat-card-modern:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(37,99,235,0.12); }
+    
+    /* Ukuran Judul Dinamis App-like */
+    .hero-title-main {
+        font-weight: 800; 
+        font-size: clamp(1.2rem, 4.5vw, 2.5rem); 
+        letter-spacing: -0.5px;
+        line-height: 1.3;
+        margin-bottom: 6px !important;
+    }
+    .hero-subtitle {
+        font-size: clamp(0.75rem, 1.8vw, 1rem);
+        line-height: 1.5; 
+        max-width: 500px;
+        opacity: 0.9;
+    }
+
+    /* KARTU STATISTIK MELAYANG (Neumorphism Compact) */
+    .stat-card-modern {
+        background: var(--md-surface); 
+        border-radius: clamp(12px, 2.5vw, 20px); 
+        padding: clamp(12px, 2vw, 24px) clamp(8px, 1.5vw, 15px);
+        text-align: center; cursor: pointer;
+        box-shadow: var(--soft-shadow); 
+        border: 1px solid rgba(226,232,240,0.4);
+        transition: all 0.3s ease; 
+        position: relative; height: 100%;
+    }
+    .stat-card-modern:hover { transform: translateY(-4px); box-shadow: var(--hover-shadow); }
     
     .stat-card-modern .icon-box {
-        width: clamp(45px, 8vw, 65px); height: clamp(45px, 8vw, 65px); border-radius: 16px; 
+        width: clamp(35px, 6vw, 55px); height: clamp(35px, 6vw, 55px); 
+        border-radius: clamp(10px, 1.5vw, 16px); 
         display: flex; align-items: center; justify-content: center;
-        font-size: clamp(1.2rem, 4vw, 1.8rem); margin: 0 auto 12px; transition: transform 0.4s;
+        font-size: clamp(1rem, 3vw, 1.5rem); margin: 0 auto 10px; transition: 0.3s;
     }
-    .stat-card-modern:hover .icon-box { transform: scale(1.1) rotate(8deg); }
+    .stat-card-modern:hover .icon-box { transform: scale(1.05) rotate(5deg); }
     
+    /* Gradien Pastel untuk Icon Box */
     .bg-jiwa { background: linear-gradient(135deg, #eff6ff 0%, #bfdbfe 100%); color: #2563eb; } 
     .bg-uptd { background: linear-gradient(135deg, #ecfdf5 0%, #a7f3d0 100%); color: #059669; }
     .bg-kab { background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%); color: #ea580c; } 
     .bg-kec { background: linear-gradient(135deg, #f5f3ff 0%, #ddd6fe 100%); color: #7c3aed; }
     
+    /* Teks dalam Kartu Statistik */
     .stat-card-modern h2 { 
-        font-weight: 900; font-size: clamp(1.4rem, 5vw, 2.5rem); /* Minimum 1.4rem agar tidak bertabrakan */
-        margin-bottom: 2px; color: var(--navy-deep); letter-spacing: -1px;
+        font-weight: 800; 
+        font-size: clamp(1.1rem, 4vw, 2rem); 
+        margin-bottom: 2px; color: #0f172a; letter-spacing: -0.5px;
     }
-    .stat-card-modern p { font-weight: 700; color: #64748b; font-size: clamp(0.65rem, 1.5vw, 0.75rem); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0;}
+    .stat-card-modern p { 
+        font-weight: 700; color: #64748b; 
+        font-size: clamp(0.55rem, 1.2vw, 0.75rem); 
+        text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0;
+    }
 
-    /* Kontainer Chart Modern */
+    /* KOTAK GRAFIK (Soft UI Frame) */
     .chart-box { 
-        background: #ffffff; border-radius: 20px; 
-        padding: clamp(15px, 4vw, 30px); 
-        border: 1px solid rgba(226,232,240,0.6); 
-        box-shadow: 0 15px 40px rgba(15,23,42,0.03); height: 100%; display: flex; flex-direction: column; 
-        transition: 0.3s ease; overflow: hidden; /* Mencegah chart luber di HP */
+        background: var(--md-surface); 
+        border-radius: clamp(16px, 3vw, 24px); 
+        padding: clamp(15px, 3vw, 25px); 
+        border: 1px solid rgba(226,232,240,0.4); 
+        box-shadow: var(--soft-shadow); 
+        height: 100%; display: flex; flex-direction: column; 
+        transition: 0.3s ease; overflow: hidden;
     }
-    .chart-box:hover { box-shadow: 0 20px 50px rgba(15,23,42,0.07); }
+    .chart-box:hover { box-shadow: var(--hover-shadow); }
     
     .chart-title { 
-        font-weight: 800; font-size: clamp(0.95rem, 2.5vw, 1.15rem); color: var(--navy-deep); 
-        margin-bottom: 20px; display: flex; align-items: center; line-height: 1.3;
+        font-weight: 800; 
+        font-size: clamp(0.85rem, 2vw, 1.1rem); 
+        color: #0f172a; 
+        margin-bottom: 15px; display: flex; align-items: center; line-height: 1.3;
     }
     .chart-icon { 
-        width: clamp(35px, 8vw, 45px); height: clamp(35px, 8vw, 45px); border-radius: 12px; 
+        width: clamp(28px, 6vw, 40px); height: clamp(28px, 6vw, 40px); 
+        border-radius: clamp(8px, 1.5vw, 12px); 
         display: inline-flex; align-items: center; justify-content: center; 
-        margin-right: 12px; font-size: clamp(1rem, 3vw, 1.3rem); flex-shrink: 0;
+        margin-right: 10px; font-size: clamp(0.85rem, 2vw, 1.2rem); flex-shrink: 0;
     }
-    .chart-wrapper { flex-grow: 1; min-height: clamp(250px, 40vh, 320px); position: relative; width: 100%; }
+    
+    /* Tinggi grafik dirampingkan untuk HP */
+    .chart-wrapper { flex-grow: 1; min-height: clamp(200px, 35vh, 320px); position: relative; width: 100%; }
+
+    .badge-micro { font-size: clamp(0.55rem, 1.2vw, 0.7rem); padding: 4px 10px; letter-spacing: 0.5px; }
 </style>
 @endpush
 

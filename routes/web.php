@@ -34,6 +34,8 @@ Route::get('/semua-berita', [BeritaController::class, 'indexPublik'])->name('ber
 Route::get('/direktori-uptd', [FrontController::class, 'direktori'])->name('direktori.index');
 Route::get('/direktori-uptd/{id}', [FrontController::class, 'direktoriDetail'])->name('direktori.show');
 
+Route::get('/galeri-semua', [App\Http\Controllers\FrontController::class, 'galeri'])->name('galeri.semua');
+
 
 /*
 |--------------------------------------------------------------------------

@@ -222,4 +222,13 @@ class FrontController extends Controller
 
         return view('frontend.direktori_detail', compact('uptd', 'profil'));
     }
+
+    public function galeri()
+    {
+        $profil = $this->getProfil();
+
+        $galeris = Galeri::latest()->paginate(12);
+
+        return view('frontend.galeri', compact('profil', 'galeris'));
+    }
 }

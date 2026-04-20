@@ -2,6 +2,7 @@
 @section('title', $berita->judul . ' | SI-Trans Jambi')
 
 @push('meta')
+    {{-- SEO & Social Media Share --}}
     <meta name="description" content="{{ Str::limit(strip_tags($berita->konten), 160) }}">
     <meta property="og:type" content="article">
     <meta property="og:url" content="{{ url()->current() }}">
@@ -16,131 +17,154 @@
 
 @push('css')
 <style>
-    /* Hero Section Tema Gradasi */
+    :root {
+        --md-surface: #ffffff;
+        --md-background: #f8fafc;
+        --md-primary: #2563eb;
+        --soft-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+    }
+
+    body { background-color: var(--md-background); }
+
+    /* 1. HERO DETAIL (Optimized for Mobile) */
     .hero-detail {
-        background: linear-gradient(-45deg, #0f172a, #1e3a8a, #3b82f6, #0f172a);
-        background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
-        padding: clamp(100px, 15vw, 150px) 15px clamp(60px, 10vw, 100px);
-        position: relative;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(37, 99, 235, 0.8) 100%), url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=2000');
+        background-size: cover; background-position: center;
+        padding: clamp(80px, 12vh, 120px) 0 clamp(60px, 10vh, 100px);
+        position: relative; color: white;
+        border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
     }
-    @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-    /* Tombol Kembali Floating */
-    .btn-back-floating {
+    /* Tombol Kembali Rata Kiri */
+    .btn-back-modern {
         background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
-        color: white; border-radius: 50px; 
-        padding: clamp(6px, 2vw, 8px) clamp(15px, 3vw, 20px); 
-        font-weight: 600; font-size: clamp(0.85rem, 2vw, 1rem);
-        transition: 0.3s; display: inline-flex; align-items: center; margin-bottom: 20px;
+        color: white; border-radius: 50px; backdrop-filter: blur(10px);
+        padding: 8px 20px; font-weight: 700; font-size: 0.85rem;
+        transition: 0.3s ease; display: inline-flex; align-items: center; 
     }
-    .btn-back-floating:hover { background: white; color: var(--navy-deep); transform: translateX(-5px); }
+    .btn-back-modern:hover { background: white; color: #0f172a; transform: translateX(-5px); }
 
-    /* Kartu Artikel Melayang */
-    .content-wrapper {
-        margin-top: clamp(-60px, -8vw, -80px);
-        position: relative; z-index: 10;
+    /* Fix Tulisan Badge (Sekarang Muncul Tajam) */
+    .badge-info-custom {
+        background: rgba(255, 255, 255, 0.9); /* Latar belakang putih solid tipis */
+        color: #2563eb !important; /* Teks Biru agar kontras */
+        padding: 6px 15px; border-radius: 50px; font-weight: 800;
+        font-size: 0.7rem; letter-spacing: 1px; margin-bottom: 15px;
+        display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
+
+    .article-title-main {
+        font-weight: 800; font-size: clamp(1.4rem, 4.5vw, 2.8rem);
+        line-height: 1.2; letter-spacing: -0.5px;
+    }
+
+    /* 2. ARTIKEL CARD */
+    .content-wrapper { margin-top: -60px; position: relative; z-index: 10; padding-bottom: 50px; }
     .article-card {
-        background: #ffffff; border-radius: 24px; 
-        padding: clamp(20px, 5vw, 50px); /* Padding dinamis, lega di laptop, pas di HP */
-        box-shadow: 0 15px 40px rgba(15,23,42,0.05); border: 1px solid rgba(226,232,240,0.8);
+        background: #ffffff; border-radius: 30px; border: 1px solid rgba(226, 232, 240, 0.8);
+        padding: clamp(20px, 5vw, 50px); box-shadow: var(--soft-shadow);
     }
 
-    /* Tipografi Artikel (Nyaman Dibaca) */
-    .article-title { 
-        font-weight: 900; font-size: clamp(1.5rem, 4vw, 2.5rem); 
-        color: var(--navy-deep); line-height: 1.3; letter-spacing: -0.5px;
-    }
-    
-    .article-meta-box {
-        display: flex; flex-wrap: wrap; gap: clamp(10px, 2vw, 20px);
-        padding: 15px 0; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;
-        margin-top: 20px; margin-bottom: 30px;
-    }
-    .article-meta-item {
-        font-size: clamp(0.85rem, 2vw, 0.95rem); color: #64748b; font-weight: 600;
-        display: flex; align-items: center;
+    /* Meta Info bar */
+    .meta-bar {
+        display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;
+        padding: 15px 0; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;
+        margin: 20px 0 30px; font-size: 0.85rem; color: #64748b; font-weight: 600;
     }
 
     /* Gambar Utama Berita */
-    .article-hero-img {
-        width: 100%; max-height: clamp(250px, 50vh, 500px); 
-        object-fit: cover; border-radius: 16px; 
-        box-shadow: 0 10px 30px rgba(15,23,42,0.06); margin-bottom: 30px;
-    }
+    .hero-img-wrapper { border-radius: 20px; overflow: hidden; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+    .hero-img-wrapper img { width: 100%; max-height: 500px; object-fit: cover; }
 
-    /* Area Konten (WYSIWYG Safe) */
-    .article-body {
-        font-size: clamp(1rem, 2.5vw, 1.1rem); line-height: 1.8; color: #334155; text-align: justify;
+    /* Area Konten (Dibuat Nyaman Dibaca) */
+    .article-content-body {
+        font-size: clamp(1rem, 2vw, 1.15rem); line-height: 1.8; color: #334155;
     }
-    .article-body p { margin-bottom: 1.5rem; }
-    /* Mencegah gambar di dalam konten berita meluber di HP */
-    .article-body img { max-width: 100% !important; height: auto !important; border-radius: 12px; margin: 15px 0; }
-    /* Mencegah tabel di dalam konten berita meluber di HP */
-    .article-body table { width: 100% !important; max-width: 100%; overflow-x: auto; display: block; }
+    .article-content-body p { margin-bottom: 1.5rem; text-align: justify; }
+    .article-content-body img { max-width: 100% !important; height: auto !important; border-radius: 12px; margin: 15px 0; }
+
+    /* Social Share Buttons */
+    .share-pill {
+        width: 45px; height: 45px; border-radius: 50%; display: inline-flex;
+        align-items: center; justify-content: center; border: 1px solid #e2e8f0;
+        transition: 0.3s; color: #64748b; font-size: 1.1rem;
+    }
+    .share-pill:hover { transform: translateY(-3px); color: white; border-color: transparent; }
+    .share-fb:hover { background: #1877f2; }
+    .share-wa:hover { background: #25d366; }
+
+    @media (max-width: 768px) {
+        .article-card { border-radius: 24px; padding: 25px 20px; }
+        .meta-bar { justify-content: flex-start; }
+    }
 </style>
 @endpush
 
 @section('content')
-    <section class="hero-detail">
-        <div class="container text-center text-lg-start px-3">
-            <a href="{{ route('berita.semua') }}" class="btn-back-floating text-decoration-none" data-aos="fade-right">
-                <i class="bi bi-arrow-left me-2"></i> Kembali ke Daftar Berita
+
+@php
+    // LOGIKA NAVIGASI DINAMIS
+    $previousUrl = url()->previous();
+    $listBeritaUrl = route('berita.semua');
+    // Jika URL sebelumnya mengandung kata 'berita' (berarti dari daftar berita), balik ke daftar.
+    // Jika tidak, asumsikan dari Beranda.
+    $backTarget = (strpos($previousUrl, $listBeritaUrl) !== false) ? $listBeritaUrl : url('/');
+@endphp
+
+<section class="hero-detail">
+    <div class="container px-3">
+        <div class="text-start mb-4">
+            <a href="{{ $backTarget }}" class="btn-back-modern text-decoration-none">
+                <i class="bi bi-arrow-left me-2"></i> Kembali
             </a>
         </div>
-    </section>
+        
+        <div class="text-center" data-aos="fade-up">
+            <span class="badge-info-custom">INFORMASI TERKINI</span>
+            <h1 class="article-title-main text-white mb-0 mx-auto" style="max-width: 900px;">
+                {{ $berita->judul }}
+            </h1>
+        </div>
+    </div>
+</section>
 
-    <section class="bg-light pb-5">
-        <div class="container content-wrapper px-3 mb-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-9" data-aos="fade-up">
-                    <div class="article-card">
-                        
-                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold mb-3" style="letter-spacing: 1px; font-size: 0.75rem;">WARTA TERKINI</span>
-                        <h1 class="article-title">{{ $berita->judul }}</h1>
-                        
-                        <div class="article-meta-box">
-                            <div class="article-meta-item">
-                                <i class="bi bi-calendar3 text-primary me-2"></i> 
-                                {{ $berita->created_at->translatedFormat('d F Y') }}
-                            </div>
-                            <div class="article-meta-item">
-                                <i class="bi bi-clock text-warning me-2"></i> 
-                                {{ $berita->created_at->format('H:i') }} WIB
-                            </div>
-                            <div class="article-meta-item">
-                                <i class="bi bi-person-circle text-success me-2"></i> 
-                                Admin UPTD
-                            </div>
-                        </div>
-
-                        @if($berita->gambar && file_exists(public_path('berita_images/' . $berita->gambar)))
-                            <img src="{{ asset('berita_images/' . $berita->gambar) }}" alt="{{ $berita->judul }}" class="article-hero-img">
-                        @endif
-
-                        <div class="article-body">
-                            {!! $berita->konten !!}
-                        </div>
-                        
-                        <div class="mt-5 pt-4 border-top d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3">
-                            <h6 class="fw-bold text-dark mb-0">Bagikan artikel ini:</h6>
-                            <div class="d-flex gap-2">
-                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}" target="_blank" class="btn btn-light rounded-circle text-primary border shadow-sm" style="width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;">
-                                    <i class="bi bi-facebook"></i>
-                                </a>
-                                <a href="https://twitter.com/intent/tweet?url={{ urlencode(url()->current()) }}&text={{ urlencode($berita->judul) }}" target="_blank" class="btn btn-light rounded-circle text-info border shadow-sm" style="width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;">
-                                    <i class="bi bi-twitter"></i>
-                                </a>
-                                <a href="https://api.whatsapp.com/send?text={{ urlencode($berita->judul . ' - ' . url()->current()) }}" target="_blank" class="btn btn-light rounded-circle text-success border shadow-sm" style="width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;">
-                                    <i class="bi bi-whatsapp"></i>
-                                </a>
-                            </div>
-                        </div>
-
+<section class="content-wrapper px-3">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <article class="article-card" data-aos="fade-up">
+                    
+                    <div class="meta-bar">
+                        <div class="d-flex align-items-center"><i class="bi bi-calendar3 text-primary me-2"></i> {{ $berita->created_at->translatedFormat('d F Y') }}</div>
+                        <div class="d-flex align-items-center"><i class="bi bi-person-circle text-primary me-2"></i> Admin SI-Trans</div>
+                        <div class="d-flex align-items-center"><i class="bi bi-clock text-primary me-2"></i> {{ $berita->created_at->format('H:i') }} WIB</div>
                     </div>
-                </div>
+
+                    @if($berita->gambar && file_exists(public_path('berita_images/' . $berita->gambar)))
+                        <div class="hero-img-wrapper">
+                            <img src="{{ asset('berita_images/' . $berita->gambar) }}" alt="{{ $berita->judul }}">
+                        </div>
+                    @endif
+
+                    <div class="article-content-body">
+                        {!! $berita->konten !!}
+                    </div>
+
+                    <div class="mt-5 pt-4 border-top d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                        <div class="fw-bold text-dark">Bagikan Informasi Ini:</div>
+                        <div class="d-flex gap-2">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}" target="_blank" class="share-pill share-fb">
+                                <i class="bi bi-facebook"></i>
+                            </a>
+                            <a href="https://api.whatsapp.com/send?text={{ urlencode($berita->judul . ' - ' . url()->current()) }}" target="_blank" class="share-pill share-wa">
+                                <i class="bi bi-whatsapp"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                </article>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 @endsection

@@ -3,60 +3,99 @@
 
 @push('css')
 <style>
-    /* Hero Section Animasi Gradasi */
-    .hero-mini {
-        background: linear-gradient(-45deg, #0f172a, #1e3a8a, #3b82f6, #0f172a);
-        background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
-        padding: clamp(100px, 15vw, 140px) 15px clamp(60px, 10vw, 80px);
-        position: relative;
-    }
-    @keyframes gradientBG {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    .hero-title-main {
-        font-weight: 900; 
-        font-size: clamp(1.8rem, 5vw, 3rem); 
-        letter-spacing: -1px; line-height: 1.2;
+    /* VARIABEL WARNA MATERIAL DESIGN 3 & NEUMORPHISM */
+    :root {
+        --md-surface: #ffffff;
+        --md-background: #f8fafc;
+        --md-primary: #2563eb;
+        --soft-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        --hover-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
     }
 
-    /* Search Bar Melayang (Mobile Optimized) */
+    body { background-color: var(--md-background); font-size: 14px; }
+
+    /* 1. HERO SECTION (Micro-Clean MD3) */
+    .hero-mini {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(37, 99, 235, 0.75) 100%), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=2000');
+        background-size: cover; background-position: center;
+        padding-top: clamp(80px, 12vh, 120px);
+        padding-bottom: clamp(60px, 10vh, 100px); 
+        position: relative;
+        border-bottom-left-radius: clamp(16px, 4vw, 32px);
+        border-bottom-right-radius: clamp(16px, 4vw, 32px);
+        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+    }
+    .hero-title-main {
+        font-weight: 800; 
+        font-size: clamp(1.2rem, 4.5vw, 2.5rem); 
+        letter-spacing: -0.5px;
+        line-height: 1.3; margin-bottom: 6px !important;
+    }
+    .hero-subtitle {
+        font-size: clamp(0.75rem, 1.8vw, 1rem);
+        line-height: 1.5; opacity: 0.9;
+    }
+
+    /* 2. SEARCH BAR MELAYANG */
     .search-wrapper {
-        margin-top: clamp(-30px, -4vw, -40px);
+        margin-top: clamp(-25px, -5vw, -35px);
         position: relative; z-index: 10;
     }
     .search-box {
-        background: #ffffff; border-radius: 50px; padding: clamp(4px, 1.5vw, 8px);
-        box-shadow: 0 15px 35px rgba(15,23,42,0.06); 
+        background: var(--md-surface); border-radius: 50px; 
+        padding: clamp(4px, 1vw, 6px);
+        box-shadow: var(--soft-shadow); 
         border: 1px solid rgba(226,232,240,0.8);
-        transition: box-shadow 0.3s;
+        transition: all 0.3s;
     }
-    .search-box:focus-within { box-shadow: 0 20px 40px rgba(37,99,235,0.15); border-color: #cbd5e1; }
-    
-    /* Kartu Direktori UPTD */
+    .search-box:focus-within { box-shadow: var(--hover-shadow); border-color: #cbd5e1; }
+    .search-box input::placeholder { font-size: clamp(0.8rem, 1.5vw, 0.9rem); color: #94a3b8; }
+
+    /* 3. KARTU DIREKTORI (Neumorphism Compact) */
     .card-direktori {
-        background: #ffffff; border-radius: 24px; border: 1px solid #e2e8f0;
-        box-shadow: 0 10px 30px rgba(15,23,42,0.03); transition: all 0.3s ease;
-        height: 100%; display: flex; flex-direction: column; position: relative; overflow: hidden;
+        background: var(--md-surface); 
+        border-radius: clamp(16px, 3vw, 24px); 
+        border: 1px solid rgba(226,232,240,0.5);
+        box-shadow: var(--soft-shadow); transition: all 0.3s ease;
+        height: 100%; display: flex; flex-direction: column; 
+        padding: clamp(15px, 3vw, 24px); /* Padding dalam dipangkas */
     }
     .card-direktori:hover {
-        transform: translateY(-8px); box-shadow: 0 20px 40px rgba(37,99,235,0.1); border-color: #cbd5e1;
+        transform: translateY(-4px); box-shadow: var(--hover-shadow); border-color: #cbd5e1;
     }
     
     .bg-soft-primary { background: #eff6ff; color: #2563eb; }
     
+    /* Typography Kartu */
+    .card-title-text { 
+        font-weight: 800; color: #0f172a; letter-spacing: -0.3px; 
+        font-size: clamp(1.05rem, 2.5vw, 1.25rem); margin-bottom: 4px; 
+    }
+    .card-loc-text { 
+        font-size: clamp(0.75rem, 1.5vw, 0.85rem); color: #64748b; 
+        font-weight: 600; margin-bottom: 15px; 
+    }
+
     /* Kotak Data Internal */
     .data-pill {
-        background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; 
-        padding: clamp(12px, 3vw, 15px) clamp(15px, 3vw, 20px); 
-        margin-bottom: 25px; transition: 0.3s;
+        background: var(--md-background); 
+        border-radius: clamp(10px, 2vw, 16px); 
+        padding: clamp(10px, 2vw, 15px); 
+        margin-bottom: 20px; transition: 0.3s;
+        border: 1px solid transparent;
     }
-    .card-direktori:hover .data-pill { background: #ffffff; border-color: #cbd5e1; }
+    .card-direktori:hover .data-pill { background: #ffffff; border-color: rgba(226,232,240,0.8); }
 
-    /* Perbaikan Input Search agar tidak terpotong di HP */
-    .search-box input::placeholder { font-size: clamp(0.85rem, 2.5vw, 1.05rem); }
+    .data-label { font-size: clamp(0.65rem, 1.2vw, 0.75rem); letter-spacing: 0.5px; color: #64748b; }
+    .data-value { font-size: clamp(0.95rem, 2vw, 1.15rem); font-weight: 800; }
+
+    /* Tombol MD3 */
+    .btn-md3 {
+        border-radius: 50px; padding: clamp(6px, 1.5vw, 10px) clamp(16px, 3vw, 24px);
+        font-size: clamp(0.75rem, 1.5vw, 0.9rem); font-weight: 700; transition: 0.3s;
+    }
+    
+    .badge-micro { font-size: clamp(0.55rem, 1.2vw, 0.7rem); padding: 4px 10px; letter-spacing: 0.5px; }
 </style>
 @endpush
 
