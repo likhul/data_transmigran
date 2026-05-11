@@ -13,11 +13,19 @@
 
     body { background-color: var(--md-background); font-size: 14px; }
 
-    /* 1. HERO SECTION (Konsisten dengan Detail Berita) */
+    /* --- PAKSA NAVBAR LANGSUNG GELAP DI HALAMAN INI --- */
+    .navbar {
+        background: #0f172a !important; /* Langsung pakai warna Navy Deep */
+        backdrop-filter: blur(15px);
+        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3);
+    }
+
+    /* 1. HERO SECTION */
     .hero-mini {
         background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%), url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=2000');
         background-size: cover; background-position: center;
-        padding: clamp(80px, 12vh, 120px) 0 clamp(60px, 10vh, 100px);
+        /* Padding atas ditambah sedikit agar tidak tertutup navbar yang sudah solid */
+        padding: clamp(120px, 15vh, 150px) 0 clamp(60px, 10vh, 100px);
         position: relative; color: white;
         border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
         box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
@@ -113,11 +121,7 @@
                                         {{ $berita->created_at->format('d M Y') }}
                                     </div>
                                     <h5 class="news-title">{{ Str::limit($berita->judul, 65) }}</h5>
-                                    
-                                    <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
-                                        <span class="text-primary fw-bold small">Baca Selengkapnya</span>
-                                        <i class="bi bi-arrow-right text-primary"></i>
-                                    </div>
+                                
                                 </div>
                             </div>
                         </a>

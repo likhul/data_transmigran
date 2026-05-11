@@ -44,9 +44,17 @@
         
         /* Footer Tabel untuk Jumlah */
         .row-jumlah td { font-weight: bold; }
+
+        .kop-surat { text-align: center; border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px; }
+        .kop-surat h2 { margin: 0; font-size: 16pt; text-transform: uppercase; }
+        .kop-surat p { margin: 2px 0; font-size: 9pt; color: #666; }
     </style>
 </head>
 <body>
+    <div class="kop-surat">
+        <h2>Pemerintah Provinsi Jambi</h2>
+        <h2>Dinas Tenaga Kerja dan Transmigrasi</h2>
+    </div>
 
     <div class="judul">
         DAFTAR: UNIT PEMUKIMAN TRANSMIGRASI / DESA TRANSMIGRASI<br>

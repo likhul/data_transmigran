@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Manajemen Data UPTD - SI Jambi')
+@section('title', 'Manajemen Data UPT - SI Jambi')
 
 @push('css')
 <style>
@@ -124,11 +124,11 @@
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h1 class="page-title mb-1">Manajemen Master UPTD</h1>
-            <p class="text-muted small mb-0"><i class="bi bi-database-fill me-1"></i>Kelola daftar nama UPTD/Desa Transmigrasi Jambi.</p>
+            <h1 class="page-title mb-1">Manajemen UPT</h1>
+            <p class="text-muted small mb-0"><i class="bi bi-database-fill me-1"></i>Kelola daftar nama UPT/Desa Transmigrasi Jambi.</p>
         </div>
         <button class="btn-premium btn-blue shadow" data-bs-toggle="modal" data-bs-target="#modalTambah">
-            <i class="bi bi-plus-circle-fill fs-5"></i> Tambah UPTD Baru
+            <i class="bi bi-plus-circle-fill fs-5"></i> Tambah UPT Baru
         </button>
     </div>
 
@@ -138,7 +138,7 @@
             <form action="{{ route('master-uptd.index') }}" method="GET" class="w-100">
                 <div class="search-pill">
                     <i class="bi bi-search text-muted fs-5"></i>
-                    <input type="text" name="search" placeholder="Cari nama UPTD, Kecamatan, atau Kabupaten..." value="{{ request('search') }}">
+                    <input type="text" name="search" placeholder="Cari nama UPT, Kecamatan, atau Kabupaten..." value="{{ request('search') }}">
                     <button type="submit shadow-sm">Cari Data</button>
                 </div>
             </form>
@@ -149,7 +149,7 @@
                 <thead>
                     <tr>
                         <th class="text-center" width="5%">No</th>
-                        <th>Nama UPTD / Desa Trans</th>
+                        <th>Nama UPT / Desa Trans</th>
                         <th>Kecamatan</th>
                         <th>Kabupaten</th>
                         <th class="text-center" width="10%">Opsi</th>
@@ -208,7 +208,7 @@
         <form action="{{ route('master-uptd.update', $m->id) }}" method="POST" class="modal-content" style="border-radius: 24px; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
             @csrf @method('PUT')
             <div class="modal-header border-0 p-4 pb-0">
-                <h5 class="fw-bold text-dark">Edit Master UPTD</h5>
+                <h5 class="fw-bold text-dark">Edit UPT</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
@@ -223,7 +223,7 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-bold small text-muted text-uppercase">Nama UPTD / Desa Trans</label>
+                    <label class="form-label fw-bold small text-muted text-uppercase">Nama UPT / Desa Trans</label>
                     <input type="text" name="nama_uptd" class="form-control form-control-premium" value="{{ $m->nama_uptd }}" required>
                 </div>
                 <button type="submit" class="btn btn-blue w-100 py-3 fw-bold mt-2" style="border-radius: 15px;">SIMPAN PERUBAHAN</button>
@@ -238,7 +238,7 @@
         <form action="{{ route('master-uptd.store') }}" method="POST" class="modal-content" style="border-radius: 24px; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
             @csrf
             <div class="modal-header border-0 p-4 pb-0">
-                <h5 class="fw-bold text-dark">Tambah UPTD Baru</h5>
+                <h5 class="fw-bold text-dark">Tambah UPT Baru</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
@@ -252,7 +252,7 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-bold small text-muted text-uppercase">Nama UPTD / Desa Trans</label>
+                    <label class="form-label fw-bold small text-muted text-uppercase">Nama UPT / Desa Trans</label>
                     <input type="text" name="nama_uptd" class="form-control form-control-premium" placeholder="Misal: Rantau Rasau VIII" required>
                 </div>
                 <button type="submit" class="btn btn-blue w-100 py-3 fw-bold mt-2" style="border-radius: 15px;">SIMPAN UPTD BARU</button>

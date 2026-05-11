@@ -85,7 +85,7 @@
                 </div>
                 <div class="badge-info-mungil d-flex align-items-center">
                     <i class="bi bi-building text-success me-2"></i>
-                    <span>Terdiri dari <b>{{ $statistik['uptd'] ?? 0 }} UPTD</b></span>
+                    <span>Terdiri dari <b>{{ $statistik['uptd'] ?? 0 }} UPT</b></span>
                 </div>
             </div>
         </div>
@@ -142,7 +142,7 @@
                         <thead>
                             <tr>
                                 <th style="text-align: left;">Kabupaten</th>
-                                <th style="text-align: center;">UPTD</th>
+                                <th style="text-align: center;">UPT</th>
                                 <th style="text-align: center;">Jiwa</th>
                             </tr>
                         </thead>
@@ -166,18 +166,18 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h6 class="fw-800 mb-0"><i class="bi bi-building text-success me-1"></i> Data UPTD</h6>
+                <h6 class="fw-800 mb-0"><i class="bi bi-building text-success me-1"></i> Data UPT</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" style="font-size: 0.7rem;"></button>
             </div>
             <div class="search-container">
-                <input type="text" class="modal-search-input" placeholder="Cari nama UPTD..." onkeyup="filterTable(this, 'tableUptd')">
+                <input type="text" class="modal-search-input" placeholder="Cari nama UPT..." onkeyup="filterTable(this, 'tableUptd')">
             </div>
             <div class="modal-body">
                 <div class="table-wrapper">
                     <table class="table-custom" id="tableUptd">
                         <thead>
                             <tr>
-                                <th style="text-align: left;">Nama UPTD</th>
+                                <th style="text-align: left;">Nama UPT</th>
                                 <th style="text-align: center;">Tahun</th>
                                 <th style="text-align: center;">Jiwa</th>
                             </tr>

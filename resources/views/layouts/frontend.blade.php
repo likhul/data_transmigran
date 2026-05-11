@@ -1,3 +1,7 @@
+@php
+    $profilGlobal = \App\Models\ProfilWeb::first();
+@endphp
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,11 +9,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', $profil->judul_website ?? 'SI-Trans Jambi')</title>
-    <meta name="description" content="@yield('meta_description', $profil->deskripsi_singkat ?? 'Portal Informasi Data')">
+    <title>@yield('title', $profilGlobal->judul_website ?? 'SI-Trans Jambi')</title>
+    <meta name="description" content="@yield('meta_description', $profilGlobal->deskripsi_singkat ?? 'Portal Informasi Data')">
     
-    @if(isset($profil) && $profil->favicon_website)
-        <link rel="icon" href="{{ asset('logo/' . $profil->favicon_website) }}">
+    {{-- KODE FAVICON FRONTEND (Dengan Anti-Cache) --}}
+    @if($profilGlobal && $profilGlobal->favicon_website && file_exists(public_path('logo/' . $profilGlobal->favicon_website)))
+        <link rel="icon" type="image/x-icon" href="{{ asset('logo/' . $profilGlobal->favicon_website) }}?v={{ time() }}">
     @endif
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -19,57 +24,203 @@
     
     <style>
         :root {
-            --md-primary: #2563eb;
-            --navy-deep: #0f172a;
-            --soft-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+            --md-primary: #2563eb; /* Biru Utama Tema */
+            --navy-deep: #0f172a;  /* Warna Footer */
+            --soft-shadow: 0 10px 30px -10px rgba(0,0,0,0.3);
         }
 
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #f8fafc; 
-            display: flex; flex-direction: column; min-height: 100vh;
+        /* --- STYLING ANIMASI OPENING (EFEK 5 TIANG BERGESER MENGHILANG) --- */
+        #opening-jambi {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh; /* Fallback untuk browser lama */
+            height: 100dvh; /* Memastikan pas di tengah pada layar HP tanpa terhalang address bar */
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Latar putih dihapus dari sini dan dipindah ke masing-masing tiang */
         }
 
-        /* --- NAVBAR BASE --- */
-        .navbar { 
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            padding: 25px 0; z-index: 2000; 
+        .opening-hidden {
+            pointer-events: none; /* Mencegah layar menghalangi klik saat animasi keluar */
         }
 
-        .navbar.scrolled {
-            background: rgba(255, 255, 255, 0.95) !important; 
-            backdrop-filter: blur(15px); 
-            box-shadow: var(--soft-shadow); 
-            padding: 12px 0;
+        /* --- WADAH 5 TIANG VERTIKAL --- */
+        .opening-columns {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            z-index: 1; /* Berada di belakang teks dan ring */
         }
 
-        /* --- NAV LINKS LOGIC --- */
-        .nav-link { 
-            font-weight: 700; font-size: 0.95rem; 
-            transition: 0.3s; padding: 10px 18px !important;
+        /* BUNGKUSAN TIANG KUNCI: overflow: hidden agar tiang hilang saat keluar garisnya */
+        .col-wrapper {
+            flex: 1;
+            height: 100%;
+            overflow: hidden; 
             position: relative;
         }
 
-        /* Keadaan di Atas (Dark/Transparent) */
-        .navbar-dark .nav-link { color: rgba(255,255,255,0.8) !important; }
-        .navbar-dark .nav-link:hover, 
-        .navbar-dark .nav-link.active { 
-            color: #ffffff !important; 
+        /* TIANG PUTIH FISIKNYA */
+        .col-slide {
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff; /* Latar Putih Bersih ada di tiang ini */
+            transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
         }
-        .navbar-dark .nav-link.active::after {
+
+        /* --- ANIMASI TIANG BERGESER KE KIRI (SEUKURAN DIRINYA SENDIRI) BERGANTIAN --- */
+        .opening-hidden .col-wrapper:nth-child(1) .col-slide { transform: translateX(-100%); transition-delay: 0.0s; }
+        .opening-hidden .col-wrapper:nth-child(2) .col-slide { transform: translateX(-100%); transition-delay: 0.1s; }
+        .opening-hidden .col-wrapper:nth-child(3) .col-slide { transform: translateX(-100%); transition-delay: 0.2s; }
+        .opening-hidden .col-wrapper:nth-child(4) .col-slide { transform: translateX(-100%); transition-delay: 0.3s; }
+        .opening-hidden .col-wrapper:nth-child(5) .col-slide { transform: translateX(-100%); transition-delay: 0.4s; }
+
+        /* --- BUNGKUSAN KONTEN TENGAH (TEKS & RING) --- */
+        .opening-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 0.3s ease; /* Konten akan memudar cepat saat opening selesai */
+        }
+
+        .opening-hidden .opening-content {
+            opacity: 0;
+        }
+
+        /* Ring Biru Tipis */
+        .ring-loader {
+            width: 70px;
+            height: 70px;
+            border: 2px solid #f1f5f9;
+            border-top: 2px solid var(--md-primary);
+            border-radius: 50%;
+            animation: spin-opening 1s linear infinite;
+            margin-bottom: 30px;
+        }
+
+        /* Teks SITRANSJAMBI */
+        .brand-opening-text {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 8px;
+            display: flex;
+            gap: 2px;
+        }
+
+        .brand-opening-text span {
+            display: inline-block;
+            color: #cbd5e1; /* Warna abu-abu awal (Standby) */
+            /* Animasi huruf akan muter 360 derajat */
+            animation: text-muter 0.8s ease-in-out forwards;
+        }
+
+        @keyframes spin-opening {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Keyframes untuk Teks Muter lalu menghitam */
+        @keyframes text-muter {
+            0% { 
+                transform: rotateY(0deg); 
+                color: #cbd5e1; 
+            }
+            50% { 
+                transform: rotateY(90deg); /* Miring 90 derajat */
+                color: #cbd5e1; 
+            }
+            100% { 
+                transform: rotateY(360deg); /* Selesai muter 1 putaran penuh */
+                color: var(--navy-deep); /* Berubah menjadi warna Hitam / Navy Pekat */
+            }
+        }
+
+        /* TAMBAHAN BARU: RESPONSIF KHUSUS UNTUK LAYAR HP (DISEMPURNAKAN AGAR PAS & GAGAH) */
+        @media (max-width: 768px) {
+            .ring-loader {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 25px;
+            }
+            .brand-opening-text {
+                /* clamp membuat ukuran elastis: min 1.4rem, ideal 6vw (ikut lebar layar HP), max 1.8rem */
+                font-size: clamp(1.4rem, 6vw, 1.8rem); 
+                letter-spacing: 5px; /* Spasi dilonggarkan sedikit agar tetap elegan */
+                gap: 2px;
+            }
+        }
+        /* --- END STYLING OPENING --- */
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        /* --- STYLING TEKS DINAS (BRAND) --- */
+        .brand-text-wrapper {
+            line-height: 1.1;
+            margin-left: 10px;
+        }
+        .brand-main {
+            font-weight: 800;
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            display: block;
+        }
+        .brand-sub {
+            font-weight: 600;
+            font-size: clamp(0.55rem, 1.5vw, 0.7rem);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            transition: 0.3s;
+        }
+
+        /* --- NAVBAR BASE --- */
+        .navbar {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px 0; z-index: 2000;
+            background: transparent !important; /* Menjamin transparan sebelum scroll */
+        }
+
+        /* --- NAVBAR SCROLLED (Warna Seperti Footer) --- */
+        .navbar.scrolled {
+            background: var(--navy-deep) !important; /* Dirubah ke Navy Deep */
+            backdrop-filter: blur(15px);
+            box-shadow: var(--soft-shadow);
+            padding: 10px 0;
+        }
+
+        /* --- NAV LINKS LOGIC --- */
+        .nav-link {
+            font-weight: 700; font-size: 0.95rem;
+            transition: 0.3s; padding: 10px 18px !important;
+            position: relative;
+            color: rgba(255,255,255,0.8) !important; /* Selalu Putih Lembut */
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #ffffff !important;
+        }
+
+        .nav-link.active::after {
             content: ""; position: absolute; bottom: 5px; left: 18px; right: 18px;
             height: 3px; background: white; border-radius: 10px;
         }
 
-        /* Keadaan di Bawah (Light/Scrolled) */
-        .navbar-light .nav-link { color: var(--navy-deep) !important; }
-        .navbar-light .nav-link:hover, 
-        .navbar-light .nav-link.active { 
-            color: var(--md-primary) !important; 
-        }
-        .navbar-light .nav-link.active::after {
-            content: ""; position: absolute; bottom: 5px; left: 18px; right: 18px;
-            height: 3px; background: var(--md-primary); border-radius: 10px;
+        /* Underline Biru saat di-scroll (Opsional, agar tetap ada aksen biru) */
+        .navbar.scrolled .nav-link.active::after {
+            background: var(--md-primary);
         }
 
         /* --- LOGIN BUTTON LOGIC --- */
@@ -77,55 +228,134 @@
             border-radius: 50px; padding: 8px 25px !important;
             font-weight: 800; font-size: 0.8rem; text-transform: uppercase;
             letter-spacing: 0.5px; transition: 0.3s;
-        }
-        /* Button di Atas */
-        .navbar-dark .btn-login-nav {
             border: 2px solid rgba(255,255,255,0.4); color: white !important;
         }
-        /* Button di Bawah */
-        .navbar-light .btn-login-nav {
-            background: var(--md-primary); color: white !important;
+        
+        .navbar.scrolled .btn-login-nav {
+            background: var(--md-primary);
+            border-color: var(--md-primary);
             box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
         }
-        .btn-login-nav:hover { transform: translateY(-2px); opacity: 0.9; }
+        
+        .btn-login-nav:hover { transform: translateY(-2px); opacity: 0.9; background: white; color: var(--navy-deep) !important; }
 
         /* --- BURGER SVG --- */
         .navbar-toggler { border: none !important; padding: 8px; }
         .burger-svg { stroke: white; transition: 0.3s; }
-        .navbar.scrolled .burger-svg { stroke: var(--navy-deep); }
 
         /* --- MOBILE MENU --- */
         @media (max-width: 991.98px) {
             .navbar-collapse {
                 background: var(--navy-deep); margin-top: 15px; padding: 20px; border-radius: 20px;
-            }
-            .navbar.scrolled .navbar-collapse {
-                background: white; border: 1px solid #e2e8f0;
+                border: 1px solid rgba(255,255,255,0.1);
             }
             .nav-link { text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
-            .navbar-light .nav-link { border-bottom: 1px solid #f1f5f9; }
-            .nav-link.active::after { display: none; } /* Matikan underline di mobile */
+            .nav-link.active::after { display: none; }
             .btn-login-nav { margin-top: 15px; width: 100%; text-align: center; }
         }
 
         /* --- FOOTER --- */
-        .footer-premium { background: white; border-top: 1px solid #e2e8f0; padding: 60px 0 30px; margin-top: auto; }
-        .footer-title { font-weight: 800; font-size: 1rem; color: var(--navy-deep); text-transform: uppercase; margin-bottom: 25px; }
-        .footer-link { display: flex; align-items: center; padding: 10px 0; color: #475569 !important; text-decoration: none; font-size: 0.95rem; font-weight: 600; transition: 0.3s; }
-        .footer-link:hover { color: var(--md-primary) !important; transform: translateX(8px); }
-        .footer-link i { margin-right: 12px; color: var(--md-primary); }
+        .footer-premium {
+            background: var(--navy-deep);
+            border-top: none;
+            padding: 40px 0 20px;
+            margin-top: auto;
+            color: white;
+        }
+        
+        .footer-title {
+            font-weight: 800; font-size: 1.05rem;
+            color: white;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        
+        .footer-link {
+            display: flex; align-items: center;
+            padding: 6px 0;
+            color: rgba(255,255,255,0.7) !important;
+            text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.3s;
+        }
+        .footer-link.active {
+            color: var(--md-primary) !important; font-weight: 800;
+        }
+        .footer-link:hover {
+            color: var(--md-primary) !important;
+            transform: translateX(6px);
+        }
+        .footer-link i {
+            margin-right: 10px;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .copyright-section {
+             margin-top: 25px !important;
+             padding-top: 15px !important;
+             border-top: 1px solid rgba(255,255,255,0.1);
+             color: rgba(255,255,255,0.5) !important;
+             font-size: 0.8rem;
+        }
+        .copyright-section b { color: white; }
     </style>
     @stack('css')
+
+    {{-- BYPASS SCRIPT: Mencegah kedipan saat pindah halaman --}}
+    <script>
+        (function() {
+            if (sessionStorage.getItem('openingSudahTampil')) {
+                var style = document.createElement('style');
+                style.innerHTML = '#opening-jambi { display: none !important; }';
+                document.head.appendChild(style);
+            }
+        })();
+    </script>
 </head>
 <body>
+
+    <div id="opening-jambi">
+        <div class="opening-columns">
+            <div class="col-wrapper"><div class="col-slide"></div></div>
+            <div class="col-wrapper"><div class="col-slide"></div></div>
+            <div class="col-wrapper"><div class="col-slide"></div></div>
+            <div class="col-wrapper"><div class="col-slide"></div></div>
+            <div class="col-wrapper"><div class="col-slide"></div></div>
+        </div>
+
+        <div class="opening-content">
+            <div class="ring-loader"></div>
+            <div class="brand-opening-text">
+                <span style="animation-delay: 0.1s;">S</span>
+                <span style="animation-delay: 0.2s;">I</span>
+                <span style="animation-delay: 0.3s;">T</span>
+                <span style="animation-delay: 0.4s;">R</span>
+                <span style="animation-delay: 0.5s;">A</span>
+                <span style="animation-delay: 0.6s;">N</span>
+                <span style="animation-delay: 0.7s;">S</span>
+                <span style="animation-delay: 0.8s;">J</span>
+                <span style="animation-delay: 0.9s;">A</span>
+                <span style="animation-delay: 1.0s;">M</span>
+                <span style="animation-delay: 1.1s;">B</span>
+                <span style="animation-delay: 1.2s;">I</span>
+            </div>
+        </div>
+    </div>
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
         <div class="container px-3">
             <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-                @if(isset($profil) && $profil->logo_website)
-                    <img src="{{ asset('logo/' . $profil->logo_website) }}" height="32" class="me-2 rounded">
+                @if($profilGlobal && $profilGlobal->logo_website && file_exists(public_path('logo/' . $profilGlobal->logo_website)))
+                    <img src="{{ asset('logo/' . $profilGlobal->logo_website) }}" alt="Logo" style="height: 60px;">
                 @endif
-                <span class="text-white" id="brandText">SI-Trans Jambi</span>
+                
+                <div class="brand-text-wrapper">
+                    <span class="brand-main text-primary">SI-Trans Jambi</span>
+                    <span class="brand-sub text-white-80" id="brandSubText">
+                        Dinas Tenaga Kerja dan Transmigrasi Provinsi Jambi
+                    </span>
+                </div>
             </a>
             
             <button class="navbar-toggler shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -178,8 +408,8 @@
                     <a href="{{ route('galeri.semua') }}" class="footer-link"><i class="bi bi-images"></i> Galeri</a>
                 </div>
             </div>
-            <div class="mt-5 pt-4 border-top text-center small text-muted">
-                &copy; {{ date('Y') }} <b>SI-Trans Jambi</b>. Pemerintah Provinsi Jambi.
+            <div class="mt-5 pt-4 border-top text-center small text-muted copyright-section">
+                &copy; {{ date('Y') }} <b>SI-Trans Jambi</b>. All Rights Reserved Develop by TIM
             </div>
         </div>
     </footer>
@@ -189,17 +419,30 @@
     <script>
         AOS.init({ duration: 800, once: true });
         const nav = document.getElementById('mainNav');
-        const brandText = document.getElementById('brandText');
 
         window.addEventListener('scroll', function() {
             if (window.scrollY > 40) {
                 nav.classList.add('scrolled');
-                nav.classList.replace('navbar-dark', 'navbar-light');
-                brandText.style.color = '#0f172a';
             } else {
                 nav.classList.remove('scrolled');
-                nav.classList.replace('navbar-light', 'navbar-dark');
-                brandText.style.color = '#ffffff';
+            }
+        });
+
+        // SCRIPT PEMICU ANIMASI KELUAR
+        window.addEventListener('load', function() {
+            const opening = document.getElementById('opening-jambi');
+            if (!sessionStorage.getItem('openingSudahTampil')) {
+                setTimeout(function() {
+                    // Memicu ke-5 tiang bergeser dan menghilang
+                    opening.classList.add('opening-hidden');
+                    sessionStorage.setItem('openingSudahTampil', 'true');
+                    setTimeout(function() {
+                        opening.style.display = 'none';
+                    }, 1000);
+
+                }, 2600);
+            } else {
+                opening.style.display = 'none';
             }
         });
     </script>

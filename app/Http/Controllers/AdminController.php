@@ -14,27 +14,33 @@ class AdminController extends Controller
             return redirect('/dashboard')->with('error', 'Akses Ditolak! Hanya Super Admin yang boleh masuk ke halaman ini.');
         }
 
-        $admins = User::all();
+        $admins = \App\Models\User::all();
         return view('admin.index', compact('admins'));
     }
 
     public function store(Request $request)
     {
+        // PROSES VALIDASI KERAS
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'role' => 'required|in:superadmin,admin',
+            'email'    => 'required|string|email|max:255|unique:users,email', // Cek apakah email sudah ada di tabel users
+            'password' => 'required|string|min:8', // Minimal 8 karakter
+            'role'     => 'required'
+        ], [
+            // Pesan Error Custom (Bahasa Indonesia)
+            'email.unique' => 'Email ini sudah terdaftar, gunakan email lain.',
+            'password.min' => 'Password minimal harus 8 karakter.',
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password), // Enkripsi password otomatis
-            'role' => $request->role,
+        // Jika lolos validasi, baru simpan
+        \App\Models\User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => \Hash::make($request->password),
+            'role'     => $request->role,
         ]);
 
-        return redirect()->back()->with('success', 'Akun Admin baru berhasil ditambahkan!');
+        return redirect()->route('admin.index')->with('success', 'Admin baru berhasil ditambahkan!');
     }
 
     public function destroy($id)

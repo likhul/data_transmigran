@@ -26,7 +26,6 @@
     <div class="kop-surat">
         <h2>Pemerintah Provinsi Jambi</h2>
         <h2>Dinas Tenaga Kerja dan Transmigrasi</h2>
-        <p>Alamat: Jl. Gatot Subroto No. 123, Jambi | Email: disnakertrans@jambiprov.go.id</p>
     </div>
 
     <div class="judul-laporan">Laporan Rekapitulasi Data Transmigran</div>
@@ -37,9 +36,9 @@
                 <th width="5%">No</th>
                 <th width="25%">Kepala Keluarga</th>
                 <th width="15%">Asal Daerah</th>
-                <th width="25%">Lokasi Penempatan</th>
+                <th width="30%">Lokasi Penempatan</th>
                 <th width="10%">Tahun</th>
-                <th width="10%">Status</th>
+                <th width="15%">Status</th>
             </tr>
         </thead>
         <tbody>
@@ -51,13 +50,14 @@
                     <small>{{ $item->jumlah_anggota }} Jiwa</small>
                 </td>
                 <td>{{ $item->asal_daerah }}</td>
+                
                 <td>
-                    {{ $item->kabupaten->nama_kabupaten ?? '-' }}<br>
-                    <small>UPTD: {{ $item->uptd->nama_uptd ?? 'Umum' }}</small>
+                    <strong>{{ $item->nama_desa ?? 'Belum Diatur' }}</strong><br>
+                    <small>Kec. {{ $item->kecamatan->nama_kecamatan ?? '-' }}, {{ $item->kabupaten->nama_kabupaten ?? '-' }}</small>
                 </td>
                 <td class="text-center">{{ $item->tahun_penempatan }}</td>
                 <td class="text-center">
-                    <span class="badge-status">{{ $item->status }}</span>
+                    <span class="badge-status">{{ strtoupper($item->status) }}</span>
                 </td>
             </tr>
             @empty
@@ -67,15 +67,5 @@
             @endforelse
         </tbody>
     </table>
-
-    <div class="footer">
-        <div class="ttd">
-            <p>Jambi, {{ date('d F Y') }}</p>
-            <p>Petugas Administrasi,</p>
-            <br><br><br>
-            <p><strong>( ____________________ )</strong></p>
-            <p>NIP. .........................</p>
-        </div>
-    </div>
 </body>
 </html>

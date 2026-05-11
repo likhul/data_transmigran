@@ -3,7 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes; // Memanggil fitur Soft Deletes
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Kecamatan;
 
 class Transmigran extends BaseModel
 {
@@ -14,6 +15,8 @@ class Transmigran extends BaseModel
         'jumlah_anggota', 
         'asal_daerah', 
         'kabupaten_id', 
+        'kecamatan_id', // Cek apakah ini sudah ada?
+        'nama_desa',    // Cek apakah ini sudah ada?
         'tahun_penempatan', 
         'status'
     ];
@@ -23,17 +26,27 @@ class Transmigran extends BaseModel
     {
         return $this->belongsTo(Kabupaten::class, 'kabupaten_id');
     }
-
-    public function uptd()
+    
+    public function kecamatan()
     {
-        // Relasi ke model MasterUptd (sesuaikan nama model master Anda)
-        // Jika nama model Anda adalah MasterUptd, gunakan MasterUptd::class
-        return $this->belongsTo(MasterUptd::class, 'uptd_id');
+        return $this->belongsTo(Kecamatan::class, 'kecamatan_id');
     }
 
     // Relasi: Satu Transmigran bisa memiliki banyak riwayat Mutasi
     public function mutasis()
     {
         return $this->hasMany(Mutasi::class);
+    }
+
+    public function getKecamatan($kabupaten_id)
+    {
+        try {
+            $data = Kecamatan::where('kabupaten_id', $kabupaten_id)
+                        ->orderBy('nama_kecamatan', 'asc')
+                        ->get();
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

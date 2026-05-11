@@ -1,6 +1,11 @@
 @extends('layouts.frontend')
 @section('title', 'Hubungi Kami | SI-Trans Jambi')
 
+{{-- INI KUNCI UTAMANYA: Mengambil data profil dari database --}}
+@php
+    $profil = \App\Models\ProfilWeb::first();
+@endphp
+
 @push('css')
 <style>
     :root {
@@ -16,11 +21,17 @@
 
     /* 1. HERO SECTION - ULTRA MODERN */
     .hero-mini {
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%), url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2000');
-        background-size: cover; background-position: center;
-        padding: clamp(80px, 12vh, 120px) 0 clamp(60px, 10vh, 100px);
-        position: relative; color: white;
-        border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(2, 132, 199, 0.6) 100%), 
+                    url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2000');
+        background-size: cover; 
+        background-position: center; 
+        background-attachment: fixed;
+        padding-top: clamp(110px, 16vh, 150px);
+        padding-bottom: clamp(80px, 12vh, 120px); 
+        position: relative;
+        border-bottom-left-radius: clamp(20px, 5vw, 40px);
+        border-bottom-right-radius: clamp(20px, 5vw, 40px);
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
     }
     
     .hero-title-main { font-weight: 900; font-size: clamp(1.5rem, 5vw, 2.5rem); letter-spacing: -1px; }
@@ -53,7 +64,7 @@
     /* INFO AREA */
     .info-container { padding: clamp(25px, 5vw, 45px); }
 
-    /* MINI INFO CARDS - Pengganti Ruang Kosong */
+    /* MINI INFO CARDS */
     .mini-card {
         background: var(--inner-card-bg);
         border: 1px solid #f1f5f9;
@@ -133,7 +144,7 @@
             <div class="mega-card" data-aos="zoom-in-up">
                 
                 <div class="map-container">
-                    @if(isset($profil) && $profil->google_maps)
+                    @if($profil && $profil->google_maps)
                         {!! $profil->google_maps !!}
                     @else
                         <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-light">
@@ -151,7 +162,7 @@
                             <div class="mini-card shadow-sm">
                                 <div class="icon-box"><i class="bi bi-geo-alt-fill"></i></div>
                                 <div class="label-small">Alamat Kantor</div>
-                                <div class="value-main">{{ $profil->alamat_kantor ?? 'Dinas Tenaga Kerja dan Transmigrasi, Provinsi Jambi' }}</div>
+                                <div class="value-main">{{ $profil->alamat_kantor ?? 'Alamat belum diatur' }}</div>
                             </div>
                         </div>
 
@@ -169,9 +180,20 @@
                                         <div class="icon-box"><i class="bi bi-chat-heart-fill"></i></div>
                                         <div class="label-small">Ikuti Kami</div>
                                         <div class="sosmed-pill">
-                                            <a href="{{ $profil->link_facebook ?? '#' }}" class="sosmed-item"><i class="bi bi-facebook"></i></a>
-                                            <a href="{{ $profil->link_instagram ?? '#' }}" class="sosmed-item"><i class="bi bi-instagram"></i></a>
-                                            <a href="{{ $profil->link_youtube ?? '#' }}" class="sosmed-item"><i class="bi bi-youtube"></i></a>
+                                            @if($profil && $profil->link_facebook)
+                                                <a href="{{ $profil->link_facebook }}" class="sosmed-item" target="_blank"><i class="bi bi-facebook"></i></a>
+                                            @endif
+                                            @if($profil && $profil->link_instagram)
+                                                <a href="{{ $profil->link_instagram }}" class="sosmed-item" target="_blank"><i class="bi bi-instagram"></i></a>
+                                            @endif
+                                            @if($profil && $profil->link_youtube)
+                                                <a href="{{ $profil->link_youtube }}" class="sosmed-item" target="_blank"><i class="bi bi-youtube"></i></a>
+                                            @endif
+                                            
+                                            {{-- Jika belum ada satupun sosmed yang diisi --}}
+                                            @if(!$profil || (!$profil->link_facebook && !$profil->link_instagram && !$profil->link_youtube))
+                                                <span class="text-muted small">Belum ada tautan</span>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -184,17 +206,21 @@
                     @php
                         // Logika memperbaiki nomor WA agar tidak "Undang"
                         $nohp = $profil->nomor_telepon ?? '';
-                        // 1. Hapus spasi, strip, dan karakter non-angka
                         $nohp = preg_replace('/[^0-9]/', '', $nohp);
-                        // 2. Jika angka pertama adalah 0, ganti dengan 62
                         if (substr($nohp, 0, 1) === '0') {
                             $nohp = '62' . substr($nohp, 1);
                         }
                     @endphp
 
-                    <a href="https://api.whatsapp.com/send?phone={{ $nohp }}" target="_blank" class="btn btn-primary btn-action shadow-sm">
-                        <i class="bi bi-whatsapp"></i> Chat WhatsApp
-                    </a>
+                    @if($nohp)
+                        <a href="https://api.whatsapp.com/send?phone={{ $nohp }}" target="_blank" class="btn btn-primary btn-action shadow-sm">
+                            <i class="bi bi-whatsapp"></i> Chat WhatsApp
+                        </a>
+                    @else
+                        <button class="btn btn-secondary btn-action shadow-sm" disabled>
+                            <i class="bi bi-whatsapp"></i> WhatsApp Belum Tersedia
+                        </button>
+                    @endif
                 </div>
 
             </div>

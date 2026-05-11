@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('uptds', function (Blueprint $table) {
             $table->id();
-            $table->year('tahun_penyerahan');
+            $table->string('tahun_penyerahan');
             $table->foreignId('kabupaten_id')->constrained('kabupatens')->onDelete('cascade');
             $table->foreignId('kecamatan_id')->constrained('kecamatans')->onDelete('cascade');
             $table->string('nama_upt'); // UPT/Desa Trans

@@ -1,5 +1,5 @@
 @extends('layouts.frontend')
-@section('title', 'Direktori UPTD | SI-Trans Jambi')
+@section('title', 'Direktori UPT | SI-Trans Jambi')
 
 @push('css')
 <style>
@@ -15,16 +15,21 @@
     body { background-color: var(--md-background); font-size: 14px; }
 
     /* 1. HERO SECTION (Micro-Clean MD3) */
+    /* --- HERO SECTION DIREKTORI --- */
     .hero-mini {
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(37, 99, 235, 0.75) 100%), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=2000');
-        background-size: cover; background-position: center;
-        padding-top: clamp(80px, 12vh, 120px);
-        padding-bottom: clamp(60px, 10vh, 100px); 
-        position: relative;
-        border-bottom-left-radius: clamp(16px, 4vw, 32px);
-        border-bottom-right-radius: clamp(16px, 4vw, 32px);
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(13, 148, 136, 0.55) 100%), 
+                    url('https://images.unsplash.com/photo-1500076656116-558758c991c1?auto=format&fit=crop&q=80&w=2000');
+        background-size: cover; 
+        background-position: center;
+        background-attachment: fixed;
+        padding: clamp(120px, 15vh, 150px) 0 clamp(60px, 10vh, 100px);
+        position: relative; 
+        color: white;
+        border-bottom-left-radius: 40px; 
+        border-bottom-right-radius: 40px;
         box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
     }
+    
     .hero-title-main {
         font-weight: 800; 
         font-size: clamp(1.2rem, 4.5vw, 2.5rem); 
@@ -103,7 +108,7 @@
     <div class="hero-mini text-center">
         <div class="container position-relative z-3 px-3">
             <span class="badge bg-white text-primary px-3 py-2 rounded-pill fw-bold mb-3 shadow-sm" style="font-size: 0.75rem; letter-spacing: 1.5px;">DATABASE RESMI</span>
-            <h1 class="hero-title-main mb-3 text-white">Direktori UPTD Transmigrasi</h1>
+            <h1 class="hero-title-main mb-3 text-white">Direktori UPT Transmigrasi</h1>
             <p class="text-white-50 mx-auto mb-0" style="max-width: 600px; font-size: clamp(0.95rem, 2vw, 1.1rem);">Daftar seluruh Unit Pemukiman Transmigrasi di Provinsi Jambi yang telah diserahterimakan ke Pemerintah Daerah.</p>
         </div>
     </div>
@@ -116,7 +121,7 @@
                         <span class="input-group-text bg-transparent border-0 ps-3 ps-md-4 pe-2 text-muted">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" name="search" class="form-control border-0 shadow-none px-2 bg-transparent" placeholder="Cari nama UPTD atau Kabupaten..." value="{{ request('search') }}" style="font-size: clamp(0.9rem, 2.5vw, 1.05rem);">
+                        <input type="text" name="search" class="form-control border-0 shadow-none px-2 bg-transparent" placeholder="Cari nama UPT atau Kabupaten..." value="{{ request('search') }}" style="font-size: clamp(0.9rem, 2.5vw, 1.05rem);">
                         <button class="btn btn-primary rounded-pill px-3 px-md-4 py-2 fw-bold shadow-sm ms-1 ms-md-2" type="submit" style="font-size: clamp(0.85rem, 2vw, 1rem);">Telusuri</button>
                     </div>
                 </form>
@@ -130,7 +135,7 @@
             <div class="text-center py-5 px-3">
                 <i class="bi bi-folder-x text-muted opacity-50 display-1 mb-3 d-block"></i>
                 <h4 class="fw-bold text-dark" style="font-size: clamp(1.2rem, 3vw, 1.5rem);">Data Tidak Ditemukan</h4>
-                <p class="text-muted" style="word-wrap: break-word;">Maaf, UPTD dengan kata kunci "<strong>{{ request('search') }}</strong>" tidak ada di dalam database kami.</p>
+                <p class="text-muted" style="word-wrap: break-word;">Maaf, UPT dengan kata kunci "<strong>{{ request('search') }}</strong>" tidak ada di dalam database kami.</p>
                 <a href="{{ route('direktori.index') }}" class="btn btn-outline-primary rounded-pill mt-2 fw-bold px-4">Reset Pencarian</a>
             </div>
         @else
@@ -173,8 +178,9 @@
             </div>
         @endif
 
-        <div class="d-flex justify-content-center mt-5 pt-3 overflow-auto w-100">
-            {{ $uptds->links() }}
+        <div class="d-flex flex-column align-items-center mt-5 pt-3">
+            {{-- Menggunakan format Pagination Bootstrap 5 --}}
+            {{ $uptds->links('pagination::bootstrap-5') }}
         </div>
     </div>
 @endsection

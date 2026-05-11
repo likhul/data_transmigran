@@ -85,6 +85,14 @@
         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
+    /* TAMBAHAN: Tombol Edit (Warna Kuning) */
+    .action-btn-edit {
+        width: 34px; height: 34px; border-radius: 10px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border: none; background: #fffbeb; color: #d97706; transition: 0.2s;
+    }
+    .action-btn-edit:hover { background: #fef3c7; transform: scale(1.1); }
+
     .action-btn-delete {
         width: 34px; height: 34px; border-radius: 10px;
         display: inline-flex; align-items: center; justify-content: center;
@@ -107,32 +115,43 @@
         </a>
     </div>
 
+    {{-- Notifikasi Sukses --}}
     @if(session('success'))
         <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4">✅ {{ session('success') }}</div>
+    @endif
+
+    {{-- Notifikasi Error Backend (Jika Ada) --}}
+    @if($errors->any())
+        <div class="alert alert-danger border-0 shadow-sm rounded-4 mb-4">
+            ⚠️ <strong>Gagal menyimpan:</strong> {{ $errors->first() }}
+        </div>
     @endif
 
     <div class="row g-4">
         <div class="col-lg-4">
             <div class="premium-card p-4">
                 <h5 class="fw-bold mb-4" style="color: var(--navy-dark);"><i class="bi bi-plus-lg me-2 text-primary"></i>Tambah Anggota</h5>
-                <form action="{{ route('struktur.store') }}" method="POST" enctype="multipart/form-data">
+                
+                {{-- TAMBAHKAN ID PADA FORM --}}
+                <form id="formTambahStruktur" action="{{ route('struktur.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-muted">NAMA LENGKAP</label>
-                        <input type="text" name="nama" class="form-control form-control-premium" placeholder="Nama Tanpa Gelar" required>
+                        <input type="text" name="nama" value="{{ old('nama') }}" class="form-control form-control-premium" placeholder="Nama Tanpa Gelar" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-muted">GELAR</label>
-                        <input type="text" name="gelar" class="form-control form-control-premium" placeholder="Contoh: S.Kom, M.Si">
+                        <input type="text" name="gelar" value="{{ old('gelar') }}" class="form-control form-control-premium" placeholder="Contoh: S.Kom, M.Si">
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-muted">JABATAN</label>
-                        <input type="text" name="jabatan" class="form-control form-control-premium" placeholder="Contoh: Kepala Bidang" required>
+                        <input type="text" name="jabatan" value="{{ old('jabatan') }}" class="form-control form-control-premium" placeholder="Contoh: Kepala Bidang" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-muted">URUTAN TAMPIL</label>
-                        <input type="number" name="urutan" class="form-control form-control-premium" value="0">
-                        <small class="text-muted" style="font-size: 0.7rem;">* Angka terkecil muncul paling pertama.</small>
+                        {{-- TAMBAHKAN ID PADA INPUT URUTAN --}}
+                        <input type="number" id="inputUrutan" name="urutan" class="form-control form-control-premium" value="{{ old('urutan', 0) }}" required>
+                        <small class="text-muted" style="font-size: 0.7rem;">* Angka tidak boleh sama dengan yang sudah ada.</small>
                     </div>
                     <div class="mb-4">
                         <label class="form-label small fw-bold text-muted">FOTO PROFIL</label>
@@ -157,7 +176,7 @@
                                 <th class="text-center" width="10%">Urutan</th>
                                 <th width="15%">Foto</th>
                                 <th>Informasi Pejabat</th>
-                                <th class="text-center" width="15%">Aksi</th>
+                                <th class="text-center" width="20%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -174,12 +193,18 @@
                                     <div class="text-primary small fw-bold text-uppercase" style="letter-spacing: 0.5px;">{{ $p->jabatan }}</div>
                                 </td>
                                 <td class="text-center">
-                                    <form action="{{ route('struktur.destroy', $p->id) }}" method="POST" class="btn-hapus-form">
-                                        @csrf @method('DELETE')
-                                        <button type="button" class="action-btn-delete btn-konfirmasi-hapus">
-                                            <i class="bi bi-trash3-fill"></i>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button type="button" class="action-btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditStruktur{{ $p->id }}" title="Edit">
+                                            <i class="bi bi-pencil-fill"></i>
                                         </button>
-                                    </form>
+                                        
+                                        <form action="{{ route('struktur.destroy', $p->id) }}" method="POST" class="btn-hapus-form">
+                                            @csrf @method('DELETE')
+                                            <button type="button" class="action-btn-delete btn-konfirmasi-hapus" title="Hapus">
+                                                <i class="bi bi-trash3-fill"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @empty
@@ -198,11 +223,105 @@
         </div>
     </div>
 </div>
+
+@foreach($penguruses as $p)
+<div class="modal fade" id="modalEditStruktur{{ $p->id }}" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form action="{{ route('struktur.update', $p->id) }}" method="POST" enctype="multipart/form-data" class="modal-content border-0 shadow-lg formEditStruktur" style="border-radius: 20px;">
+            @csrf @method('PUT')
+            <div class="modal-header border-bottom p-4 bg-white">
+                <h5 class="fw-bold text-navy-dark mb-0"><i class="bi bi-pencil-fill me-2 text-warning"></i>Edit Data Pejabat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 bg-light bg-opacity-50">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">NAMA LENGKAP</label>
+                    <input type="text" name="nama" value="{{ $p->nama }}" class="form-control form-control-premium" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">GELAR</label>
+                    <input type="text" name="gelar" value="{{ $p->gelar }}" class="form-control form-control-premium">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">JABATAN</label>
+                    <input type="text" name="jabatan" value="{{ $p->jabatan }}" class="form-control form-control-premium" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">URUTAN TAMPIL</label>
+                    <input type="number" name="urutan" class="form-control form-control-premium edit-urutan" data-original="{{ $p->urutan }}" value="{{ $p->urutan }}" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-muted">GANTI FOTO PROFIL (Opsional)</label>
+                    <input type="file" name="foto" class="form-control form-control-premium" accept="image/*">
+                    <div class="mt-3 text-center border p-2 rounded-3 bg-white">
+                        <small class="text-muted fw-bold d-block mb-1">Preview Foto Saat Ini:</small>
+                        <img src="{{ asset('pengurus/'.$p->foto) }}" class="rounded-3" style="height: 80px; object-fit: contain;">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top p-4 bg-white" style="border-radius: 0 0 20px 20px;">
+                <button type="button" class="btn btn-light fw-bold px-4 rounded-pill" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn-premium btn-blue px-5 shadow">💾 SIMPAN PERUBAHAN</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
+
 @endsection
 
 @push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
+    // 1. Ambil semua angka urutan yang sudah dipakai dari database/tabel
+    const urutanSudahAda = {!! json_encode($penguruses->pluck('urutan')->toArray()) !!};
+
+    // 2. Validasi Anti-Duplikat saat form TAMBAH disubmit
+    $('#formTambahStruktur').on('submit', function(e) {
+        // Ambil nilai yang diketik user
+        let urutanDiketik = parseInt($('#inputUrutan').val());
+
+        // Cek apakah nilai tersebut ada di array urutanSudahAda
+        if (urutanSudahAda.includes(urutanDiketik)) {
+            // STOP form agar tidak terkirim
+            e.preventDefault(); 
+            
+            // Munculkan Peringatan SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Urutan Sudah Dipakai!',
+                text: 'Angka urutan ' + urutanDiketik + ' sudah digunakan oleh pejabat lain. Silakan pilih angka lain.',
+                confirmButtonColor: '#2563eb',
+                confirmButtonText: 'Oke, Saya Ganti',
+                borderRadius: '16px',
+            });
+        }
+    });
+
+    // TAMBAHAN: Validasi Anti-Duplikat saat form EDIT disubmit
+    $('.formEditStruktur').on('submit', function(e) {
+        // Ambil urutan yang diketik di form edit ini
+        let urutanDiketik = parseInt($(this).find('.edit-urutan').val());
+        // Ambil urutan asli (sebelum diedit)
+        let urutanAsli = parseInt($(this).find('.edit-urutan').attr('data-original'));
+
+        // Jika user MENGGANTI angkanya, DAN angka barunya sudah ada di database
+        if (urutanDiketik !== urutanAsli && urutanSudahAda.includes(urutanDiketik)) {
+            e.preventDefault(); 
+            Swal.fire({
+                icon: 'error',
+                title: 'Urutan Sudah Dipakai!',
+                text: 'Angka urutan ' + urutanDiketik + ' sudah digunakan oleh pejabat lain. Silakan pilih angka lain.',
+                confirmButtonColor: '#2563eb',
+                confirmButtonText: 'Oke, Saya Ganti',
+                borderRadius: '16px',
+            });
+        }
+    });
+
+    // 3. Script Hapus (Bawaan Komandan sebelumnya)
     $('.btn-konfirmasi-hapus').on('click', function() {
         let form = $(this).closest('form');
         Swal.fire({

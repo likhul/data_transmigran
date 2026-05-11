@@ -1,259 +1,254 @@
 @extends('layouts.app')
 
-@section('title', 'Daftar Transmigran - SI Jambi')
+@section('title', 'Daftar Transmigran')
 
 @push('css')
 <style>
-    /* Konfigurasi Warna Tema Navy & Blue */
     :root {
-        --blue-primary: #2563eb; 
-        --blue-hover: #1d4ed8;
-        --blue-light: #eff6ff;
-        --navy-dark: #0f172a; 
-        --text-main: #1e293b;
+        --teal-primary: #0f766e;
+        --teal-light: #f0fdfa;
+        --navy-dark: #0f172a;
+        --text-main: #334155;
         --text-muted: #64748b;
         --bg-body: #f8fafc;
-        --bg-surface: #ffffff;
-        --border-color: #f1f5f9;
+        --border-color: #e2e8f0;
     }
 
-    /* Container Utama */
+    /* Container & Card */
     .premium-card {
-        background: var(--bg-surface);
-        border-radius: 24px;
-        box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.04), 0 4px 16px -4px rgba(0, 0, 0, 0.02);
-        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        border: 1px solid var(--border-color);
         overflow: hidden;
     }
 
-    /* Header & Tombol */
-    .page-title { font-weight: 800; color: var(--navy-dark); letter-spacing: -0.5px; font-size: 1.5rem; }
+    .page-title { font-weight: 800; color: var(--navy-dark); letter-spacing: -0.5px; }
     
-    .btn-premium {
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 0.875rem;
-        padding: 10px 20px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: inline-flex; align-items: center; gap: 8px;
-        text-decoration: none;
+    /* Custom Blue Buttons (Senada dengan halaman UPT) */
+    .btn-blue-solid {
+        background-color: #2b6cb0; color: #ffffff; border: none; border-radius: 12px;
+        padding: 10px 24px; font-weight: 600; font-size: 0.9rem;
+        display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease;
+        box-shadow: 0 4px 6px rgba(43, 108, 176, 0.15);
     }
+    .btn-blue-solid:hover { background-color: #2c5282; color: #ffffff; transform: translateY(-2px); }
     
-    /* Tombol Export (Biru Solid) */
-    .btn-blue { 
-        background: var(--blue-primary); color: white; border: 1px solid var(--blue-primary); 
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); 
+    .btn-blue-outline {
+        background-color: #ffffff; color: #2b6cb0; border: 2px solid #2b6cb0; border-radius: 12px;
+        padding: 8px 20px 8px 12px; font-weight: 600; font-size: 0.9rem;
+        display: inline-flex; align-items: center; gap: 10px; text-decoration: none; transition: all 0.2s ease;
     }
-    .btn-blue:hover { 
-        background: var(--blue-hover); border-color: var(--blue-hover);
-        transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3); color: white; 
+    .btn-blue-outline .icon-circle {
+        background-color: #2b6cb0; color: #ffffff; border-radius: 50%; width: 24px; height: 24px;
+        display: inline-flex; align-items: center; justify-content: center; font-size: 1.1rem;
     }
-    
-    /* Tombol Input (Putih Border Biru) */
-    .btn-outline-blue { 
-        background: white; color: var(--blue-primary); border: 2px solid var(--blue-primary); 
-    }
-    .btn-outline-blue:hover { 
-        background: var(--blue-light); color: var(--blue-hover); border-color: var(--blue-hover);
-        transform: translateY(-2px); 
-    }
+    .btn-blue-outline:hover { background-color: #ebf8ff; color: #2c5282; border-color: #2c5282; }
+    .btn-blue-outline:hover .icon-circle { background-color: #2c5282; }
 
-    /* Search Bar Kapsul (Full Width) */
-    .search-pill {
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 50px;
-        padding: 6px 6px 6px 20px;
-        display: flex; align-items: center;
-        transition: 0.3s;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        width: 100%;
+    /* Modern Filter Bar (Gabungan Search + Select) */
+    .filter-bar {
+        background: #f8fafc; border: 1px solid var(--border-color); border-radius: 16px;
+        padding: 8px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
     }
-    .search-pill:focus-within { border-color: var(--blue-primary); box-shadow: 0 0 0 4px var(--blue-light); }
-    .search-pill input { border: none; background: transparent; outline: none; box-shadow: none; font-size: 0.95rem; width: 100%; padding-left: 12px; color: var(--text-main); }
-    .search-pill button {
-        background: var(--navy-dark); color: white; border: none;
-        border-radius: 50px; padding: 10px 30px; font-weight: 600; font-size: 0.9rem; transition: 0.2s; white-space: nowrap;
+    .filter-input-group {
+        display: flex; align-items: center; flex: 1; min-width: 200px;
+        background: white; border-radius: 10px; border: 1px solid var(--border-color); padding: 4px 12px;
     }
+    .filter-input-group i { color: var(--text-muted); margin-right: 8px; }
+    .filter-input-group input, .filter-input-group select {
+        border: none; background: transparent; outline: none; width: 100%; padding: 6px; font-size: 0.85rem; color: var(--text-main);
+    }
+    .btn-filter-submit {
+        background: var(--navy-dark); color: white; border: none; border-radius: 10px;
+        padding: 10px 24px; font-weight: 600; font-size: 0.85rem; transition: 0.2s;
+    }
+    .btn-filter-submit:hover { background: #1e293b; transform: translateY(-1px); }
 
-    /* Tabel Modern */
-    .table-responsive { border-radius: 16px; margin: 20px; border: 1px solid var(--border-color); }
+    /* Table Styling Utama */
+    .table-container { border-radius: 12px; border: 1px solid var(--border-color); overflow-x: auto; }
     .table-modern { margin-bottom: 0; white-space: nowrap; }
     
     .table-modern thead th {
-        background: #f8fafc;
-        color: #475569;
-        font-weight: 700;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        border-bottom: 2px solid #e2e8f0;
-        padding: 16px 12px;
-        vertical-align: middle;
+        background: #f8fafc; color: #64748b; font-weight: 800; font-size: 0.7rem;
+        text-transform: uppercase; letter-spacing: 0.05em; padding: 15px 12px;
+        border-top: none; border-bottom: 2px solid var(--border-color); vertical-align: middle;
     }
 
     .table-modern tbody td {
-        padding: 16px 12px;
-        vertical-align: middle;
-        color: var(--text-main);
-        font-size: 0.85rem;
-        border-bottom: 1px solid var(--border-color);
+        padding: 15px 12px; vertical-align: middle; color: var(--text-main);
+        font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; transition: background 0.15s;
     }
-    .table-modern tbody tr:hover { background-color: #f1f5f9; }
+    .table-modern tbody tr:hover { background-color: #fafafa; }
 
-    /* Soft Badges */
-    .soft-badge {
-        padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 0.7rem; text-transform: uppercase;
-    }
-    .bg-aktif-soft { background: #d1fae5; color: #065f46; }
-    .bg-pindah-soft { background: #fef3c7; color: #92400e; }
-    .bg-meninggal-soft { background: #fee2e2; color: #991b1b; }
+    /* Elemen Dalam Tabel */
+    .kepala-keluarga { font-weight: 800; color: var(--navy-dark); font-size: 0.95rem; margin-bottom: 4px; display: block; line-height: 1.3; }
+    .asal-daerah { font-size: 0.8rem; font-weight: 600; color: #475569; }
+    .lokasi-info { display: flex; align-items: center; gap: 4px; font-size: 0.85rem; font-weight: 700; color: var(--navy-dark); margin-bottom: 4px;}
+    .kecamatan-info { font-size: 0.7rem; color: var(--text-muted); }
+    
+    /* Badges */
+    .badge-anggota { display: inline-flex; align-items: center; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; border-radius: 6px; font-size: 0.65rem; font-weight: 700; padding: 3px 8px; }
+    .badge-year { display: inline-block; background: #f1f5f9; border: 1px solid var(--border-color); border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; font-weight: 800; color: var(--navy-dark); }
+    
+    .status-pill { padding: 4px 12px; border-radius: 50px; font-weight: 800; font-size: 0.65rem; letter-spacing: 0.5px; border: 1px solid transparent; }
+    .status-aktif { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+    .status-pindah { background: #fffbeb; color: #b45309; border-color: #fef08a; }
+    .status-wafat { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
 
-    .action-btn {
-        width: 34px; height: 34px; border-radius: 10px;
-        display: inline-flex; align-items: center; justify-content: center;
-        border: none; background: #f1f5f9; color: #64748b; transition: 0.2s;
-        text-decoration: none;
+    /* Action Buttons */
+    .action-group { display: flex; justify-content: flex-end; gap: 5px; }
+    .btn-action {
+        width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center;
+        border: 1px solid transparent; font-size: 0.8rem; text-decoration: none; transition: 0.2s; cursor: pointer;
     }
-    .action-btn.edit:hover { background: #eff6ff; color: #2563eb; transform: scale(1.05); }
-    .action-btn.delete:hover { background: #fef2f2; color: #dc2626; transform: scale(1.05); }
+    .btn-action.edit { background: var(--teal-light); color: var(--teal-primary); border-color: #ccfbf1; }
+    .btn-action.edit:hover { background: var(--teal-primary); color: white; }
+    .btn-action.delete { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+    .btn-action.delete:hover { background: #dc2626; color: white; }
 </style>
 @endpush
 
 @section('content')
-<div class="container-fluid py-3">
-
+<div class="container-fluid py-4">
+    
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h1 class="page-title mb-1">Daftar Transmigran</h1>
-            <p class="text-muted small mb-0"><i class="bi bi-people-fill me-1"></i>Manajemen data individu dan penempatan wilayah Jambi.</p>
+            <h3 class="page-title mb-1">Daftar Warga Transmigran</h3>
+            <p class="text-muted small mb-0"><i class="bi bi-people-fill text-primary me-1"></i>Manajemen populasi dan persebaran penduduk transmigrasi Provinsi Jambi.</p>
         </div>
-        <div class="d-flex gap-2">
-            <button type="button" class="btn-premium btn-blue" data-bs-toggle="modal" data-bs-target="#modalCetakPilihan">
-                <i class="bi bi-printer-fill fs-5"></i> Cetak / Export
-            </button>
-            <a href="{{ route('transmigran.create') }}" class="btn-premium btn-outline-blue">
-                <i class="bi bi-plus-circle-fill fs-5"></i> Tambah Data
+        <div class="d-flex gap-3">
+            <a href="{{ route('transmigran.pdf', request()->query()) }}" target="_blank" class="btn-blue-solid" style="background-color: #dc2626; box-shadow: 0 4px 6px rgba(220, 38, 38, 0.15);">
+                <i class="bi bi-file-earmark-pdf-fill fs-5"></i> Cetak PDF
+            </a>
+            <a href="{{ route('transmigran.create') }}" class="btn-blue-outline shadow-sm">
+                <span class="icon-circle"><i class="bi bi-plus"></i></span> Tambah Warga
             </a>
         </div>
     </div>
 
-    <div class="premium-card mb-5">
-        
-        <div class="p-4 border-bottom border-light">
-            <form action="{{ route('transmigran.index') }}" method="GET" class="w-100">
-                <div class="row g-3">
-                    <div class="col-12">
-                        <div class="search-pill">
-                            <i class="bi bi-search text-muted fs-5"></i>
-                            <input type="text" name="search" placeholder="Cari nama kepala keluarga, asal daerah, atau tahun..." value="{{ request('search') }}">
-                            <button type="submit shadow-sm">Cari Data</button>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <select name="kabupaten_id" class="form-select border-0 bg-light rounded-pill px-4 shadow-sm" style="font-size: 0.9rem;">
-                            <option value="">-- Semua Kabupaten --</option>
-                            @foreach($kabupatens as $kab)
-                                <option value="{{ $kab->id }}" {{ request('kabupaten_id') == $kab->id ? 'selected' : '' }}>{{ $kab->nama_kabupaten }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+    <div class="premium-card mb-4">
+        <div class="p-4 border-bottom bg-white">
+            <form action="{{ route('transmigran.index') }}" method="GET" class="filter-bar">
+                
+                {{-- Search Box --}}
+                <div class="filter-input-group" style="flex: 2;">
+                    <i class="bi bi-search"></i>
+                    <input type="text" name="search" placeholder="Cari nama kepala keluarga..." value="{{ request('search') }}">
                 </div>
+                
+                {{-- Dropdown Kabupaten --}}
+                <div class="filter-input-group">
+                    <i class="bi bi-geo-alt"></i>
+                    <select name="kabupaten_id">
+                        <option value="">Semua Wilayah</option>
+                        @foreach($kabupatens as $kab)
+                            <option value="{{ $kab->id }}" {{ request('kabupaten_id') == $kab->id ? 'selected' : '' }}>{{ $kab->nama_kabupaten }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                {{-- Input Tahun --}}
+                <div class="filter-input-group" style="flex: 0.5;">
+                    <i class="bi bi-calendar3"></i>
+                    <input type="number" name="tahun" placeholder="Tahun" value="{{ request('tahun') }}">
+                </div>
+                
+                <button type="submit" class="btn-filter-submit"><i class="bi bi-funnel-fill me-1"></i> Filter Data</button>
             </form>
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-modern">
-                <thead>
-                    <tr>
-                        <th class="text-center" width="5%">No</th>
-                        <th>Profil Kepala Keluarga</th>
-                        <th>Asal Daerah</th>
-                        <th>Penempatan Jambi</th>
-                        <th class="text-center">Tahun</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Opsi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($transmigrans as $index => $item)
-                    <tr>
-                        <td class="text-center fw-bold text-muted">{{ $transmigrans->firstItem() + $index }}</td>
-                        <td>
-                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">{{ $item->nama_kepala_keluarga }}</div>
-                            <div class="text-muted small"><i class="bi bi-people me-1"></i>{{ $item->jumlah_anggota }} Anggota Keluarga</div>
-                        </td>
-                        <td>
-                            <div class="fw-bold" style="font-size: 0.85rem; color: var(--text-main);">{{ $item->asal_daerah }}</div>
-                        </td>
-                        <td>
-                            <div class="fw-bold" style="color: var(--blue-primary); font-size: 0.9rem;">{{ $item->kabupaten->nama_kabupaten }}</div>
-                            <div class="text-muted small"><i class="bi bi-geo-alt me-1"></i>{{ $item->uptd->nama_uptd ?? 'Umum' }}</div>
-                        </td>
-                        <td class="text-center">
-                            <span class="badge bg-light text-dark border px-3 py-2" style="border-radius: 8px;">{{ $item->tahun_penempatan }}</span>
-                        </td>
-                        <td class="text-center">
-                            @php
-                                $statusClass = $item->status == 'Aktif' ? 'bg-aktif-soft' : ($item->status == 'Pindah' ? 'bg-pindah-soft' : 'bg-meninggal-soft');
-                            @endphp
-                            <span class="soft-badge {{ $statusClass }}">{{ $item->status }}</span>
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex justify-content-center gap-2">
-                                <a href="{{ route('transmigran.edit', $item->id) }}" class="action-btn edit" title="Edit Data">
-                                    <i class="bi bi-pencil-fill"></i>
-                                </a>
-                                <form action="{{ route('transmigran.destroy', $item->id) }}" method="POST" class="m-0">
-                                    @csrf @method('DELETE')
-                                    <button type="button" class="action-btn delete btn-konfirmasi-hapus">
-                                        <i class="bi bi-trash3-fill"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="text-center py-5">
-                            <div class="mb-3"><i class="bi bi-search text-slate-200" style="font-size: 3rem;"></i></div>
-                            <h6 class="fw-bold text-slate-700">Data Tidak Ditemukan</h6>
-                            <p class="text-muted small">Coba sesuaikan filter atau tambahkan data transmigran baru.</p>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+        <div class="p-4">
+            <div class="table-container">
+                <table class="table table-modern align-middle">
+                    <thead>
+                        <tr>
+                            <th class="text-center" width="50">NO</th>
+                            <th style="min-width: 220px;">KEPALA KELUARGA</th>
+                            <th style="min-width: 150px;">ASAL DAERAH</th>
+                            <th style="min-width: 200px;">LOKASI PENEMPATAN</th>
+                            <th class="text-center">TAHUN</th>
+                            <th class="text-center">STATUS</th>
+                            <th class="text-end pe-4">AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($transmigrans as $index => $item)
+                        <tr>
+                            <td class="text-center">
+                                <span style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; background:#f1f5f9; border-radius:6px; font-size:0.75rem; font-weight:800; color:#64748b;">
+                                    {{ $transmigrans->firstItem() + $index }}
+                                </span>
+                            </td>
+                            
+                            <td>
+                                <span class="kepala-keluarga">{{ $item->nama_kepala_keluarga }}</span>
+                                <span class="badge-anggota">
+                                    <i class="bi bi-people-fill me-1"></i> {{ $item->jumlah_anggota }} Anggota
+                                </span>
+                            </td>
+                            
+                            <td>
+                                <span class="asal-daerah">{{ $item->asal_daerah }}</span>
+                            </td>
+                            
+                            <td>
+                                <div class="lokasi-info">
+                                    <i class="bi bi-geo-alt-fill text-danger"></i> {{ $item->nama_desa ?? '-' }}
+                                </div>
+                                <div class="kecamatan-info">
+                                    Kec. {{ $item->kabupaten->nama_kabupaten ?? '-' }}
+                                </div>
+                            </td>
+                            
+                            <td class="text-center">
+                                <span class="badge-year">{{ $item->tahun_penempatan }}</span>
+                            </td>
+                            
+                            <td class="text-center">
+                                @if($item->status == 'Aktif')
+                                    <span class="status-pill status-aktif">AKTIF</span>
+                                @elseif($item->status == 'Pindah')
+                                    <span class="status-pill status-pindah">PINDAH</span>
+                                @else
+                                    <span class="status-pill status-wafat">WAFAT</span>
+                                @endif
+                            </td>
+                            
+                            <td class="pe-4">
+                                <div class="action-group">
+                                    <a href="{{ route('transmigran.edit', $item->id) }}" class="btn-action edit" title="Edit Data"><i class="bi bi-pencil-square"></i></a>
+                                    <form action="{{ route('transmigran.destroy', $item->id) }}" method="POST" id="form-hapus-{{ $item->id }}" class="m-0">
+                                        @csrf @method('DELETE')
+                                        <button type="button" class="btn-action delete" onclick="konfirmasiHapus('{{ $item->id }}', '{{ $item->nama_kepala_keluarga }}')" title="Hapus Data">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <i class="bi bi-people" style="font-size:3.5rem; color:#cbd5e1; display:block; margin-bottom:12px;"></i>
+                                <div style="font-weight:800; color:#475569; font-size:0.95rem; margin-bottom:4px;">Belum Ada Data Transmigran</div>
+                                <div style="color:#94a3b8; font-size:0.8rem;">Silakan tambahkan data warga transmigran baru atau sesuaikan filter pencarian.</div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
         
         @if($transmigrans->hasPages())
-        <div class="px-4 py-3 border-top border-light d-flex flex-column flex-md-row justify-content-between align-items-center bg-white">
-            <span class="text-muted small fw-bold mb-3 mb-md-0">Menampilkan {{ $transmigrans->firstItem() }} - {{ $transmigrans->lastItem() }} dari {{ $transmigrans->total() }} Data</span>
+        <div class="px-4 py-4 border-top bg-light bg-opacity-50 d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <span class="text-muted small fw-bold mb-3 mb-md-0">
+                Menampilkan <span class="text-dark">{{ $transmigrans->firstItem() }}</span> sampai <span class="text-dark">{{ $transmigrans->lastItem() }}</span> dari <span class="text-dark">{{ $transmigrans->total() }}</span> entri
+            </span>
             <div class="pagination-sm m-0">{{ $transmigrans->links('pagination::bootstrap-5') }}</div>
         </div>
         @endif
-    </div>
-</div>
-
-<div class="modal fade" id="modalCetakPilihan" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content" style="border-radius: 24px; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
-            <div class="modal-body p-4 text-center">
-                <div class="mb-3 bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                    <i class="bi bi-file-earmark-arrow-down-fill fs-3 text-primary"></i>
-                </div>
-                <h6 class="fw-bold mb-2">Export Laporan</h6>
-                <p class="text-muted small mb-4">Pilih format dokumen untuk data transmigran yang sedang difilter.</p>
-                <div class="d-grid gap-2">
-                    <a href="{{ route('transmigran.pdf', request()->all()) }}" class="btn btn-outline-danger py-2 fw-bold" style="border-radius: 12px; font-size: 0.9rem;">
-                        <i class="bi bi-file-pdf-fill me-1"></i> Dokumen PDF
-                    </a>
-                    <a href="{{ route('transmigran.export', request()->all()) }}" class="btn btn-outline-success py-2 fw-bold" style="border-radius: 12px; font-size: 0.9rem;">
-                        <i class="bi bi-file-excel-fill me-1"></i> Spreadsheet Excel
-                    </a>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 @endsection
@@ -261,26 +256,27 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-$('.btn-konfirmasi-hapus').on('click', function() {
-    let form = $(this).closest('form');
-    Swal.fire({
-        title: 'Hapus Data?',
-        html: `Apakah Anda yakin ingin menghapus data transmigran ini?<br><span class="text-danger small">Tindakan ini tidak dapat diurungkan.</span>`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc2626',
-        cancelButtonColor: '#f1f5f9',
-        confirmButtonText: 'Ya, Hapus',
-        cancelButtonText: '<span class="text-dark">Batal</span>',
-        reverseButtons: true,
-        borderRadius: '16px',
-        customClass: {
-            confirmButton: 'rounded-pill px-4 shadow-sm',
-            cancelButton: 'rounded-pill px-4'
-        }
-    }).then((result) => {
-        if (result.isConfirmed) { form.submit(); }
-    });
-});
+    function konfirmasiHapus(id, nama) {
+        Swal.fire({
+            title: 'Hapus Data Warga?',
+            html: `Anda akan menghapus data warga atas nama <b>${nama}</b>.<br><small class="text-muted">Tindakan ini tidak dapat dibatalkan.</small>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#f1f5f9',
+            confirmButtonText: 'YA, HAPUS',
+            cancelButtonText: '<span class="text-dark">BATAL</span>',
+            reverseButtons: true,
+            borderRadius: '20px',
+            customClass: {
+                confirmButton: 'rounded-pill px-4 py-2 shadow-sm',
+                cancelButton: 'rounded-pill px-4 py-2'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('form-hapus-' + id).submit();
+            }
+        });
+    }
 </script>
 @endpush

@@ -53,4 +53,38 @@ class GaleriController extends Controller
 
         return redirect()->back()->with('success', 'Foto galeri berhasil dihapus!');
     }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'foto'  => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        // Cari data galeri (sesuaikan dengan nama Model Anda, misal: Galeri::findOrFail)
+        $galeri = \App\Models\Galeri::findOrFail($id);
+        
+        // Update Judul
+        $galeri->judul = $request->judul;
+
+        // Cek apakah ada file foto baru yang diupload
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada
+            $pathLama = public_path('galeri/' . $galeri->foto);
+            if (file_exists($pathLama) && $galeri->foto) {
+                unlink($pathLama);
+            }
+
+            // Upload dan simpan nama foto baru
+            $file = $request->file('foto');
+            $nama_file = time() . "_" . $file->getClientOriginalName();
+            $file->move(public_path('galeri'), $nama_file);
+            
+            $galeri->foto = $nama_file;
+        }
+
+        $galeri->save();
+
+        return redirect()->back()->with('success', 'Foto Galeri berhasil diperbarui!');
+    }
 }

@@ -3,7 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin | SI Transmigran Jambi</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>Login Admin | SI-Trans Jambi</title>
+
+    @php
+        $profilGlobal = \App\Models\ProfilWeb::first();
+    @endphp
+
+    {{-- KODE FAVICON DINAMIS (Anti-Cache) --}}
+    @if($profilGlobal && $profilGlobal->favicon_website && file_exists(public_path('logo/' . $profilGlobal->favicon_website)))
+        <link rel="icon" type="image/x-icon" href="{{ asset('logo/' . $profilGlobal->favicon_website) }}?v={{ time() }}">
+    @endif
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -25,13 +36,12 @@
                 radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.1) 0px, transparent 50%),
                 radial-gradient(at 100% 100%, rgba(29, 78, 216, 0.1) 0px, transparent 50%),
                 radial-gradient(at 50% 50%, rgba(15, 23, 42, 1) 0px, transparent 100%);
-            /* PERBAIKAN 1: Ganti height jadi min-height dan hapus overflow:hidden agar bisa di-scroll saat keyboard HP muncul */
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0;
-            padding: 15px; 
+            padding: 20px; 
         }
 
         .login-card {
@@ -44,7 +54,7 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
             animation: cardAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            margin: auto; /* Membantu centering saat halaman di-scroll */
+            margin: auto;
         }
 
         @keyframes cardAppear {
@@ -66,43 +76,53 @@
         }
 
         .brand-logo-wrapper {
-            width: 50px; height: 50px;
+            width: 55px; height: 55px;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 14px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; margin-bottom: 20px;
+            font-size: 1.8rem; margin-bottom: 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .brand-side h1 { font-weight: 800; font-size: 1.8rem; letter-spacing: -0.5px; margin-bottom: 10px; line-height: 1.2; }
-        .brand-side p { font-size: 0.9rem; opacity: 0.8; font-weight: 400; line-height: 1.5; margin-bottom: 0;}
+        .brand-side p { font-size: 0.95rem; opacity: 0.8; font-weight: 400; line-height: 1.6; margin-bottom: 0;}
 
         /* SISI KANAN: FORM LOGIN */
         .form-side {
             flex: 1.2;
-            padding: 40px 50px;
+            padding: 45px 50px;
             display: flex; flex-direction: column; justify-content: center;
             background: white;
         }
 
-        .form-side h2 { font-weight: 800; color: var(--navy-dark); margin-bottom: 5px; font-size: 1.6rem;}
-        .subtitle { color: var(--slate-400); font-weight: 500; margin-bottom: 25px; font-size: 0.85rem; }
+        .form-side h2 { font-weight: 800; color: var(--navy-dark); margin-bottom: 5px; font-size: 1.8rem;}
+        .subtitle { color: var(--slate-400); font-weight: 500; margin-bottom: 30px; font-size: 0.9rem; }
 
         .form-label {
-            font-weight: 700; font-size: 0.7rem; color: var(--navy-dark);
-            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+            font-weight: 700; font-size: 0.75rem; color: var(--navy-dark);
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
+            display: block; /* Pastikan label selalu di baris sendiri */
         }
 
-        .input-box { position: relative; margin-bottom: 18px; }
-        .input-box i {
-            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
-            color: var(--slate-400); font-size: 1rem; transition: 0.3s;
+        /* --- KUNCI PRESISI IKON TENGAH --- */
+        .input-box { margin-bottom: 20px; }
+        .input-wrapper { position: relative; width: 100%; }
+        
+        .input-wrapper i {
+            position: absolute; 
+            left: 16px; 
+            top: 50%; 
+            transform: translateY(-50%); /* Menarik ikon presisi ke tengah vertikal */
+            color: var(--slate-400); 
+            font-size: 1.1rem; 
+            transition: 0.3s;
+            pointer-events: none; /* Mencegah ikon menghalangi klik kursor */
         }
 
         .form-control-premium {
             background: var(--slate-100); border: 2px solid transparent; border-radius: 12px;
-            padding: 12px 15px 12px 45px; font-size: 0.9rem; font-weight: 500;
+            padding: 12px 15px 12px 45px; font-size: 0.95rem; font-weight: 500;
             color: var(--navy-dark); width: 100%; transition: 0.3s;
         }
 
@@ -115,54 +135,53 @@
         .btn-login {
             background: linear-gradient(135deg, var(--blue-primary) 0%, #1d4ed8 100%);
             color: white; border: none; border-radius: 12px;
-            padding: 12px; font-weight: 700; font-size: 0.9rem;
+            padding: 14px; font-weight: 700; font-size: 0.95rem;
             width: 100%; margin-top: 10px; transition: 0.3s;
             box-shadow: 0 8px 15px -5px rgba(37, 99, 235, 0.4);
+            letter-spacing: 0.5px;
         }
         .btn-login:hover { transform: translateY(-2px); box-shadow: 0 12px 20px -5px rgba(37, 99, 235, 0.5); }
 
         .alert-modern {
             background: #fff1f2; border-radius: 12px; color: #e11d48;
-            font-size: 0.8rem; font-weight: 600; padding: 10px 15px;
+            font-size: 0.85rem; font-weight: 600; padding: 12px 15px;
             margin-bottom: 20px; border: 1px solid #ffe4e6;
         }
 
         .back-link { text-align: center; margin-top: 25px; }
         .back-link a {
             color: var(--slate-400); text-decoration: none;
-            font-size: 0.8rem; font-weight: 600; transition: 0.3s;
+            font-size: 0.85rem; font-weight: 600; transition: 0.3s;
         }
         .back-link a:hover { color: var(--blue-primary); }
 
-        /* PERBAIKAN 2: RESPONSIF MOBILE EKSTREM */
+        /* RESPONSIF MOBILE EKSTREM */
         @media (max-width: 768px) {
             .login-card { 
                 flex-direction: column; 
-                max-width: 400px; /* Dipersempit agar proporsional di HP */
+                max-width: 450px; 
                 border-radius: 20px;
             }
             .brand-side { 
-                padding: 30px 20px; 
+                padding: 35px 25px; 
                 text-align: center; 
                 align-items: center; 
             }
             .brand-logo-wrapper { 
-                width: 45px; height: 45px; font-size: 1.2rem; margin-bottom: 12px; 
+                width: 50px; height: 50px; font-size: 1.5rem; margin-bottom: 15px; 
             }
-            .brand-side h1 { font-size: 1.4rem; margin-bottom: 5px; }
-            /* Menyembunyikan deskripsi di HP agar form login langsung terlihat tanpa scroll jauh */
-            .brand-side p { display: none; } 
+            .brand-side h1 { font-size: 1.5rem; margin-bottom: 5px; }
+            .brand-side p { display: none; } /* Menyembunyikan deskripsi di HP agar form langsung terlihat */
             
-            .form-side { padding: 25px 20px 30px; }
-            .form-side h2 { font-size: 1.4rem; }
-            .subtitle { margin-bottom: 20px; font-size: 0.8rem; }
+            .form-side { padding: 30px 25px 35px; }
+            .form-side h2 { font-size: 1.6rem; text-align: center;}
+            .subtitle { margin-bottom: 25px; text-align: center; }
             
-            .input-box { margin-bottom: 15px; }
-            .form-control-premium { padding: 10px 15px 10px 40px; font-size: 0.85rem; }
-            .input-box i { left: 14px; font-size: 0.95rem; }
+            .input-box { margin-bottom: 18px; }
+            .form-control-premium { padding: 12px 15px 12px 42px; font-size: 0.9rem; }
+            .input-wrapper i { left: 14px; font-size: 1rem; }
             
-            .btn-login { padding: 10px; font-size: 0.85rem; margin-top: 5px; }
-            .back-link { margin-top: 20px; }
+            .btn-login { padding: 12px; font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -183,7 +202,7 @@
 
             @if ($errors->any())
                 <div class="alert-modern">
-                    <i class="bi bi-exclamation-circle-fill me-2"></i> Kredensial tidak valid.
+                    <i class="bi bi-exclamation-circle-fill me-2"></i> Kredensial tidak valid atau akun tidak ditemukan.
                 </div>
             @endif
 
@@ -192,23 +211,27 @@
                 
                 <div class="input-box">
                     <label class="form-label">Email Address</label>
-                    <input type="email" name="email" class="form-control-premium" 
-                           placeholder="admin@email.com" value="{{ old('email') }}" required autofocus>
-                    <i class="bi bi-envelope-at"></i>
+                    <div class="input-wrapper">
+                        <input type="email" name="email" class="form-control-premium" 
+                               placeholder="admin@email.com" value="{{ old('email') }}" required autofocus>
+                        <i class="bi bi-envelope-at"></i>
+                    </div>
                 </div>
 
                 <div class="input-box">
                     <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control-premium" 
-                           placeholder="••••••••" required>
-                    <i class="bi bi-key"></i>
+                    <div class="input-wrapper">
+                        <input type="password" name="password" class="form-control-premium" 
+                               placeholder="••••••••" required>
+                        <i class="bi bi-key"></i>
+                    </div>
                 </div>
 
-                <div class="d-flex align-items-center mb-3">
+                <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-4">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="remember" id="remember">
-                        <label class="form-check-label small fw-semibold text-muted" for="remember" style="font-size: 0.8rem;">
-                            Ingat Sesi
+                        <input class="form-check-input" type="checkbox" name="remember" id="remember" style="cursor: pointer;">
+                        <label class="form-check-label small fw-semibold text-muted ms-1" for="remember" style="cursor: pointer; font-size: 0.85rem;">
+                            Ingat Sesi Saya
                         </label>
                     </div>
                 </div>
@@ -220,7 +243,7 @@
 
             <div class="back-link">
                 <a href="{{ url('/') }}">
-                    <i class="bi bi-house-door me-1"></i> Beranda Utama
+                    <i class="bi bi-house-door me-1"></i> Kembali ke Beranda Utama
                 </a>
             </div>
         </div>

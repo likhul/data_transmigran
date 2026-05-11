@@ -1,9 +1,19 @@
+@php
+    $profilGlobal = \App\Models\ProfilWeb::first();
+@endphp
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'SI Transmigran Jambi')</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'Admin Panel')</title>
+
+    {{-- KODE FAVICON ADMIN (Dengan Anti-Cache) --}}
+    @if($profilGlobal && $profilGlobal->favicon_website && file_exists(public_path('logo/' . $profilGlobal->favicon_website)))
+        <link rel="icon" type="image/x-icon" href="{{ asset('logo/' . $profilGlobal->favicon_website) }}?v={{ time() }}">
+    @endif
     
     {{-- Fonts & Libraries --}}
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -132,24 +142,24 @@
             </a>
             
             <a href="{{ url('/transmigran') }}" class="nav-link-custom {{ request()->is('transmigran*') ? 'active' : '' }}">
-                <i class="bi bi-people-fill"></i> Data Penduduk
+                <i class="bi bi-people-fill"></i> Data Transmigran
             </a>
             
             <a href="{{ url('/uptd') }}" class="nav-link-custom {{ request()->is('uptd*') ? 'active' : '' }}">
-                <i class="bi bi-buildings-fill"></i> Penyerahan UPTD
+                <i class="bi bi-buildings-fill"></i> Penyerahan UPT
             </a>
 
             <div class="menu-label mt-4">Data Master</div>
             <a href="{{ route('master-uptd.index') }}" class="nav-link-custom {{ request()->routeIs('master-uptd.*') ? 'active' : '' }}">
-                <i class="bi bi-database-fill-gear"></i> Master UPTD/Desa
+                <i class="bi bi-database-fill-gear"></i> UPT/Desa
             </a>
 
             <a href="{{ route('kabupaten.index') }}" class="nav-link-custom {{ request()->is('kabupaten*') ? 'active' : '' }}">
-                <i class="bi bi-map-fill"></i> Master Kabupaten
+                <i class="bi bi-map-fill"></i> Kabupaten
             </a>
             
             <a href="{{ route('kecamatan.index') }}" class="nav-link-custom {{ request()->is('kecamatan*') ? 'active' : '' }}">
-                <i class="bi bi-geo-alt-fill"></i> Master Kecamatan
+                <i class="bi bi-geo-alt-fill"></i> Kecamatan
             </a>
 
             @if(auth()->check() && auth()->user()->role === 'superadmin')
@@ -234,6 +244,17 @@
     @if(session('error'))
         Toast.fire({ icon: 'error', title: "{{ session('error') }}" });
     @endif
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Cari menu yang sedang memiliki class 'active'
+        let activeMenu = document.querySelector('.sidebar .nav-link-custom.active');
+        
+        // Jika ada menu yang aktif, gulir sidebar ke arah menu tersebut
+        if (activeMenu) {
+            // block: "center" akan menaruh menu yang aktif persis di tengah-tengah layar sidebar
+            activeMenu.scrollIntoView({ behavior: "auto", block: "center" });
+        }
+    });
 </script>
     
 @stack('scripts')

@@ -4,13 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Uptd extends BaseModel
+class Uptd extends Model
 {
     protected $fillable = [
         'tahun_penyerahan', 'kabupaten_id', 'kecamatan_id', 'nama_upt', 
         'waktu_penempatan', 'kk_awal', 'jiwa_awal', 'status_desa', 
         'nama_desa_baru', 'kk_baru', 'jiwa_baru', 'no_ba_penyerahan', 
-        'pola', 'permasalahan'
+        'pola', 'permasalahan',
+        'sejarah_desa',
+        'file_sk_penyerahan',
+        'file_sk_penempatan',
+        'file_peta_lokasi'
     ];
 
     public function kecamatan()

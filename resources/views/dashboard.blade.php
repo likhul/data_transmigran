@@ -85,7 +85,7 @@
                 <div class="card-body d-flex align-items-center p-3">
                     <div class="icon-box bg-info bg-opacity-10 text-info me-3"><i class="bi bi-building-fill"></i></div>
                     <div>
-                        <h6 class="text-muted small mb-1">UPTD Diserahkan</h6>
+                        <h6 class="text-muted small mb-1">UPT Diserahkan</h6>
                         <h4 class="mb-0 fw-bold" style="color: var(--navy-dark);">{{ $total_rekap_uptd }}</h4>
                     </div>
                 </div>
@@ -148,7 +148,7 @@
     <div class="card border-0 shadow-sm" style="border-radius: 20px; overflow: hidden;">
         <div class="card-body p-0">
             <div class="d-flex justify-content-between align-items-center p-4">
-                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-clock-history me-2 text-primary"></i>Data Penyerahan UPTD Terbaru</h6>
+                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-clock-history me-2 text-primary"></i>Data Penyerahan UPT Terbaru</h6>
                 <a href="{{ url('/uptd') }}" class="btn btn-sm btn-outline-primary fw-bold px-3" style="border-radius: 10px;">Lihat Semua</a>
             </div>
             <div class="table-responsive">
@@ -156,7 +156,7 @@
                     <thead>
                         <tr>
                             <th class="text-center">Tahun</th>
-                            <th>Nama UPTD</th>
+                            <th>Nama UPT</th>
                             <th>Wilayah Administratif</th>
                             <th class="text-center">Total Jiwa</th>
                         </tr>

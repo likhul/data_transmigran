@@ -120,7 +120,7 @@
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h1 class="page-title mb-1">Master Kabupaten</h1>
+            <h1 class="page-title mb-1">Kabupaten</h1>
             <p class="text-muted small mb-0"><i class="bi bi-map-fill me-1"></i>Kelola daftar Kabupaten di Provinsi Jambi.</p>
         </div>
         <button class="btn-premium btn-blue shadow" data-bs-toggle="modal" data-bs-target="#modalTambah">

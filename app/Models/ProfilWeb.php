@@ -12,5 +12,16 @@ class ProfilWeb extends BaseModel
     protected $table = 'profil_webs';
 
     // Mengizinkan semua kolom di tabel profil_webs untuk diisi (Mass Assignment)
-    protected $guarded = [];
+    protected $fillable = [
+        'judul_website',
+        'deskripsi_singkat',
+        'logo_website',
+        'favicon_website',
+        'alamat_kantor',
+        'nomor_telepon',
+        'link_facebook', // Pastikan ini ada
+        'link_instagram', // Pastikan ini ada
+        'link_youtube',   // Pastikan ini ada
+        'google_maps',
+    ];
 }

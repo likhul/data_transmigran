@@ -44,14 +44,14 @@ class FrontController extends Controller
     {
         $profil = $this->getProfil();
 
-        // Data dinamis di Beranda di-cache selama 1 jam untuk performa maskimal
         $penguruses = Cache::remember('pengurus_list', now()->addHours(1), function () {
             return Pengurus::all();
         });
 
-        // Ingat: Berita dan Galeri biasanya sering update, cache cukup 30 menit
-        $beritas = Cache::remember('berita_terbaru', now()->addMinutes(30), function () {
-            return Berita::latest()->take(3)->get();
+        // UBAH DISINI: Ambil 10 berita agar cukup untuk dibagi-bagi di Blade
+        $beritas = Cache::remember('berita_terbaru_home', now()->addMinutes(30), function () {
+            // Kita ambil 10 berita terbaru
+            return Berita::latest()->get(); 
         });
 
         $galeris = Cache::remember('galeri_terbaru', now()->addMinutes(30), function () {
@@ -100,30 +100,65 @@ class FrontController extends Controller
             // ==========================================
             // DATA UNTUK 5 GRAFIK DASHBOARD
             // ==========================================
-            
-            // 1. Tren Populasi Tahunan (Line Chart)
-            $dataJiwa = Uptd::select('tahun_penyerahan', DB::raw('SUM(jiwa_baru) as jumlah'))
-                ->groupBy('tahun_penyerahan')->orderBy('tahun_penyerahan', 'asc')->get(); 
-            
-            $labels = $dataJiwa->pluck('tahun_penyerahan')->map(function($item) { return "Thn " . $item; });
-            $totals = $dataJiwa->pluck('jumlah');
 
-            $trenKabupaten = [];
+            // 1. Tren Populasi Tahunan (Line Chart) - DATA PER TAHUN
+            $allTrendData = Uptd::whereNotNull('tahun_penyerahan')
+                ->where('tahun_penyerahan', '!=', '-')
+                ->where('tahun_penyerahan', '!=', '')
+                ->select('tahun_penyerahan', 'kabupaten_id', 'jiwa_baru')
+                ->get();
+
             $semuaKab = Kabupaten::all();
-            foreach($semuaKab as $kab) {
-                $dataTren = Uptd::where('kabupaten_id', $kab->id)
-                    ->select('tahun_penyerahan', DB::raw('SUM(jiwa_baru) as jumlah'))
-                    ->groupBy('tahun_penyerahan')
-                    ->pluck('jumlah', 'tahun_penyerahan')
-                    ->toArray();
+            $kabMap = $semuaKab->pluck('nama_kabupaten', 'id');
 
-                $trenKabupaten[$kab->nama_kabupaten] = [];
-                foreach ($dataJiwa->pluck('tahun_penyerahan') as $thn) {
-                    $trenKabupaten[$kab->nama_kabupaten][] = $dataTren[$thn] ?? 0;
+            $aggregatedGlobal = [];
+            $aggregatedKab = [];
+            
+            foreach($semuaKab as $kab) {
+                $aggregatedKab[$kab->nama_kabupaten] = [];
+            }
+
+            foreach ($allTrendData as $item) {
+                // Paksa ubah ke angka
+                $thn = (int) trim($item->tahun_penyerahan); 
+                
+                // VALIDASI KETAT: Hanya proses jika tahun masuk akal (di atas 1900)
+                if ($thn > 1900) { 
+                    // PENTING: Jangan pakai kelompok 5 tahun lagi, langsung cetak tahun aslinya!
+                    $label = (string) $thn; 
+
+                    if (!isset($aggregatedGlobal[$label])) $aggregatedGlobal[$label] = 0;
+                    $aggregatedGlobal[$label] += (int)$item->jiwa_baru;
+
+                    $namaKab = $kabMap[$item->kabupaten_id] ?? null;
+                    if ($namaKab) {
+                        if (!isset($aggregatedKab[$namaKab][$label])) {
+                            $aggregatedKab[$namaKab][$label] = 0;
+                        }
+                        $aggregatedKab[$namaKab][$label] += (int)$item->jiwa_baru;
+                    }
                 }
             }
 
-            // 2 & 3. Sebaran Kabupaten & Komparasi KK vs Jiwa (Doughnut & Grouped Bar)
+            // Urutkan tahun dari terkecil ke terbesar
+            if (!empty($aggregatedGlobal)) {
+                ksort($aggregatedGlobal);
+            }
+            
+            $labels = array_keys($aggregatedGlobal);
+            $totals = array_values($aggregatedGlobal);
+
+            // Susun data per kabupaten agar sinkron dengan sumbu X (labels)
+            $trenKabupaten = [];
+            foreach ($semuaKab as $kab) {
+                $namaKab = $kab->nama_kabupaten;
+                $trenKabupaten[$namaKab] = [];
+                foreach ($labels as $lbl) {
+                    $trenKabupaten[$namaKab][] = $aggregatedKab[$namaKab][$lbl] ?? 0;
+                }
+            }
+
+            // 2 & 3. Sebaran Kabupaten & Komparasi KK vs Jiwa
             $kabupatenStats = Kabupaten::withSum('uptds as total_jiwa', 'jiwa_baru')
                                        ->withSum('uptds as total_kk', 'kk_baru')
                                        ->get();
@@ -131,30 +166,29 @@ class FrontController extends Controller
             $kabTotals = $kabupatenStats->pluck('total_jiwa');
             $kabKkTotals = $kabupatenStats->pluck('total_kk'); 
 
-            // 4. Top 5 UPTD (Horizontal Bar)
+            // 4. Top 5 UPTD
             $topUptd = Uptd::orderBy('jiwa_baru', 'desc')->take(5)->get(['nama_upt', 'jiwa_baru']);
             $uptdLabels = $topUptd->pluck('nama_upt');
             $uptdTotals = $topUptd->pluck('jiwa_baru');
 
-            // 5. Era Penyerahan UPTD (Polar Area)
-            $allUptds = Uptd::select('tahun_penyerahan')->get();
-            $eras = ['Era 1980an' => 0, 'Era 1990an' => 0, 'Era 2000an' => 0, 'Era 2010an' => 0, 'Era 2020an' => 0];
-            
-            foreach($allUptds as $u) {
-                $thn = (int)$u->tahun_penyerahan;
-                if($thn >= 1980 && $thn < 1990) $eras['Era 1980an']++;
-                elseif($thn >= 1990 && $thn < 2000) $eras['Era 1990an']++;
-                elseif($thn >= 2000 && $thn < 2010) $eras['Era 2000an']++;
-                elseif($thn >= 2010 && $thn < 2020) $eras['Era 2010an']++;
-                elseif($thn >= 2020) $eras['Era 2020an']++;
+            // 5. Era Penyerahan UPTD (Polar Area) - KELOMPOK 10 TAHUN
+            $eras = [];
+            foreach($allTrendData as $u) {
+                $thn = (int) trim($u->tahun_penyerahan);
+                if($thn > 1900) {
+                    $dekade = floor($thn / 10) * 10;
+                    $label = 'Era ' . $dekade . 'an';
+                    if(!isset($eras[$label])) $eras[$label] = 0;
+                    $eras[$label]++;
+                }
             }
-            
-            $eraLabels = []; $eraTotals = [];
-            foreach($eras as $label => $total) {
-                if($total > 0) { $eraLabels[] = $label; $eraTotals[] = $total; } 
+            if (!empty($eras)) {
+                ksort($eras);
             }
+            $eraLabels = array_keys($eras);
+            $eraTotals = array_values($eras);
 
-            // Kembalikan semua data komputasi ini ke dalam satu paket Cache
+            // Return Data
             return compact(
                 'statistik', 'kabupaten_list', 'kecamatan_list', 'uptd_list', 
                 'labels', 'totals', 'trenKabupaten', 'kabLabels', 'kabTotals', 'kabKkTotals',
@@ -188,9 +222,8 @@ class FrontController extends Controller
     {
         $profil = $this->getProfil();
         
-        $query = Uptd::with(['kabupaten', 'kecamatan']);
+        $query = Uptd::with(['kabupaten', 'kecamatan'])->latest();
 
-        // Jika ada pencarian, kita TIDAK MENGGUNAKAN Cache karena datanya spesifik
         if ($request->has('search') && $request->search != '') {
             $query->where('nama_upt', 'like', '%' . $request->search . '%')
                   ->orWhere('nama_desa_baru', 'like', '%' . $request->search . '%');

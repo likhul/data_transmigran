@@ -34,10 +34,15 @@
         background: #f1f5f9;
         padding: 8px;
         border-radius: 16px;
-        display: inline-flex;
+        display: flex; 
+        width: 100%; 
         gap: 4px;
     }
+    .nav-pills-modern .nav-item {
+        flex: 1; 
+    }
     .nav-pills-modern .nav-link {
+        width: 100%; 
         border-radius: 12px;
         color: var(--text-muted);
         font-weight: 700;
@@ -45,6 +50,7 @@
         padding: 10px 20px;
         transition: 0.3s;
         border: none;
+        text-align: center; 
     }
     .nav-pills-modern .nav-link.active {
         background: var(--navy-dark);
@@ -132,10 +138,12 @@
                                 <h6 class="fw-bold mb-4 text-dark"><i class="bi bi-shield-check me-2 text-primary"></i>Branding Instansi</h6>
                                 <div class="mb-4">
                                     <label class="form-label small fw-bold">Logo Utama</label>
-                                    @if($profil->logo_website)
+                                    @if($profil && $profil->logo_website && file_exists(public_path('logo/' . $profil->logo_website)))
                                         <div class="mb-3 p-3 border rounded-3 bg-white" style="width: fit-content;">
-                                            <img src="{{ asset('logo/' . $profil->logo_website) }}" style="height: 60px; border-radius: 8px; object-fit: contain;">
+                                            <img src="{{ asset('logo/' . $profil->logo_website) }}?v={{ time() }}" style="height: 60px; border-radius: 8px; object-fit: contain;">
                                         </div>
+                                    @else
+                                        <div class="mb-3 p-3 border rounded-3 bg-light text-muted small">Logo belum diunggah</div>
                                     @endif
                                     <input type="file" name="logo_website" class="form-control form-control-premium">
                                 </div>
@@ -281,17 +289,24 @@
                 <div class="row g-4">
                     @forelse($galeris as $g)
                     <div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="rounded-4 border overflow-hidden shadow-sm h-100 bg-white">
+                        <div class="rounded-4 border overflow-hidden shadow-sm h-100 bg-white d-flex flex-column">
                             <img src="{{ asset('galeri/'.$g->foto) }}" class="w-100 border-bottom" style="height: 180px; object-fit: cover;">
-                            <div class="p-3 text-center">
+                            <div class="p-3 text-center d-flex flex-column flex-grow-1">
                                 <p class="small fw-bold text-dark text-truncate mb-3" title="{{ $g->judul }}">{{ $g->judul }}</p>
-                                <form action="{{ route('galeri.destroy', $g->id ?? $g->id_galeri ?? $g->getKey()) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus foto ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-outline-danger w-100 fw-bold" style="border-radius: 10px;">
-                                        <i class="bi bi-trash"></i> Hapus
+                                
+                                <div class="d-flex gap-2 mt-auto">
+                                    <button type="button" class="btn btn-outline-warning w-50 fw-bold" style="border-radius: 10px; font-size: 0.85rem;" data-bs-toggle="modal" data-bs-target="#modalEditGaleri{{ $g->id ?? $g->id_galeri ?? $g->getKey() }}">
+                                        <i class="bi bi-pencil-fill"></i> Edit
                                     </button>
-                                </form>
+                                    
+                                    <form action="{{ route('galeri.destroy', $g->id ?? $g->id_galeri ?? $g->getKey()) }}" method="POST" class="w-50" onsubmit="return confirm('Yakin ingin menghapus foto ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-outline-danger w-100 fw-bold" style="border-radius: 10px; font-size: 0.85rem;">
+                                            <i class="bi bi-trash"></i> Hapus
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -374,13 +389,45 @@
 </div>
 @endforeach
 
+@foreach($galeris as $g)
+<div class="modal fade" id="modalEditGaleri{{ $g->id ?? $g->id_galeri ?? $g->getKey() }}" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form action="{{ route('galeri.update', $g->id ?? $g->id_galeri ?? $g->getKey()) }}" method="POST" enctype="multipart/form-data" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            @csrf @method('PUT')
+            <div class="modal-header border-bottom p-4 bg-white">
+                <h5 class="fw-bold text-navy-dark mb-0"><i class="bi bi-pencil-fill me-2 text-warning"></i>Edit Foto Galeri</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 bg-light bg-opacity-50">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted text-uppercase">Ubah Judul / Deskripsi</label>
+                    <input type="text" name="judul" class="form-control form-control-premium" value="{{ $g->judul }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted text-uppercase">Ganti File Foto (Opsional)</label>
+                    <input type="file" name="foto" class="form-control form-control-premium" accept="image/*">
+                    <small class="text-muted" style="font-size: 0.7rem;">Biarkan kosong jika tidak ingin mengganti foto.</small>
+                </div>
+                <div class="text-center mt-3 p-2 bg-white border rounded-4 shadow-sm">
+                    <p class="small text-muted mb-2 fw-bold">Preview Foto Saat Ini:</p>
+                    <img src="{{ asset('galeri/'.$g->foto) }}" class="rounded-3" style="max-height: 150px; max-width: 100%; object-fit: contain;">
+                </div>
+            </div>
+            <div class="modal-footer border-top p-4 bg-white" style="border-radius: 0 0 20px 20px;">
+                <button type="button" class="btn btn-light fw-bold px-4 rounded-pill" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn-premium btn-blue px-5 shadow">💾 SIMPAN FOTO</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
+
 @endsection
 
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js"></script>
 
 <script>
-    // PERBAIKAN FATAL: Mematikan proteksi modal Bootstrap agar kolom TinyMCE bisa di-klik & diketik
     document.addEventListener('focusin', (e) => {
         if (e.target.closest(".tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
             e.stopImmediatePropagation();
@@ -395,6 +442,23 @@
         $('.modal').on('shown.bs.modal', function() {
             $(document).off('focusin.modal'); // Hack spesifik untuk Bootstrap Modal
         });
+
+        // --- SCRIPT DAYA INGAT TAB (AGAR TIDAK BALIK KE DEPAN SAAT RELOAD) ---
+        // 1. Menyimpan tab yang sedang diklik ke memori
+        $('button[data-bs-toggle="pill"]').on('shown.bs.tab', function (e) {
+            localStorage.setItem('tabAktifPengaturan', $(e.target).attr('data-bs-target'));
+        });
+
+        // 2. Membaca memori dan langsung membuka tab terakhir saat halaman direload
+        var tabAktif = localStorage.getItem('tabAktifPengaturan');
+        if (tabAktif) {
+            var tombolTab = document.querySelector('button[data-bs-target="' + tabAktif + '"]');
+            if (tombolTab) {
+                var tabInstance = new bootstrap.Tab(tombolTab);
+                tabInstance.show();
+            }
+        }
+        // ----------------------------------------------------------------------
     });
 
     function initTinyMCE() {

@@ -31,21 +31,13 @@
        ========================================= */
     @media (max-width: 768px) {
         .container-fluid { padding: 10px !important; }
-        
-        /* Mengecilkan header dan memposisikan tombol ke bawah (Stacking) */
         .page-header { flex-direction: column; align-items: flex-start !important; gap: 15px; }
         .page-header h1 { font-size: 1.4rem !important; }
         .btn-premium { width: 100%; justify-content: center; padding: 12px; font-size: 0.9rem; }
-        
-        /* Mengecilkan padding dan font pada Tabel agar tidak hancur */
         .table-modern thead th { padding: 10px; font-size: 0.65rem; }
         .table-modern tbody td { padding: 10px; font-size: 0.85rem; }
-        
-        /* Avatar diperkecil */
         .avatar-circle { width: 32px !important; height: 32px !important; }
         .avatar-circle i { font-size: 1rem !important; }
-        
-        /* Modal dipadatkan */
         .modal-body { padding: 20px !important; }
         .form-control-premium { padding: 10px; font-size: 0.85rem; }
     }
@@ -125,22 +117,37 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
+                
+                {{-- BAGIAN PESAN ERROR VALIDASI --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger border-0 shadow-sm rounded-4 mb-3 small">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li><i class="bi bi-exclamation-triangle-fill me-1"></i> {{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <div class="mb-3">
                     <label class="form-label small fw-bold text-muted">NAMA LENGKAP</label>
-                    <input type="text" name="name" class="form-control form-control-premium" required>
+                    <input type="text" name="name" class="form-control form-control-premium" value="{{ old('name') }}" required>
                 </div>
+                
                 <div class="mb-3">
                     <label class="form-label small fw-bold text-muted">EMAIL</label>
-                    <input type="email" name="email" class="form-control form-control-premium" required>
+                    <input type="email" name="email" class="form-control form-control-premium" value="{{ old('email') }}" required>
                 </div>
+                
                 <div class="mb-3">
-                    <label class="form-label small fw-bold text-muted">PASSWORD</label>
-                    <input type="password" name="password" class="form-control form-control-premium" required>
+                    <label class="form-label small fw-bold text-muted">PASSWORD (MIN. 8 KARAKTER)</label>
+                    <input type="password" name="password" class="form-control form-control-premium" required minlength="8">
+                    <small class="text-muted" style="font-size: 0.65rem;">*Gunakan kombinasi huruf dan angka.</small>
                 </div>
                 <div class="mb-4">
                     <label class="form-label small fw-bold text-muted">HAK AKSES</label>
                     <select name="role" class="form-select form-control-premium" required>
-                        <option value="admin">Operator UPTD</option>
+                        <option value="admin">Operator UPT</option>
                         <option value="superadmin">Super Admin</option>
                     </select>
                 </div>
@@ -150,3 +157,16 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Cek apakah ada error dari Laravel (Backend)
+        @if($errors->any())
+            // Jika ada error, otomatis buka modalnya!
+            var modalTambah = new bootstrap.Modal(document.getElementById('modalTambahAdmin'));
+            modalTambah.show();
+        @endif
+    });
+</script>
+@endpush

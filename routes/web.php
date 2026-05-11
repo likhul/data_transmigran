@@ -93,6 +93,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Ubah /galeri menjadi /galeri-simpan agar tidak bentrok dengan folder public/galeri
     Route::post('/galeri-simpan', [GaleriController::class, 'store'])->name('galeri.store');
     Route::delete('/galeri-hapus/{id}', [GaleriController::class, 'destroy'])->name('galeri.destroy');
+    Route::put('/galeri/{id}', [App\Http\Controllers\GaleriController::class, 'update'])->name('galeri.update');
+
+    Route::put('/struktur/{id}', [App\Http\Controllers\StrukturController::class, 'update'])->name('struktur.update');
 });
 
 require __DIR__.'/auth.php';

@@ -124,7 +124,7 @@
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h1 class="page-title mb-1">Master Kecamatan</h1>
+            <h1 class="page-title mb-1">Kecamatan</h1>
             <p class="text-muted small mb-0"><i class="bi bi-geo-fill me-1"></i>Kelola daftar Kecamatan berdasarkan Kabupatennya.</p>
         </div>
         <button class="btn-premium btn-blue shadow" data-bs-toggle="modal" data-bs-target="#modalTambah">

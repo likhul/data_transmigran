@@ -4,12 +4,12 @@
 <div class="container py-4">
     <div class="card border-0 shadow-lg" style="border-radius: 20px;">
         <div class="card-header bg-white pt-4 border-0 text-center">
-            <h4 class="fw-bold" style="color: #0f766e;">EDIT DATA PENYERAHAN UPTD</h4>
+            <h4 class="fw-bold" style="color: #0f766e;">EDIT DATA PENYERAHAN UPT</h4>
             <p class="text-muted small">Pastikan semua kolom administrasi terisi dengan benar.</p>
         </div>
         
         <div class="card-body p-4">
-            <form action="{{ route('uptd.update', $uptd->id) }}" method="POST">
+            <form action="{{ route('uptd.update', $uptd->id) }}" method="POST"enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 
@@ -18,7 +18,7 @@
                     <div class="row g-3">
                         <div class="col-md-3">
                             <label class="form-label fw-bold small">Tahun Penyerahan</label>
-                            <input type="number" name="tahun_penyerahan" class="form-control" value="{{ $uptd->tahun_penyerahan }}" required>
+                            <input type="text" name="tahun_penyerahan" class="form-control" value="{{ $uptd->tahun_penyerahan }}" required>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label fw-bold small">Kabupaten</label>
@@ -110,6 +110,55 @@
                             <label class="small fw-bold">Permasalahan / Keterangan</label>
                             <input type="text" name="permasalahan" class="form-control" value="{{ $uptd->permasalahan }}">
                         </div>
+
+                        <div class="col-12 mt-3">
+                            <label class="form-label small fw-bold text-muted">Sejarah Singkat / Profil Desa UPT</label>
+                            <textarea name="sejarah_desa" class="tinymce-editor form-control shadow-sm" rows="5" placeholder="Tuliskan sejarah terbentuknya UPT, tokoh perintis, atau informasi historis lainnya...">{{ old('sejarah_desa', $uptd->sejarah_desa ?? '') }}</textarea>
+                        </div>
+
+                        <div class="p-4 mb-4 rounded-4" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
+                            <h6 class="fw-bold mb-3 text-primary border-bottom pb-2">
+                                <i class="bi bi-folder-check me-2"></i>III. Arsip Dokumen Digital (Opsional)
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold text-muted">File SK Penyerahan</label>
+                                    <input type="file" name="file_sk_penyerahan" class="form-control shadow-sm" accept=".pdf,.jpg,.jpeg,.png">
+                                    <small class="text-muted" style="font-size: 0.65rem;">Format: PDF/JPG/PNG. Maks: 5MB</small>
+                                    
+                                    {{-- Khusus untuk form EDIT: Tampilkan info jika file sudah ada --}}
+                                    @if(isset($uptd) && $uptd->file_sk_penyerahan)
+                                        <div class="mt-2 text-success small fw-bold">
+                                            <i class="bi bi-check-circle-fill"></i> File sudah terupload
+                                        </div>
+                                    @endif
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold text-muted">File SK Penempatan</label>
+                                    <input type="file" name="file_sk_penempatan" class="form-control shadow-sm" accept=".pdf,.jpg,.jpeg,.png">
+                                    <small class="text-muted" style="font-size: 0.65rem;">Format: PDF/JPG/PNG. Maks: 5MB</small>
+                                    
+                                    @if(isset($uptd) && $uptd->file_sk_penempatan)
+                                        <div class="mt-2 text-success small fw-bold">
+                                            <i class="bi bi-check-circle-fill"></i> File sudah terupload
+                                        </div>
+                                    @endif
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold text-muted">Peta Lokasi / Site Plan</label>
+                                    <input type="file" name="file_peta_lokasi" class="form-control shadow-sm" accept=".pdf,.jpg,.jpeg,.png">
+                                    <small class="text-muted" style="font-size: 0.65rem;">Format: PDF/JPG/PNG. Maks: 5MB</small>
+                                    
+                                    @if(isset($uptd) && $uptd->file_peta_lokasi)
+                                        <div class="mt-2 text-success small fw-bold">
+                                            <i class="bi bi-check-circle-fill"></i> File sudah terupload
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -162,3 +211,23 @@ $(document).ready(function() {
 });
 </script>
 @endsection
+
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Menyalakan mesin TinyMCE
+        tinymce.init({
+            selector: '.tinymce-editor', // Targetkan class kotak teks sejarah
+            height: 350, // Tinggi kotak teks
+            plugins: 'lists link preview wordcount', // Fitur yang diaktifkan
+            toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | removeformat', // Tombol-tombol di atas
+            menubar: false, // Sembunyikan menu bar atas biar rapi
+            branding: false, // Hilangkan watermark TinyMCE
+            promotion: false, // Hilangkan tombol upgrade
+            content_style: 'body { font-family: "Plus Jakarta Sans", Helvetica, Arial, sans-serif; font-size:15px; color: #334155; line-height: 1.6; }'
+        });
+    });
+</script>
+@endpush

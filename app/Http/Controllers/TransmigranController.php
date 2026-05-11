@@ -23,7 +23,7 @@ class TransmigranController extends Controller
         $kabupatens = Kabupaten::all();
 
         // Mulai query transmigran dengan relasi kabupaten
-        $transmigrans = Transmigran::with('kabupaten')
+        $transmigrans = Transmigran::with(['kabupaten', 'kecamatan'])
             // Filter berdasarkan Nama Kepala Keluarga
             ->when($request->search, function($query) use ($request) {
                 $query->where('nama_kepala_keluarga', 'like', '%' . $request->search . '%');
@@ -57,28 +57,32 @@ class TransmigranController extends Controller
         // Validasi: pastikan data yang diisi tidak kosong dan sesuai format
         $request->validate([
             'nama_kepala_keluarga' => 'required|string|max:255',
-            'jumlah_anggota' => 'required|integer|min:1',
-            'asal_daerah' => 'required|string|max:255',
-            'kabupaten_id' => 'required|exists:kabupatens,id',
-            'tahun_penempatan' => 'required|digits:4|integer',
-            'status' => 'required|string',
+            'jumlah_anggota'       => 'required|integer|min:1',
+            'asal_daerah'          => 'required|string|max:255',
+            'kabupaten_id'         => 'required|exists:kabupatens,id',
+            'kecamatan_id'         => 'required|exists:kecamatans,id', 
+            'nama_desa'            => 'required|string|max:255',      
+            'tahun_penempatan'     => 'required|integer',
+            'status'               => 'required|string',
         ]);
 
         // Simpan data ke tabel transmigrans
         Transmigran::create([
             'nama_kepala_keluarga' => $request->nama_kepala_keluarga,
-            'jumlah_anggota' => $request->jumlah_anggota,
-            'asal_daerah' => $request->asal_daerah,
-            'kabupaten_id' => $request->kabupaten_id,
-            'tahun_penempatan' => $request->tahun_penempatan,
-            'status' => $request->status,
+            'jumlah_anggota'       => $request->jumlah_anggota,
+            'asal_daerah'          => $request->asal_daerah,
+            'kabupaten_id'         => $request->kabupaten_id,
+            'kecamatan_id'         => $request->kecamatan_id, // WAJIB ADA
+            'nama_desa'            => $request->nama_desa,    // WAJIB ADA
+            'tahun_penempatan'     => $request->tahun_penempatan,
+            'status'               => $request->status,
         ]);
 
-                LogAktivitas::create([
-            'user_id' => Auth::id(),
+        \App\Models\LogAktivitas::create([
+            'user_id' => auth()->id(),
             'aksi' => 'Tambah',
             'modul' => 'Data Transmigran',
-            'keterangan' => 'Menambahkan data Transmigran baru: ' . $request->nama // (Ganti 'nama' jika nama kolom Anda 'nama_kk' atau lainnya)
+            'keterangan' => 'Menambahkan warga baru: ' . $request->nama_kepala_keluarga
         ]);
 
         // Kembalikan ke halaman daftar transmigran dengan pesan sukses
@@ -162,10 +166,10 @@ class TransmigranController extends Controller
 
     public function cetakPdf(Request $request)
     {
-        // Mengambil data dengan relasi agar tidak error saat cetak
-        $query = \App\Models\Transmigran::with(['kabupaten', 'uptd']);
+        // PERBAIKAN: Ganti 'uptd' menjadi 'kecamatan'
+        $query = \App\Models\Transmigran::with(['kabupaten', 'kecamatan']);
 
-        // Logika Filter sesuai Form Index Anda
+        // Logika Filter sesuai Form Index
         if ($request->filled('search')) {
             $query->where('nama_kepala_keluarga', 'like', '%' . $request->search . '%');
         }
@@ -182,6 +186,9 @@ class TransmigranController extends Controller
 
         // Memanggil view khusus PDF
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('transmigran.pdf', compact('transmigrans'));
+        
+        // Mengatur orientasi kertas ke Landscape (opsional, agar tabel lebih rapi)
+        $pdf->setPaper('a4', 'landscape');
         
         return $pdf->stream('Laporan_Transmigran_Jambi_' . date('Ymd') . '.pdf');
     }

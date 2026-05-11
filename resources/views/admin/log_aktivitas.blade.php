@@ -36,7 +36,10 @@
                 <tbody>
                     @forelse($logs as $log)
                     <tr>
-                        <td class="text-muted">{{ \Carbon\Carbon::parse($log->created_at)->format('d M Y, H:i') }}</td>
+                        {{-- Penambahan timezone('Asia/Jakarta') agar sesuai jam Jambi --}}
+                        <td class="text-muted">
+                            {{ \Carbon\Carbon::parse($log->created_at)->timezone('Asia/Jakarta')->translatedFormat('d M Y, H:i') }} WIB
+                        </td>
                         <td class="fw-bold text-primary">{{ $log->user->name ?? 'User Dihapus' }}</td>
                         <td>
                             @php $cls = $log->aksi == 'Tambah' ? 'bg-tambah' : ($log->aksi == 'Edit' ? 'bg-edit' : 'bg-hapus'); @endphp

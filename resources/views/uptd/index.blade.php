@@ -1,277 +1,302 @@
 @extends('layouts.app')
 
-@section('title', 'Data Penyerahan UPTD - SI Transmigran Jambi')
+@section('title', 'Data Penyerahan UPT - SI Transmigran Jambi')
 
 @push('css')
 <style>
-    /* Konfigurasi Warna & Font Dasar (Sesuai Gambar Sidebar) */
     :root {
-        --blue-primary: #2563eb; /* Biru terang untuk tombol/aksen */
-        --blue-hover: #1d4ed8;
-        --blue-light: #eff6ff;
-        --navy-dark: #0f172a; /* Biru dongker gelap khas sidebar */
-        --text-main: #1e293b;
+        --teal-primary: #0f766e;
+        --teal-light: #f0fdfa;
+        --navy-dark: #0f172a;
+        --text-main: #334155;
         --text-muted: #64748b;
         --bg-body: #f8fafc;
-        --bg-surface: #ffffff;
-        --border-color: #f1f5f9;
+        --border-color: #e2e8f0;
     }
 
-    /* Container Utama */
+    /* Container & Card */
     .premium-card {
-        background: var(--bg-surface);
-        border-radius: 24px;
-        box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.04), 0 4px 16px -4px rgba(0, 0, 0, 0.02);
-        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        border: 1px solid var(--border-color);
         overflow: hidden;
     }
 
-    /* Header & Tombol */
-    .page-title { font-weight: 800; color: var(--navy-dark); letter-spacing: -0.5px; font-size: 1.5rem; }
+    .page-title { font-weight: 800; color: var(--navy-dark); letter-spacing: -0.5px; }
     
-    .btn-premium {
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 0.875rem;
-        padding: 10px 20px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: inline-flex; align-items: center; gap: 8px;
-        text-decoration: none;
+    /* Custom Blue Buttons */
+    .btn-blue-solid {
+        background-color: #2b6cb0; color: #ffffff; border: none; border-radius: 12px;
+        padding: 10px 24px; font-weight: 600; font-size: 0.9rem;
+        display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease;
+        box-shadow: 0 4px 6px rgba(43, 108, 176, 0.15);
     }
+    .btn-blue-solid:hover { background-color: #2c5282; color: #ffffff; transform: translateY(-2px); }
     
-    /* Tombol Export (Warna Biru Solid) */
-    .btn-blue { 
-        background: var(--blue-primary); 
-        color: white; 
-        border: 1px solid var(--blue-primary); 
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); 
+    .btn-blue-outline {
+        background-color: #ffffff; color: #2b6cb0; border: 2px solid #2b6cb0; border-radius: 12px;
+        padding: 8px 20px 8px 12px; font-weight: 600; font-size: 0.9rem;
+        display: inline-flex; align-items: center; gap: 10px; text-decoration: none; transition: all 0.2s ease;
     }
-    .btn-blue:hover { 
-        background: var(--blue-hover); 
-        border-color: var(--blue-hover);
-        transform: translateY(-2px); 
-        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3); 
-        color: white; 
+    .btn-blue-outline .icon-circle {
+        background-color: #2b6cb0; color: #ffffff; border-radius: 50%; width: 24px; height: 24px;
+        display: inline-flex; align-items: center; justify-content: center; font-size: 1.1rem;
     }
-    
-    /* Tombol Input (Putih dengan Border Biru) */
-    .btn-outline-blue { 
-        background: white; 
-        color: var(--blue-primary); 
-        border: 2px solid var(--blue-primary); 
-    }
-    .btn-outline-blue:hover { 
-        background: var(--blue-light); 
-        color: var(--blue-hover); 
-        border-color: var(--blue-hover);
-        transform: translateY(-2px); 
-    }
+    .btn-blue-outline:hover { background-color: #ebf8ff; color: #2c5282; border-color: #2c5282; }
+    .btn-blue-outline:hover .icon-circle { background-color: #2c5282; }
 
-    /* Search Bar Kapsul (Full Width) */
+    /* Search Bar */
     .search-pill {
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 50px;
-        padding: 6px 6px 6px 20px;
-        display: flex; align-items: center;
-        transition: 0.3s;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        width: 100%;
+        background: #f8fafc; border: 1px solid var(--border-color); border-radius: 50px;
+        padding: 4px 4px 4px 20px; display: flex; align-items: center; transition: 0.3s;
     }
-    .search-pill:focus-within { border-color: var(--blue-primary); box-shadow: 0 0 0 4px var(--blue-light); }
-    .search-pill input { border: none; background: transparent; outline: none; box-shadow: none; font-size: 0.95rem; width: 100%; padding-left: 12px; color: var(--text-main); }
-    .search-pill input::placeholder { color: #94a3b8; }
+    .search-pill:focus-within { background: white; border-color: var(--teal-primary); box-shadow: 0 0 0 4px var(--teal-light); }
+    .search-pill input { border: none; background: transparent; outline: none; width: 100%; padding: 8px; color: var(--text-main); font-size: 0.9rem; }
     .search-pill button {
-        background: var(--navy-dark); color: white; border: none;
-        border-radius: 50px; padding: 10px 30px; font-weight: 600; font-size: 0.9rem; transition: 0.2s; white-space: nowrap;
+        background: var(--navy-dark); color: white; border: none; border-radius: 50px;
+        padding: 8px 24px; font-weight: 600; transition: 0.2s; font-size: 0.85rem;
     }
-    .search-pill button:hover { background: #1e293b; }
 
-    /* Tabel Modern */
-    .table-responsive { border-radius: 16px; margin: 0 20px 20px 20px; border: 1px solid var(--border-color); }
-    .table-modern { margin-bottom: 0; white-space: nowrap; }
+    /* Table Styling Utama - DIRAPIKAN */
+    .table-container { border-radius: 12px; border: 1px solid var(--border-color); overflow-x: auto; }
+    .table-modern { margin-bottom: 0; white-space: nowrap; } /* Mencegah baris berantakan */
     
     .table-modern thead th {
-        background: #f8fafc;
-        color: #475569;
-        font-weight: 700;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        border-bottom: 2px solid #e2e8f0;
-        padding: 16px 12px;
-        vertical-align: middle;
-        border-right: none; border-left: none;
+        background: #f8fafc; color: #64748b; font-weight: 800; font-size: 0.7rem;
+        text-transform: uppercase; letter-spacing: 0.05em; padding: 15px 12px;
+        border-top: none; border-bottom: 2px solid var(--border-color); vertical-align: middle;
     }
 
     .table-modern tbody td {
-        padding: 16px 12px;
-        vertical-align: middle;
-        color: var(--text-main);
-        font-size: 0.85rem;
-        border-bottom: 1px solid var(--border-color);
-        border-right: none; border-left: none;
+        padding: 15px 12px; vertical-align: middle; color: var(--text-main);
+        font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; transition: background 0.15s;
     }
-    .table-modern tbody tr:last-child td { border-bottom: none; }
-    .table-modern tbody tr { transition: 0.2s; }
-    .table-modern tbody tr:hover { background-color: #f1f5f9; }
+    .table-modern tbody tr:hover { background-color: #fafafa; }
 
-    /* Soft Badges */
-    .soft-badge {
-        padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 0.75rem; display: inline-block;
+    /* Elemen Dalam Tabel */
+    .upt-name { font-weight: 800; color: var(--navy-dark); font-size: 0.95rem; margin-bottom: 4px; display: block; white-space: normal; line-height: 1.3; }
+    .location-info { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-bottom: 6px; white-space: normal; }
+    
+    /* Box KK & Jiwa yang lebih rapi */
+    .stat-wrapper { display: flex; justify-content: center; gap: 6px; }
+    .stat-box {
+        background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px;
+        padding: 6px 10px; min-width: 55px; text-align: center;
     }
-    .badge-year { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
-    .badge-blue { background: #eff6ff; color: #1d4ed8; }
-    .badge-green { background: #f0fdf4; color: #15803d; }
-    .badge-amber { background: #fffbeb; color: #b45309; }
+    .stat-box.success { background: #f0fdfa; border-color: #ccfbf1; }
+    .stat-val { font-weight: 800; color: var(--navy-dark); font-size: 0.85rem; line-height: 1; }
+    .stat-box.success .stat-val { color: var(--teal-primary); }
+    .stat-label { font-size: 0.6rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-top: 3px; display: block; }
+    .stat-box.success .stat-label { color: #5eead4; }
 
-    /* Typography Data */
-    .text-upt-title { font-weight: 800; font-size: 0.95rem; color: var(--navy-dark); margin-bottom: 3px; }
-    .text-upt-loc { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
-    .data-value { font-weight: 800; font-size: 0.95rem; color: var(--navy-dark); }
-    .data-label { font-size: 0.65rem; color: #94a3b8; font-weight: 600; margin-left: 2px; text-transform: uppercase; }
-
-    /* Action Buttons Rounded */
-    .action-btn {
-        width: 34px; height: 34px; border-radius: 10px;
-        display: inline-flex; align-items: center; justify-content: center;
-        border: none; background: #f1f5f9; color: #64748b; transition: 0.2s;
-        text-decoration: none;
+    /* Badges */
+    .badge-year { display: inline-block; background: #f1f5f9; color: #475569; border-radius: 6px; font-size: 0.65rem; font-weight: 700; padding: 3px 8px; }
+    .badge-def { background: var(--teal-light); color: var(--teal-primary); padding: 2px 7px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; }
+    .badge-non { background: #fffbeb; color: #b45309; padding: 2px 7px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; }
+    .badge-pola { display: inline-block; background: #f1f5f9; border: 1px solid var(--border-color); border-radius: 4px; padding: 1px 6px; font-size: 0.65rem; font-weight: 700; color: #334155; }
+    
+    .alert-permasalahan {
+        background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px;
+        padding: 6px 8px; font-size: 0.65rem; color: #dc2626; line-height: 1.4; margin-top: 4px; white-space: normal;
     }
-    .action-btn.edit:hover { background: #eff6ff; color: #2563eb; transform: scale(1.05); }
-    .action-btn.delete:hover { background: #fef2f2; color: #dc2626; transform: scale(1.05); }
 
-    /* Note Box */
-    .note-box {
-        background: #fff1f2; border: 1px dashed #fecdd3; color: #be123c;
-        padding: 6px 10px; border-radius: 8px; font-size: 0.7rem; margin-top: 6px; white-space: normal; line-height: 1.4;
+    /* Action Buttons (E-Arsip & Edit/Delete) */
+    .action-group { display: flex; justify-content: center; gap: 5px; }
+    
+    .arsip-btn {
+        width: 30px; height: 30px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; 
+        font-size: 0.85rem; text-decoration: none; transition: all 0.2s;
     }
+    .arsip-btn.doc-pdf { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+    .arsip-btn.doc-pdf:hover { background: #dc2626; color: white; transform: translateY(-2px); }
+    .arsip-btn.doc-img { background: #e0e7ff; color: #2563eb; border: 1px solid #bfdbfe; }
+    .arsip-btn.doc-img:hover { background: #2563eb; color: white; transform: translateY(-2px); }
+    .arsip-btn.disabled { background: #f8fafc; color: #cbd5e1; border: 1px solid var(--border-color); cursor: not-allowed; }
+
+    .btn-action {
+        width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center;
+        border: 1px solid transparent; font-size: 0.8rem; text-decoration: none; transition: 0.2s; cursor: pointer;
+    }
+    .btn-action.edit { background: var(--teal-light); color: var(--teal-primary); border-color: #ccfbf1; }
+    .btn-action.edit:hover { background: var(--teal-primary); color: white; }
+    .btn-action.delete { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+    .btn-action.delete:hover { background: #dc2626; color: white; }
 </style>
 @endpush
 
 @section('content')
-<div class="container-fluid py-3">
+<div class="container-fluid py-4">
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h1 class="page-title mb-1">Daftar Penyerahan UPTD</h1>
-            <p class="text-muted small mb-0"><i class="bi bi-info-circle me-1"></i>Kelola data penempatan awal dan realisasi desa transmigrasi.</p>
+            <h3 class="page-title mb-1">Daftar Penyerahan UPT</h3>
+            <p class="text-muted small mb-0"><i class="bi bi-pin-map-fill text-danger me-1"></i>Rekapitulasi data penempatan awal dan realisasi desa transmigrasi.</p>
         </div>
-        <div class="d-flex gap-2">
-            <button type="button" class="btn-premium btn-blue" data-bs-toggle="modal" data-bs-target="#modalCetakUptd">
+        <div class="d-flex gap-3">
+            <button type="button" class="btn-blue-solid" data-bs-toggle="modal" data-bs-target="#modalCetakUptd">
                 <i class="bi bi-cloud-arrow-down-fill fs-5"></i> Export Data
             </button>
-            
-            <a href="{{ route('uptd.create') }}" class="btn-premium btn-outline-blue">
-                <i class="bi bi-plus-circle-fill fs-5"></i> Input UPTD Baru
+            <a href="{{ route('uptd.create') }}" class="btn-blue-outline shadow-sm">
+                <span class="icon-circle"><i class="bi bi-plus"></i></span> Input UPT Baru
             </a>
         </div>
     </div>
 
-    <div class="premium-card mb-5">
-        
-        <div class="p-4 border-bottom border-light">
+    <div class="premium-card">
+        <div class="p-4 border-bottom bg-white">
             <form action="{{ route('uptd.index') }}" method="GET" class="w-100">
                 <div class="search-pill">
-                    <i class="bi bi-search text-muted fs-5"></i>
-                    <input type="text" name="search" placeholder="Cari nama UPTD, Kecamatan, Kabupaten, atau No. BA..." value="{{ request('search') }}">
-                    <button type="submit shadow-sm">Cari Data</button>
+                    <i class="bi bi-search text-muted"></i>
+                    <input type="text" name="search" placeholder="Cari Nama UPT, Desa Baru, Kecamatan, atau No. Berita Acara..." value="{{ request('search') }}">
+                    <button type="submit">Cari Data</button>
                 </div>
             </form>
         </div>
 
-        <div class="table-responsive mt-4">
-            <table class="table table-modern">
-                <thead>
-                    <tr>
-                        <th class="text-center" width="5%">No</th>
-                        <th class="text-center" width="8%">Tahun</th>
-                        <th width="22%">Unit & Lokasi Wilayah</th>
-                        <th class="text-center" width="10%">Awal (Bln/Thn)</th>
-                        <th class="text-center" width="15%">Populasi Awal</th>
-                        <th class="text-center" width="15%">Kondisi Desa Baru</th>
-                        <th width="18%">Data Administrasi</th>
-                        <th class="text-center" width="7%">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($uptds as $index => $u)
-                    <tr>
-                        <td class="text-center fw-bold text-muted">{{ $uptds->firstItem() + $index }}</td>
-                        
-                        <td class="text-center">
-                            <span class="soft-badge badge-year">{{ $u->tahun_penyerahan }}</span>
-                        </td>
-                        
-                        <td>
-                            <div class="text-upt-title">{{ $u->nama_upt }}</div>
-                            <div class="text-upt-loc">
-                                <i class="bi bi-geo-alt-fill text-danger opacity-75"></i> 
-                                Kec. {{ $u->kecamatan->nama_kecamatan ?? '-' }}, {{ $u->kabupaten->nama_kabupaten ?? '-' }}
-                            </div>
-                        </td>
-
-                        <td class="text-center">
-                            <span class="soft-badge badge-blue">{{ $u->waktu_penempatan }}</span>
-                        </td>
-                        
-                        <td class="text-center">
-                            <div class="d-flex justify-content-center gap-3">
-                                <div><span class="data-value">{{ number_format($u->kk_awal) }}</span><span class="data-label">KK</span></div>
-                                <div><span class="data-value">{{ number_format($u->jiwa_awal) }}</span><span class="data-label">Jiwa</span></div>
-                            </div>
-                        </td>
-
-                        <td class="text-center">
-                            <div class="fw-bold mb-2" style="color: #15803d;">{{ $u->nama_desa_baru }} 
-                                <span class="soft-badge ms-1 {{ $u->status_desa == 'DEF' ? 'badge-green' : 'badge-amber' }}" style="font-size: 0.6rem; padding: 2px 6px;">
-                                    {{ $u->status_desa }}
+        <div class="p-4">
+            <div class="table-container">
+                <table class="table table-modern align-middle">
+                    <thead>
+                        <tr>
+                            <th class="text-center" width="50">NO</th>
+                            <th style="min-width: 220px;">UPT & LOKASI</th>
+                            <th class="text-center">PENEMPATAN</th>
+                            <th class="text-center">POPULASI AWAL</th>
+                            <th class="text-center">REALISASI DESA</th>
+                            <th style="min-width: 180px;">ADMINISTRASI</th>
+                            <th class="text-center">E-ARSIP</th>
+                            <th class="text-center">AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($uptds as $index => $u)
+                        <tr>
+                            {{-- NO --}}
+                            <td class="text-center">
+                                <span style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; background:#f1f5f9; border-radius:6px; font-size:0.75rem; font-weight:800; color:#64748b;">
+                                    {{ $uptds->firstItem() + $index }}
                                 </span>
-                            </div>
-                            <div class="d-flex justify-content-center gap-3 mt-1">
-                                <div><span class="data-value text-success">{{ number_format($u->kk_baru) }}</span><span class="data-label text-success">KK</span></div>
-                                <div><span class="data-value text-success">{{ number_format($u->jiwa_baru) }}</span><span class="data-label text-success">Jiwa</span></div>
-                            </div>
-                        </td>
+                            </td>
 
-                        <td>
-                            <div class="fw-bold text-dark" style="font-size: 0.8rem;"><i class="bi bi-file-earmark-text me-1 text-muted"></i>{{ $u->no_ba_penyerahan }}</div>
-                            <div class="text-muted mt-1" style="font-size: 0.75rem;">Pola: <span class="fw-bold text-dark">{{ $u->pola ?: '-' }}</span></div>
-                            @if($u->permasalahan && $u->permasalahan != '-')
-                                <div class="note-box"><i class="bi bi-exclamation-triangle-fill me-1"></i> {{ $u->permasalahan }}</div>
-                            @endif
-                        </td>
+                            {{-- UPT & LOKASI --}}
+                            <td>
+                                <span class="upt-name">{{ $u->nama_upt }}</span>
+                                <div class="location-info">
+                                    <i class="bi bi-geo-alt-fill text-danger" style="font-size:0.65rem;"></i>
+                                    Kec. {{ $u->kecamatan->nama_kecamatan ?? '-' }}, {{ $u->kabupaten->nama_kabupaten ?? '-' }}
+                                </div>
+                                <span class="badge-year">Tahun Serah: {{ $u->tahun_penyerahan }}</span>
+                            </td>
 
-                        <td class="text-center">
-                            <div class="d-flex justify-content-center gap-2">
-                                <a href="{{ route('uptd.edit', $u->id) }}" class="action-btn edit" title="Edit"><i class="bi bi-pencil-fill"></i></a>
-                                <form action="{{ route('uptd.destroy', $u->id) }}" method="POST" id="form-hapus-{{ $u->id }}" class="m-0">
-                                    @csrf @method('DELETE')
-                                    <button type="button" class="action-btn delete" onclick="konfirmasiHapus('{{ $u->id }}', '{{ $u->nama_upt }}')" title="Hapus"><i class="bi bi-trash3-fill"></i></button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="8" class="text-center py-5">
-                            <div class="mb-3">
-                                <i class="bi bi-inbox text-slate-200" style="font-size: 3.5rem;"></i>
-                            </div>
-                            <h6 class="fw-bold text-slate-700 mb-1">Tidak Ada Data Ditemukan</h6>
-                            <p class="text-muted small mb-4">Silakan sesuaikan kata kunci pencarian atau tambah data baru.</p>
-                            <a href="{{ route('uptd.create') }}" class="btn-premium btn-blue"><i class="bi bi-plus-circle-fill"></i> Input Data UPTD</a>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                            {{-- PENEMPATAN --}}
+                            <td class="text-center">
+                                <div style="font-weight:700; color:var(--navy-dark); font-size:0.85rem;">{{ $u->waktu_penempatan }}</div>
+                            </td>
+
+                            {{-- POPULASI AWAL --}}
+                            <td class="text-center">
+                                <div class="stat-wrapper">
+                                    <div class="stat-box">
+                                        <span class="stat-val">{{ number_format($u->kk_awal) }}</span>
+                                        <span class="stat-label">KK</span>
+                                    </div>
+                                    <div class="stat-box">
+                                        <span class="stat-val">{{ number_format($u->jiwa_awal) }}</span>
+                                        <span class="stat-label">Jiwa</span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            {{-- REALISASI DESA BARU --}}
+                            <td class="text-center">
+                                <div style="margin-bottom:6px;">
+                                    <span style="font-weight:800; color:var(--teal-primary); font-size:0.85rem;">{{ $u->nama_desa_baru }}</span>
+                                    <span class="{{ $u->status_desa == 'DEF' ? 'badge-def' : 'badge-non' }} ms-1">{{ $u->status_desa }}</span>
+                                </div>
+                                <div class="stat-wrapper">
+                                    <div class="stat-box success">
+                                        <span class="stat-val">{{ number_format($u->kk_baru) }}</span>
+                                        <span class="stat-label">KK</span>
+                                    </div>
+                                    <div class="stat-box success">
+                                        <span class="stat-val">{{ number_format($u->jiwa_baru) }}</span>
+                                        <span class="stat-label">Jiwa</span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            {{-- ADMINISTRASI --}}
+                            <td>
+                                <div style="font-size:0.75rem; font-weight:700; color:var(--navy-dark); margin-bottom:2px;">
+                                    <i class="bi bi-file-earmark-check-fill text-teal-primary me-1"></i> {{ $u->no_ba_penyerahan }}
+                                </div>
+                                <div style="font-size:0.7rem; color:var(--text-muted);">
+                                    Pola: <span class="badge-pola">{{ $u->pola ?: '-' }}</span>
+                                </div>
+                                @if($u->permasalahan && $u->permasalahan != '-')
+                                <div class="alert-permasalahan">
+                                    <i class="bi bi-exclamation-circle-fill me-1"></i>{{ $u->permasalahan }}
+                                </div>
+                                @endif
+                            </td>
+
+                            {{-- E-ARSIP --}}
+                            <td class="text-center">
+                                <div class="action-group">
+                                    @if($u->file_sk_penyerahan)
+                                        <a href="{{ asset('arsip_uptd/' . $u->file_sk_penyerahan) }}" target="_blank" title="Lihat SK Penyerahan" class="arsip-btn doc-pdf"><i class="bi bi-file-earmark-pdf-fill"></i></a>
+                                    @else
+                                        <span title="SK Penyerahan Belum Diupload" class="arsip-btn disabled"><i class="bi bi-file-earmark-x"></i></span>
+                                    @endif
+
+                                    @if($u->file_sk_penempatan)
+                                        <a href="{{ asset('arsip_uptd/' . $u->file_sk_penempatan) }}" target="_blank" title="Lihat SK Penempatan" class="arsip-btn doc-pdf"><i class="bi bi-file-earmark-pdf-fill"></i></a>
+                                    @else
+                                        <span title="SK Penempatan Belum Diupload" class="arsip-btn disabled"><i class="bi bi-file-earmark-x"></i></span>
+                                    @endif
+
+                                    @if($u->file_peta_lokasi)
+                                        <a href="{{ asset('arsip_uptd/' . $u->file_peta_lokasi) }}" target="_blank" title="Lihat Peta Lokasi" class="arsip-btn doc-img"><i class="bi bi-image-fill"></i></a>
+                                    @else
+                                        <span title="Peta Lokasi Belum Diupload" class="arsip-btn disabled"><i class="bi bi-image"></i></span>
+                                    @endif
+                                </div>
+                            </td>
+
+                            {{-- AKSI --}}
+                            <td class="text-center">
+                                <div class="action-group">
+                                    <a href="{{ route('uptd.edit', $u->id) }}" class="btn-action edit" title="Edit Data"><i class="bi bi-pencil-square"></i></a>
+                                    <form action="{{ route('uptd.destroy', $u->id) }}" method="POST" id="form-hapus-{{ $u->id }}" class="m-0">
+                                        @csrf @method('DELETE')
+                                        <button type="button" class="btn-action delete" onclick="konfirmasiHapus('{{ $u->id }}', '{{ $u->nama_upt }}')" title="Hapus Data">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="8" class="text-center py-5">
+                                <i class="bi bi-folder-x" style="font-size:3.5rem; color:#cbd5e1; display:block; margin-bottom:12px;"></i>
+                                <div style="font-weight:800; color:#475569; font-size:0.95rem; margin-bottom:4px;">Belum Ada Data UPT</div>
+                                <div style="color:#94a3b8; font-size:0.8rem;">Data penyerahan UPT belum tersedia atau tidak ditemukan.</div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
         
         @if($uptds->hasPages())
-        <div class="px-4 py-3 border-top border-light d-flex flex-column flex-md-row justify-content-between align-items-center bg-white" style="border-radius: 0 0 24px 24px;">
-            <span class="text-muted small fw-bold mb-3 mb-md-0">Menampilkan {{ $uptds->firstItem() }} - {{ $uptds->lastItem() }} dari {{ $uptds->total() }} Data</span>
-            <div class="pagination-sm m-0">{{ $uptds->links('pagination::bootstrap-5') }}</div>
+        <div class="px-4 py-4 border-top bg-light bg-opacity-50 d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <span class="text-muted small fw-bold mb-3 mb-md-0">
+                Menampilkan <span class="text-dark">{{ $uptds->firstItem() }}</span> sampai <span class="text-dark">{{ $uptds->lastItem() }}</span> dari <span class="text-dark">{{ $uptds->total() }}</span> entri
+            </span>
+            <div class="pagination-sm m-0">{{ $uptds->withQueryString()->links('pagination::bootstrap-5') }}</div>
         </div>
         @endif
     </div>
@@ -279,20 +304,21 @@
 
 <div class="modal fade" id="modalCetakUptd" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 24px;">
             <div class="modal-body p-4 text-center">
-                <div class="mb-3 bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                    <i class="bi bi-cloud-download fs-3 text-primary"></i>
+                <div class="mb-3 mx-auto bg-teal-50 rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px; background: #f0fdfa;">
+                    <i class="bi bi-cloud-download fs-2" style="color: var(--teal-primary);"></i>
                 </div>
-                <h6 class="fw-bold mb-2 text-dark">Export Data</h6>
-                <p class="text-muted small mb-4">Pilih format unduhan untuk data yang sedang difilter.</p>
+                <h5 class="fw-bold mb-2">Export Laporan</h5>
+                <p class="text-muted small mb-4">Pilih format dokumen untuk data yang difilter saat ini.</p>
                 <div class="d-grid gap-2">
-                    <a href="{{ route('uptd.pdf', request()->query()) }}" class="btn btn-outline-danger py-2 fw-bold" style="border-radius: 12px; font-size: 0.9rem;">
-                        <i class="bi bi-file-pdf-fill me-1"></i> Cetak PDF
+                    <a href="{{ route('uptd.pdf', request()->query()) }}" class="btn btn-danger py-2 fw-bold" style="border-radius: 12px; font-size: 0.9rem;">
+                        <i class="bi bi-file-pdf-fill me-1"></i> DOWNLOAD PDF
                     </a>
-                    <a href="{{ route('uptd.excel', request()->query()) }}" class="btn btn-outline-success py-2 fw-bold" style="border-radius: 12px; font-size: 0.9rem;">
-                        <i class="bi bi-file-excel-fill me-1"></i> Export Excel
+                    <a href="{{ route('uptd.excel', request()->query()) }}" class="btn btn-success py-2 fw-bold" style="border-radius: 12px; font-size: 0.9rem;">
+                        <i class="bi bi-file-excel-fill me-1"></i> DOWNLOAD EXCEL
                     </a>
+                    <button type="button" class="btn btn-light py-2 fw-bold text-muted" data-bs-dismiss="modal" style="border-radius: 12px; font-size: 0.9rem;">BATAL</button>
                 </div>
             </div>
         </div>
@@ -305,19 +331,19 @@
 <script>
     function konfirmasiHapus(id, nama) {
         Swal.fire({
-            title: 'Hapus Data?',
-            html: `Apakah Anda yakin ingin menghapus data <b>${nama}</b>?<br><span class="text-danger small">Tindakan ini tidak dapat diurungkan.</span>`,
+            title: 'Hapus Data UPT?',
+            html: `Anda akan menghapus data <b>${nama}</b>.<br><small class="text-muted">Data yang dihapus tidak dapat dipulihkan kembali.</small>`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc2626',
             cancelButtonColor: '#f1f5f9',
-            confirmButtonText: 'Ya, Hapus Data',
-            cancelButtonText: '<span class="text-dark">Batal</span>',
+            confirmButtonText: 'YA, HAPUS',
+            cancelButtonText: '<span class="text-dark">BATAL</span>',
             reverseButtons: true,
-            borderRadius: '16px',
+            borderRadius: '20px',
             customClass: {
-                confirmButton: 'rounded-pill px-4 shadow-sm',
-                cancelButton: 'rounded-pill px-4'
+                confirmButton: 'rounded-pill px-4 py-2 shadow-sm',
+                cancelButton: 'rounded-pill px-4 py-2'
             }
         }).then((result) => {
             if (result.isConfirmed) {
