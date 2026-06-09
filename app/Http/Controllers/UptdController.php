@@ -33,7 +33,7 @@ class UptdController extends Controller
                         $q->where('nama_kabupaten', 'like', '%' . $search . '%');
                     });
             })
-            ->latest() // Diganti dari orderBy('tahun_penyerahan') menjadi latest() (created_at desc)
+            ->latest() 
             ->paginate(10)
             ->appends(request()->query());
 
@@ -72,9 +72,7 @@ class UptdController extends Controller
         foreach ($dokumens as $dok) {
             if ($request->hasFile($dok)) {
                 $file = $request->file($dok);
-                // Buat nama file unik: timestamp_namafield.ekstensi
                 $nama_file = time() . '_' . $dok . '.' . $file->getClientOriginalExtension();
-                // Pindahkan ke folder public/arsip_uptd
                 $file->move(public_path('arsip_uptd'), $nama_file);
                 $data[$dok] = $nama_file;
             }
@@ -109,10 +107,8 @@ class UptdController extends Controller
 
     public function update(Request $request, $id)
     {
-        // 1. CARI DATANYA DULU (Ini yang tadi terlewat dan menyebabkan error)
         $uptd = Uptd::findOrFail($id);
 
-        // 2. VALIDASI
         $request->validate([
             'tahun_penyerahan' => 'nullable|string|max:20',
             'kabupaten_id'     => 'required',
@@ -170,7 +166,6 @@ class UptdController extends Controller
         $uptd = Uptd::findOrFail($id);
         $nama_upt = $uptd->nama_upt;
         
-        // Opsional: Hapus juga file fisiknya saat data dihapus
         $dokumens = ['file_sk_penyerahan', 'file_sk_penempatan', 'file_peta_lokasi'];
         foreach ($dokumens as $dok) {
             if ($uptd->$dok && file_exists(public_path('arsip_uptd/' . $uptd->$dok))) {
@@ -210,7 +205,7 @@ class UptdController extends Controller
                         $q->where('nama_kabupaten', 'like', '%' . $search . '%');
                     });
             })
-            ->latest() // Disamakan dengan index agar export PDF merepresentasikan urutan data yang valid
+            ->latest() 
             ->get();
 
         $pdf = PDF::loadView('uptd.pdf', compact('uptds'))->setPaper('a4', 'landscape');
@@ -222,7 +217,6 @@ class UptdController extends Controller
      */
     public function excel(Request $request)
     {
-        // Pastikan Anda juga menerapkan ->latest() pada class App\Exports\UptdExport jika query-nya terpisah
         return Excel::download(new \App\Exports\UptdExport($request->search), 'Laporan_Penyerahan_UPTD.xlsx');
     }
 

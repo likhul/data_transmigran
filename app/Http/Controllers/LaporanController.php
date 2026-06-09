@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Transmigran;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf; // Memanggil library PDF
+use Barryvdh\DomPDF\Facade\Pdf; 
 
 class LaporanController extends Controller
 {
     public function cetakPdf(Request $request)
     {
-        // Kita ambil data transmigran (jika sedang difilter, laporan akan mengikuti filter tersebut)
+        // ambil data transmigran (jika sedang difilter, laporan akan mengikuti filter tersebut)
         $transmigrans = Transmigran::with('kabupaten')
             ->when($request->search, function($query) use ($request) {
                 $query->where('nama_kepala_keluarga', 'like', '%' . $request->search . '%');

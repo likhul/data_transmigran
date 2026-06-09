@@ -69,7 +69,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('transmigran', TransmigranController::class);
 
     // --- RUTE AJAX DROPDOWN (SINKRON DENGAN CONTROLLER) ---
-    // Gunakan rute ini di JavaScript kamu
     Route::get('/get-kecamatan/{kabupaten_id}', [UptdController::class, 'getKecamatan']);
     Route::get('/get-master-uptd/{kecamatan_id}', [UptdController::class, 'getMasterUptd']);
 
@@ -78,7 +77,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/pengaturan-admin', [AdminController::class, 'store'])->name('admin.store');
     Route::delete('/pengaturan-admin/{id}', [AdminController::class, 'destroy'])->name('admin.destroy');
     
-    // Log Aktivitas menggunakan LogAktivitasController (Duplikat sudah dibersihkan)
     Route::get('/log-aktivitas', [LogAktivitasController::class, 'index'])->name('admin.log');
 
     // 7. Konten Website
@@ -90,7 +88,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/manajemen-struktur', [StrukturController::class, 'store'])->name('struktur.store');
     Route::delete('/manajemen-struktur/{id}', [StrukturController::class, 'destroy'])->name('struktur.destroy');
 
-    // Ubah /galeri menjadi /galeri-simpan agar tidak bentrok dengan folder public/galeri
     Route::post('/galeri-simpan', [GaleriController::class, 'store'])->name('galeri.store');
     Route::delete('/galeri-hapus/{id}', [GaleriController::class, 'destroy'])->name('galeri.destroy');
     Route::put('/galeri/{id}', [App\Http\Controllers\GaleriController::class, 'update'])->name('galeri.update');

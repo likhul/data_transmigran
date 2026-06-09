@@ -19,20 +19,18 @@
 
     body { background-color: var(--md-background); }
 
-    /* 1. HERO SECTION - ULTRA MODERN */
+    /* 1. HERO SECTION*/
     .hero-mini {
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(2, 132, 199, 0.6) 100%), 
-                    url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2000');
-        background-size: cover; 
-        background-position: center; 
-        background-attachment: fixed;
-        padding-top: clamp(110px, 16vh, 150px);
-        padding-bottom: clamp(80px, 12vh, 120px); 
-        position: relative;
-        border-bottom-left-radius: clamp(20px, 5vw, 40px);
-        border-bottom-right-radius: clamp(20px, 5vw, 40px);
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(37, 99, 235, 0.75) 100%), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=2000');
+        background-size: cover; background-position: center;
+        padding-top: clamp(80px, 12vh, 120px);
+        padding-bottom: clamp(70px, 12vh, 110px); 
+        position: relative; color: white;
+        border-bottom-left-radius: clamp(16px, 4vw, 32px);
+        border-bottom-right-radius: clamp(16px, 4vw, 32px);
+        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
     }
+    
     
     .hero-title-main { font-weight: 900; font-size: clamp(1.5rem, 5vw, 2.5rem); letter-spacing: -1px; }
 

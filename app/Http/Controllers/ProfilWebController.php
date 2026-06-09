@@ -19,7 +19,6 @@ class ProfilWebController extends Controller
             return redirect('/dashboard')->with('error', 'Akses Ditolak! Hanya Super Admin yang bisa mengatur profil website.');
         }
 
-        // Ambil data profil pertama. Kalau database masih kosong, buatkan data awal otomatis!
         $profil = ProfilWeb::firstOrCreate(['id' => 1], [
             'judul_website' => 'Sistem Informasi Transmigran Jambi',
             'deskripsi_singkat' => 'Selamat datang di portal resmi informasi transmigrasi daerah Jambi.',
@@ -28,16 +27,13 @@ class ProfilWebController extends Controller
         // Ambil data berita terbaru
         $beritas = Berita::latest()->get();
 
-        // 👈 2. Tambahkan pemanggilan data galeri di sini agar variabel $galeris tersedia di view
         $galeris = Galeri::latest()->get();
 
-        // 👈 3. Masukkan 'galeris' ke dalam compact
         return view('profil_web.edit', compact('profil', 'beritas', 'galeris'));
     }
 
     public function update(Request $request)
     {
-        // Ambil data profil pertama (atau buat baru jika database masih kosong)
         $profil = ProfilWeb::first() ?? new ProfilWeb();
 
         // Simpan data teks

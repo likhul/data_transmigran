@@ -4,7 +4,6 @@
 
 @push('css')
 <style>
-    /* Konfigurasi Warna Tema Navy & Blue */
     :root {
         --blue-primary: #2563eb; 
         --blue-hover: #1d4ed8;
@@ -17,7 +16,6 @@
         --border-color: #f1f5f9;
     }
 
-    /* Container Utama */
     .premium-card {
         background: var(--bg-surface);
         border-radius: 24px;
@@ -26,7 +24,6 @@
         overflow: hidden;
     }
 
-    /* Header & Tombol Modern */
     .page-title { font-weight: 800; color: var(--navy-dark); letter-spacing: -0.5px; font-size: 1.5rem; }
     
     .btn-premium {
@@ -48,7 +45,6 @@
         transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3); color: white; 
     }
 
-    /* Search Bar Kapsul (Full Width) */
     .search-pill {
         background: white;
         border: 1px solid #e2e8f0;

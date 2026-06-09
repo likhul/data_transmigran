@@ -19,7 +19,6 @@ class UptdExport implements FromView, ShouldAutoSize
 
     public function view(): View
     {
-        // Logika pencarian yang SAMA PERSIS
         $uptds = Uptd::with(['kabupaten', 'kecamatan'])
             ->when($this->search, function($query) {
                 $query->where('nama_upt', 'like', '%' . $this->search . '%')

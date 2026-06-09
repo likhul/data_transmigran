@@ -58,7 +58,6 @@
         padding: 8px 24px; font-weight: 600; transition: 0.2s; font-size: 0.85rem;
     }
 
-    /* Table Styling Utama - DIRAPIKAN */
     .table-container { border-radius: 12px; border: 1px solid var(--border-color); overflow-x: auto; }
     .table-modern { margin-bottom: 0; white-space: nowrap; } /* Mencegah baris berantakan */
     
@@ -78,7 +77,6 @@
     .upt-name { font-weight: 800; color: var(--navy-dark); font-size: 0.95rem; margin-bottom: 4px; display: block; white-space: normal; line-height: 1.3; }
     .location-info { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-bottom: 6px; white-space: normal; }
     
-    /* Box KK & Jiwa yang lebih rapi */
     .stat-wrapper { display: flex; justify-content: center; gap: 6px; }
     .stat-box {
         background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px;

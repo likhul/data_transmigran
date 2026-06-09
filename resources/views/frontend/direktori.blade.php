@@ -3,7 +3,6 @@
 
 @push('css')
 <style>
-    /* VARIABEL WARNA MATERIAL DESIGN 3 & NEUMORPHISM */
     :root {
         --md-surface: #ffffff;
         --md-background: #f8fafc;
@@ -15,20 +14,17 @@
     body { background-color: var(--md-background); font-size: 14px; }
 
     /* 1. HERO SECTION (Micro-Clean MD3) */
-    /* --- HERO SECTION DIREKTORI --- */
     .hero-mini {
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(13, 148, 136, 0.55) 100%), 
-                    url('https://images.unsplash.com/photo-1500076656116-558758c991c1?auto=format&fit=crop&q=80&w=2000');
-        background-size: cover; 
-        background-position: center;
-        background-attachment: fixed;
-        padding: clamp(120px, 15vh, 150px) 0 clamp(60px, 10vh, 100px);
-        position: relative; 
-        color: white;
-        border-bottom-left-radius: 40px; 
-        border-bottom-right-radius: 40px;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(37, 99, 235, 0.75) 100%), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=2000');
+        background-size: cover; background-position: center;
+        padding-top: clamp(80px, 12vh, 120px);
+        padding-bottom: clamp(70px, 12vh, 110px); 
+        position: relative; color: white;
+        border-bottom-left-radius: clamp(16px, 4vw, 32px);
+        border-bottom-right-radius: clamp(16px, 4vw, 32px);
         box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
     }
+    
     
     .hero-title-main {
         font-weight: 800; 
@@ -63,7 +59,7 @@
         border: 1px solid rgba(226,232,240,0.5);
         box-shadow: var(--soft-shadow); transition: all 0.3s ease;
         height: 100%; display: flex; flex-direction: column; 
-        padding: clamp(15px, 3vw, 24px); /* Padding dalam dipangkas */
+        padding: clamp(15px, 3vw, 24px); 
     }
     .card-direktori:hover {
         transform: translateY(-4px); box-shadow: var(--hover-shadow); border-color: #cbd5e1;
@@ -71,7 +67,6 @@
     
     .bg-soft-primary { background: #eff6ff; color: #2563eb; }
     
-    /* Typography Kartu */
     .card-title-text { 
         font-weight: 800; color: #0f172a; letter-spacing: -0.3px; 
         font-size: clamp(1.05rem, 2.5vw, 1.25rem); margin-bottom: 4px; 

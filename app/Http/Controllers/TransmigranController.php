@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Transmigran;
 use App\Models\Kabupaten;
-use Barryvdh\DomPDF\Facade\Pdf; // Taruh di baris paling atas
+use Barryvdh\DomPDF\Facade\Pdf; 
 
 class TransmigranController extends Controller
 {
@@ -72,8 +72,8 @@ class TransmigranController extends Controller
             'jumlah_anggota'       => $request->jumlah_anggota,
             'asal_daerah'          => $request->asal_daerah,
             'kabupaten_id'         => $request->kabupaten_id,
-            'kecamatan_id'         => $request->kecamatan_id, // WAJIB ADA
-            'nama_desa'            => $request->nama_desa,    // WAJIB ADA
+            'kecamatan_id'         => $request->kecamatan_id, 
+            'nama_desa'            => $request->nama_desa,    
             'tahun_penempatan'     => $request->tahun_penempatan,
             'status'               => $request->status,
         ]);
@@ -88,9 +88,6 @@ class TransmigranController extends Controller
         // Kembalikan ke halaman daftar transmigran dengan pesan sukses
         return redirect()->route('transmigran.index')->with('success', 'Data Transmigran berhasil ditambahkan!');
 
-        // --- CCTV REKAM TAMBAH DATA ---
-
-        // ------------------------------
     }
 
     /**
@@ -142,8 +139,7 @@ class TransmigranController extends Controller
 
         return redirect()->route('transmigran.index')->with('success', 'Data Transmigran berhasil diperbarui!');
 
-        // --- CCTV REKAM EDIT DATA ---
-        // ------------------------------
+        
     }
 
     // 5. Menghapus data (Soft Delete)
@@ -158,7 +154,7 @@ class TransmigranController extends Controller
             'keterangan' => 'Menghapus data Transmigran: ' . $transmigran->nama_kepala_keluarga
         ]);
 
-        $transmigran->delete(); // Karena pakai SoftDeletes, data tidak hilang permanen
+        $transmigran->delete();
 
         return redirect()->route('transmigran.index')->with('success', 'Data Transmigran berhasil dihapus!');
     }
@@ -166,7 +162,6 @@ class TransmigranController extends Controller
 
     public function cetakPdf(Request $request)
     {
-        // PERBAIKAN: Ganti 'uptd' menjadi 'kecamatan'
         $query = \App\Models\Transmigran::with(['kabupaten', 'kecamatan']);
 
         // Logika Filter sesuai Form Index
@@ -193,14 +188,14 @@ class TransmigranController extends Controller
         return $pdf->stream('Laporan_Transmigran_Jambi_' . date('Ymd') . '.pdf');
     }
 
-    // FUNGSI EXPORT (DOWNLOAD) YANG SUDAH DIPERBAIKI
+    // FUNGSI EXPORT (DOWNLOAD) 
     public function exportExcel(Request $request)
     {
         // Menangkap request filter agar data Excel yang didownload sesuai dengan pencarian
         return Excel::download(new TransmigranExport($request), 'Data_Transmigran_Jambi.xlsx');
     }
 
-    // FUNGSI IMPORT (UPLOAD) YANG SUDAH DIPERBAIKI
+    // FUNGSI IMPORT (UPLOAD) 
     public function importExcel(Request $request)
     {
         $request->validate([

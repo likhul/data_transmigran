@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Admin; // Memanggil model Admin
-use Illuminate\Support\Facades\Hash; // Memanggil fitur enkripsi password
+use App\Models\Admin; 
+use Illuminate\Support\Facades\Hash; 
 
 class AdminSeeder extends Seeder
 {
@@ -15,7 +15,7 @@ class AdminSeeder extends Seeder
     {
         Admin::create([
             'username' => 'admin',
-            'password' => Hash::make('password123'), // Password akan otomatis dienkripsi
+            'password' => Hash::make('password123'), 
         ]);
     }
 }

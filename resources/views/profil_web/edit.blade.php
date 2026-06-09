@@ -4,7 +4,6 @@
 
 @push('css')
 <style>
-    /* Konfigurasi Warna Tema Navy & Blue */
     :root {
         --blue-primary: #2563eb; 
         --blue-hover: #1d4ed8;
@@ -96,7 +95,6 @@
         background: white; border-color: var(--blue-primary); box-shadow: 0 0 0 4px var(--blue-light);
     }
     
-    /* Menyembunyikan elemen TinyMCE secara default jika diperlukan */
     .tox-promotion, .tox-statusbar__branding { display: none !important; }
 </style>
 @endpush

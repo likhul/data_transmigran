@@ -9,6 +9,5 @@ class Galeri extends BaseModel
 {
     use HasFactory;
 
-    // Tambahkan baris ini untuk mengizinkan semua kolom diisi
     protected $guarded = [];
 }

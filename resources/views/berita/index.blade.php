@@ -13,9 +13,8 @@
 
     body { background-color: var(--md-background); font-size: 14px; }
 
-    /* --- PAKSA NAVBAR LANGSUNG GELAP DI HALAMAN INI --- */
     .navbar {
-        background: #0f172a !important; /* Langsung pakai warna Navy Deep */
+        background: #0f172a !important; 
         backdrop-filter: blur(15px);
         box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3);
     }
@@ -24,7 +23,6 @@
     .hero-mini {
         background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%), url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=2000');
         background-size: cover; background-position: center;
-        /* Padding atas ditambah sedikit agar tidak tertutup navbar yang sudah solid */
         padding: clamp(120px, 15vh, 150px) 0 clamp(60px, 10vh, 100px);
         position: relative; color: white;
         border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;

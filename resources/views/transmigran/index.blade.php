@@ -25,7 +25,6 @@
 
     .page-title { font-weight: 800; color: var(--navy-dark); letter-spacing: -0.5px; }
     
-    /* Custom Blue Buttons (Senada dengan halaman UPT) */
     .btn-blue-solid {
         background-color: #2b6cb0; color: #ffffff; border: none; border-radius: 12px;
         padding: 10px 24px; font-weight: 600; font-size: 0.9rem;
@@ -46,7 +45,6 @@
     .btn-blue-outline:hover { background-color: #ebf8ff; color: #2c5282; border-color: #2c5282; }
     .btn-blue-outline:hover .icon-circle { background-color: #2c5282; }
 
-    /* Modern Filter Bar (Gabungan Search + Select) */
     .filter-bar {
         background: #f8fafc; border: 1px solid var(--border-color); border-radius: 16px;
         padding: 8px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;

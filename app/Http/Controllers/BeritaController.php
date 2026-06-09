@@ -8,8 +8,6 @@ use App\Models\ProfilWeb;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
-
-// Import Library Intervention Image Versi 3
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
@@ -31,19 +29,15 @@ class BeritaController extends Controller
             
             $destinationPath = public_path('berita_images');
             
-            // Buat folder jika belum ada
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0755, true);
             }
 
-            // PROSES KOMPRESI GAMBAR VERSI 3 (RESIZE & OPTIMIZE)
             $manager = new ImageManager(new Driver());
             $img = $manager->read($file->getRealPath());
             
-            // scaleDown mencegah gambar yang sudah kecil jadi pecah
             $img->scaleDown(width: 800);
             
-            // Simpan gambar dengan kualitas 75%
             $img->save($destinationPath . '/' . $nama_gambar, quality: 75);
         }
 
@@ -55,9 +49,7 @@ class BeritaController extends Controller
             'user_id' => auth()->id() // Mengambil ID admin yang sedang login
         ]);
 
-        // HAPUS CACHE AGAR BERANDA LANGSUNG UPDATE!
         Cache::forget('berita_terbaru');
-        // Hapus juga cache pagination halaman semua berita
         $this->clearBeritaPaginationCache();
 
         return redirect()->back()->with('success', 'Berita berhasil diterbitkan dan gambar otomatis dikompres!');
@@ -74,16 +66,13 @@ class BeritaController extends Controller
 
         $berita = Berita::findOrFail($id);
 
-        // Jika admin mengupload gambar baru saat edit
         if ($request->hasFile('gambar')) {
             $destinationPath = public_path('berita_images');
 
-            // Hapus gambar lama dari folder
             if ($berita->gambar && File::exists($destinationPath . '/' . $berita->gambar)) {
                 File::delete($destinationPath . '/' . $berita->gambar);
             }
 
-            // Proses gambar baru & kompres Versi 3
             $file = $request->file('gambar');
             $nama_gambar = time() . "_" . Str::slug($request->judul) . '.' . $file->getClientOriginalExtension();
             
@@ -100,7 +89,6 @@ class BeritaController extends Controller
         $berita->konten = $request->konten;
         $berita->save();
 
-        // HAPUS CACHE AGAR BERANDA LANGSUNG UPDATE!
         Cache::forget('berita_terbaru');
         Cache::forget("berita_detail_{$berita->slug}");
         $this->clearBeritaPaginationCache();
@@ -113,7 +101,6 @@ class BeritaController extends Controller
     {
         $berita = Berita::findOrFail($id);
         
-        // Hapus foto dari folder agar hardisk tidak penuh
         if ($berita->gambar && File::exists(public_path('berita_images/' . $berita->gambar))) {
             File::delete(public_path('berita_images/' . $berita->gambar));
         }
@@ -121,7 +108,6 @@ class BeritaController extends Controller
         Cache::forget("berita_detail_{$berita->slug}");
         $berita->delete();
 
-        // HAPUS CACHE AGAR BERANDA LANGSUNG UPDATE!
         Cache::forget('berita_terbaru');
         $this->clearBeritaPaginationCache();
 
@@ -144,7 +130,6 @@ class BeritaController extends Controller
     {
         $profil = ProfilWeb::first();
         
-        // Karena ada fitur paginasi bawaan, kita cache halamannya berdasar nomor "page=X" di URL
         $page = request()->get('page', 1);
         $beritas = Cache::remember("semua_berita_page_{$page}", now()->addHours(2), function () {
             return Berita::latest()->paginate(9);
@@ -153,7 +138,6 @@ class BeritaController extends Controller
         return view('berita.index', compact('beritas', 'profil'));
     }
 
-    // FUNGSI BANTUAN: Menghapus semua cache halaman pagination berita
     private function clearBeritaPaginationCache()
     {
         // Menghapus cache untuk beberapa halaman pertama untuk memastikan data terbaru tampil

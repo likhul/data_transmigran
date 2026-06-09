@@ -5,11 +5,9 @@
         --md-primary: #2563eb;
     }
 
-    /* 1. PERBAIKAN UKURAN MODAL (Tidak Full Screen di HP) */
     .modal-dialog { margin: 1.25rem; }
     .modal-content { border-radius: 24px; border: none; overflow: hidden; }
 
-    /* 2. HEADER MODAL & SEARCH BOX */
     .modal-header { padding: 20px 20px 10px; border: none; }
     .search-container { padding: 0 20px 15px; }
     .modal-search-input {
@@ -19,7 +17,6 @@
     }
     .modal-search-input:focus { outline: none; border-color: var(--md-primary); background: #fff; }
 
-    /* 3. PERBAIKAN TABEL (Lebih Compact) */
     .modal-body { padding: 0 15px 20px; }
     .table-wrapper { 
         max-height: 50vh; overflow-y: auto; border-radius: 16px; 
@@ -36,13 +33,12 @@
         border-bottom: 1px solid #f1f5f9;
     }
 
-    /* 4. PERBAIKAN FONT RINGKASAN (Standard Mobile) */
     .stat-main-box {
         padding: 15px; border-radius: 20px; height: 100%;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
     .stat-main-number { 
-        font-weight: 800; font-size: 1.3rem; /* Diperbesar agar standar mobile */
+        font-weight: 800; font-size: 1.3rem; 
         letter-spacing: -0.5px; line-height: 1.1; 
     }
     .stat-main-label { font-size: 0.65rem; font-weight: 700; opacity: 0.8; margin-top: 4px; }

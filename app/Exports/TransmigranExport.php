@@ -22,7 +22,6 @@ class TransmigranExport implements FromCollection, WithHeadings, WithMapping
     {
         $query = Transmigran::with(['kabupaten', 'uptd']);
 
-        // Logika Filter persis seperti di Cetak PDF
         if ($this->request->filled('search')) {
             $query->where('nama_kepala_keluarga', 'like', '%' . $this->request->search . '%');
         }

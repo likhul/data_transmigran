@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable; // Penting untuk fitur Login
+use Illuminate\Foundation\Auth\User as Authenticatable; 
 
 class Admin extends Authenticatable
 {

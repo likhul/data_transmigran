@@ -15,10 +15,6 @@ use Illuminate\Support\Facades\DB;
 
 class FrontController extends Controller
 {
-    /**
-     * Memuat profil website (Dipakai di semua halaman)
-     * Data ini juga di-cache agar tidak query database terus-menerus
-     */
     private function getProfil()
     {
         return Cache::remember('profil_web', now()->addDay(), function () {
@@ -48,9 +44,7 @@ class FrontController extends Controller
             return Pengurus::all();
         });
 
-        // UBAH DISINI: Ambil 10 berita agar cukup untuk dibagi-bagi di Blade
         $beritas = Cache::remember('berita_terbaru_home', now()->addMinutes(30), function () {
-            // Kita ambil 10 berita terbaru
             return Berita::latest()->get(); 
         });
 
@@ -63,7 +57,6 @@ class FrontController extends Controller
 
     /**
      * 2. HALAMAN STATISTIK & DEMOGRAFI (/statistik)
-     * Menggunakan Caching penuh karena kalkulasinya sangat berat
      */
     public function statistik()
     {
@@ -97,10 +90,6 @@ class FrontController extends Controller
 
             $uptd_list = Uptd::select('nama_upt', 'jiwa_baru', 'kk_baru', 'tahun_penyerahan')->get();
 
-            // ==========================================
-            // DATA UNTUK 5 GRAFIK DASHBOARD
-            // ==========================================
-
             // 1. Tren Populasi Tahunan (Line Chart) - DATA PER TAHUN
             $allTrendData = Uptd::whereNotNull('tahun_penyerahan')
                 ->where('tahun_penyerahan', '!=', '-')
@@ -119,12 +108,10 @@ class FrontController extends Controller
             }
 
             foreach ($allTrendData as $item) {
-                // Paksa ubah ke angka
                 $thn = (int) trim($item->tahun_penyerahan); 
                 
-                // VALIDASI KETAT: Hanya proses jika tahun masuk akal (di atas 1900)
+                // Hanya proses jika tahun masuk akal (di atas 1900)
                 if ($thn > 1900) { 
-                    // PENTING: Jangan pakai kelompok 5 tahun lagi, langsung cetak tahun aslinya!
                     $label = (string) $thn; 
 
                     if (!isset($aggregatedGlobal[$label])) $aggregatedGlobal[$label] = 0;
@@ -230,7 +217,6 @@ class FrontController extends Controller
             $uptds = $query->paginate(6);
             $uptds->appends(['search' => $request->search]); // Agar tombol paginasi tetap membawa kata kunci pencarian
         } else {
-            // Jika tidak ada pencarian (hanya halaman biasa), kita Cache halamannya!
             // Cache disesuaikan dengan nomor halaman URL (page=1, page=2, dst)
             $page = $request->get('page', 1);
             $uptds = Cache::remember("direktori_uptd_page_{$page}", now()->addHours(6), function () use ($query) {
@@ -248,7 +234,6 @@ class FrontController extends Controller
     {
         $profil = $this->getProfil();
         
-        // Detail UPTD juga di-cache per ID selama 1 hari
         $uptd = Cache::remember("uptd_detail_{$id}", now()->addDay(), function () use ($id) {
             return Uptd::with(['kabupaten', 'kecamatan'])->findOrFail($id);
         });

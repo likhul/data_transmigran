@@ -11,7 +11,6 @@
     
     .premium-card { background: #fff; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; overflow: hidden; }
     
-    /* Tabel Standard */
     .table-modern thead th { background: #f8fafc; color: #475569; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; padding: 16px; }
     .table-modern tbody td { padding: 16px; vertical-align: middle; color: var(--text-main); border-bottom: 1px solid #f1f5f9; }
     
@@ -26,9 +25,6 @@
     .form-control-premium { border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; background: #f8fafc; }
     .form-control-premium:focus { background: #fff; border-color: var(--blue-primary); box-shadow: 0 0 0 4px var(--blue-light); }
 
-    /* =========================================
-       PERBAIKAN RESPONSIVE KHUSUS MOBILE (HP) 
-       ========================================= */
     @media (max-width: 768px) {
         .container-fluid { padding: 10px !important; }
         .page-header { flex-direction: column; align-items: flex-start !important; gap: 15px; }
@@ -161,9 +157,7 @@
 @push('scripts')
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Cek apakah ada error dari Laravel (Backend)
         @if($errors->any())
-            // Jika ada error, otomatis buka modalnya!
             var modalTambah = new bootstrap.Modal(document.getElementById('modalTambahAdmin'));
             modalTambah.show();
         @endif

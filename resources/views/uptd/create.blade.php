@@ -4,7 +4,6 @@
 
 @push('css')
 <style>
-    /* Konfigurasi Warna Premium */
     :root {
         --teal-primary: #0f766e;
         --teal-light: #f0fdfa;
@@ -358,7 +357,6 @@
             }
         });
         
-        // Hapus styling merah (error) saat user mulai mengetik ulang
         $('input[required], select[required]').on('input change', function() {
             if ($(this).val() !== '') {
                 $(this).removeClass('is-invalid');

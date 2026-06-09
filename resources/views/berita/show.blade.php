@@ -28,14 +28,14 @@
     body { 
         background-color: var(--bg-main); 
         color: var(--text-deep);
-        /* 1. TEKSTUR BACKGROUND (AGAR TIDAK DATAR) */
+        /* 1. TEKSTUR BACKGROUND */
         background-image: radial-gradient(#e2e8f0 0.8px, transparent 0.8px);
         background-size: 24px 24px;
     }
 
     /* 2. HEADER AREA DENGAN GRADASI */
     .header-wrapper {
-        padding: clamp(120px, 16vh, 160px) 0 30px; /* Padding atas dinaikkan sedikit agar tidak tertutup navbar */
+        padding: clamp(120px, 16vh, 160px) 0 30px; 
     }
     
     .btn-back-styled {
@@ -49,7 +49,6 @@
     .article-headline {
         font-weight: 900; font-size: clamp(1.8rem, 5vw, 3rem);
         line-height: 1.1; letter-spacing: -1px; margin-bottom: 25px;
-        /* JUDUL GRADASI */
         background: linear-gradient(to right, var(--text-deep), var(--md-primary));
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }

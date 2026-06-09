@@ -16,7 +16,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // --- KUNCI ANTI LOOP (SANGAT PENTING) ---
         static $sedangMencatat = false;
 
         Event::listen([
@@ -25,18 +24,15 @@ class AppServiceProvider extends ServiceProvider
             'eloquent.deleted: *',
         ], function ($event, $models) use (&$sedangMencatat) {
             
-            // 1. Jika kunci sedang aktif, abaikan aksi ini
             if ($sedangMencatat) {
                 return;
             }
 
-            // 2. Cek apakah ada admin yang login
             if (!Auth::check()) {
                 return;
             }
 
             foreach ($models as $model) {
-                // 3. Jangan catat jika yang berubah adalah tabel log itu sendiri
                 if ($model instanceof LogAktivitas) {
                     continue;
                 }

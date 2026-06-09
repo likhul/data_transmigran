@@ -22,12 +22,11 @@
     @stack('css')
     
     <style>
-        /* VARIABEL WARNA MATERIAL DESIGN 3 & NEUMORPHISM */
         :root {
             --md-surface: #ffffff;
             --md-background: #f8fafc;
             --md-primary: #2563eb;
-            --navy-deep: #0f172a; /* Warna Navy Asli */
+            --navy-deep: #0f172a; 
             --soft-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
             --hover-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
         }
@@ -39,17 +38,15 @@
             color: var(--navy-deep);
         }
         
-        /* --- SIDEBAR FIX (ANTI-PUTIH) --- */
         .sidebar { 
             min-height: 100vh; 
-            background-color: var(--navy-deep) !important; /* Paksa tetap Navy */
+            background-color: var(--navy-deep) !important; 
             padding: 20px 15px 30px; 
             box-shadow: 4px 0 15px rgba(0,0,0,0.1); 
             z-index: 1050;
             border-right: 1px solid rgba(255,255,255,0.05);
         }
         
-        /* Mengatasi background offcanvas di Mobile */
         .offcanvas-md.offcanvas-start {
             background-color: var(--navy-deep) !important;
         }
@@ -74,7 +71,7 @@
         
         /* Link Menu Kapsul */
         .sidebar a.nav-link-custom { 
-            color: #94a3b8 !important; /* Warna teks abu-abu terang */
+            color: #94a3b8 !important; 
             text-decoration: none; 
             padding: 12px 16px; margin-bottom: 4px;
             display: flex; align-items: center; 
@@ -246,12 +243,9 @@
     @endif
 
     document.addEventListener("DOMContentLoaded", function() {
-        // Cari menu yang sedang memiliki class 'active'
         let activeMenu = document.querySelector('.sidebar .nav-link-custom.active');
         
-        // Jika ada menu yang aktif, gulir sidebar ke arah menu tersebut
         if (activeMenu) {
-            // block: "center" akan menaruh menu yang aktif persis di tengah-tengah layar sidebar
             activeMenu.scrollIntoView({ behavior: "auto", block: "center" });
         }
     });

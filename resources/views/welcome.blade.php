@@ -3,7 +3,6 @@
 
 @push('css')
 <style>
-    /* VARIABEL WARNA MD3 */
     :root {
         --md-surface: #ffffff;
         --md-background: #f8fafc;
@@ -127,10 +126,6 @@
 
     /* ============================================================
        5. CUSTOM MODAL FOTO
-          Dibuat 100% mandiri, TIDAK pakai Bootstrap Modal sama sekali.
-          Bootstrap Modal punya default CSS yang override flex-direction
-          di layar lebar — inilah akar masalahnya.
-          Solusi: buat modal sendiri dengan position:fixed + flexbox column.
        ============================================================ */
     #cfm-overlay {
         display: none;
@@ -381,7 +376,7 @@
 @push('scripts')
 <script>
     /* =========================================================
-       CUSTOM MODAL — fungsi buka & tutup
+       CUSTOM MODAL 
     ========================================================= */
     function lihatFoto(imgUrl, title) {
         document.getElementById('cfm-img').src = imgUrl;
@@ -403,7 +398,7 @@
     });
 
     /* =========================================================
-       AUTO SCROLL INFINITE — STRUKTUR ORGANISASI (SUDAH DI-UPGRADE)
+       AUTO SCROLL INFINITE — STRUKTUR ORGANISASI 
     ========================================================= */
     const scrollContainer = document.getElementById('hybridScroll');
     let isDown = false;
@@ -413,8 +408,6 @@
     function initInfinite() {
         const items = scrollContainer.innerHTML;
         if (items.trim() !== "") {
-            // Gandakan foto menjadi 10 KALI LIPAT agar track/jalan tol-nya 
-            // sangat panjang dan tidak pernah mentok di layar sebesar apapun.
             let newHTML = "";
             for(let i=0; i<10; i++) {
                 newHTML += items;
@@ -422,7 +415,6 @@
             scrollContainer.innerHTML = newHTML;
             
             setTimeout(() => {
-                // Posisi awal ditaruh di blok pertama
                 scrollContainer.scrollLeft = scrollContainer.scrollWidth / 10;
             }, 100);
         }
@@ -430,14 +422,11 @@
     initInfinite();
 
     scrollContainer.addEventListener('scroll', () => {
-        // Karena ada 10 salinan, ukuran 1 blok asli adalah total dibagi 10
         const sectionWidth = scrollContainer.scrollWidth / 10;
         
-        // Jika sudah masuk ke blok ke-2, mundur diam-diam 1 blok
         if (scrollContainer.scrollLeft >= sectionWidth * 2) {
             scrollContainer.scrollLeft -= sectionWidth;
         }
-        // Jika mentok digeser ke arah kiri, lempar maju 1 blok
         if (scrollContainer.scrollLeft <= 0) {
             scrollContainer.scrollLeft += sectionWidth;
         }

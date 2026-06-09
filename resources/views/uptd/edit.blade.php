@@ -217,15 +217,13 @@ $(document).ready(function() {
 
 <script>
     $(document).ready(function() {
-        // Menyalakan mesin TinyMCE
         tinymce.init({
-            selector: '.tinymce-editor', // Targetkan class kotak teks sejarah
-            height: 350, // Tinggi kotak teks
-            plugins: 'lists link preview wordcount', // Fitur yang diaktifkan
-            toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | removeformat', // Tombol-tombol di atas
-            menubar: false, // Sembunyikan menu bar atas biar rapi
-            branding: false, // Hilangkan watermark TinyMCE
-            promotion: false, // Hilangkan tombol upgrade
+            selector: '.tinymce-editor', 
+            plugins: 'lists link preview wordcount', 
+            toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | removeformat', 
+            menubar: false, 
+            branding: false, 
+            promotion: false, 
             content_style: 'body { font-family: "Plus Jakarta Sans", Helvetica, Arial, sans-serif; font-size:15px; color: #334155; line-height: 1.6; }'
         });
     });

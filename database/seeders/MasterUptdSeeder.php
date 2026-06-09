@@ -65,7 +65,6 @@ class MasterUptdSeeder extends Seeder
                 'Maro Sebo' => ['Tebing Jaya I', 'Tebing Jaya II', 'Tebing Jaya III', 'Tebing Jaya IV']
             ],
 
-            // --- DATA BARU TEBO ---
             'Tebo' => [
                 'Rimbo Bujang' => [
                     'Rimbo Bujang I', 'Rimbo Bujang II', 'Rimbo Bujang III', 'Rimbo Bujang IV', 'Rimbo Bujang V', 

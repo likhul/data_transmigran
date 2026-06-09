@@ -24,31 +24,28 @@
     
     <style>
         :root {
-            --md-primary: #2563eb; /* Biru Utama Tema */
-            --navy-deep: #0f172a;  /* Warna Footer */
+            --md-primary: #2563eb; 
+            --navy-deep: #0f172a; 
             --soft-shadow: 0 10px 30px -10px rgba(0,0,0,0.3);
         }
 
-        /* --- STYLING ANIMASI OPENING (EFEK 5 TIANG BERGESER MENGHILANG) --- */
         #opening-jambi {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh; /* Fallback untuk browser lama */
-            height: 100dvh; /* Memastikan pas di tengah pada layar HP tanpa terhalang address bar */
+            height: 100vh; 
+            height: 100dvh; 
             z-index: 999999;
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Latar putih dihapus dari sini dan dipindah ke masing-masing tiang */
         }
 
         .opening-hidden {
-            pointer-events: none; /* Mencegah layar menghalangi klik saat animasi keluar */
+            pointer-events: none; 
         }
 
-        /* --- WADAH 5 TIANG VERTIKAL --- */
         .opening-columns {
             position: absolute;
             top: 0;
@@ -56,10 +53,9 @@
             width: 100%;
             height: 100%;
             display: flex;
-            z-index: 1; /* Berada di belakang teks dan ring */
+            z-index: 1; 
         }
 
-        /* BUNGKUSAN TIANG KUNCI: overflow: hidden agar tiang hilang saat keluar garisnya */
         .col-wrapper {
             flex: 1;
             height: 100%;
@@ -67,29 +63,26 @@
             position: relative;
         }
 
-        /* TIANG PUTIH FISIKNYA */
         .col-slide {
             width: 100%;
             height: 100%;
-            background-color: #ffffff; /* Latar Putih Bersih ada di tiang ini */
+            background-color: #ffffff; 
             transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
         }
 
-        /* --- ANIMASI TIANG BERGESER KE KIRI (SEUKURAN DIRINYA SENDIRI) BERGANTIAN --- */
         .opening-hidden .col-wrapper:nth-child(1) .col-slide { transform: translateX(-100%); transition-delay: 0.0s; }
         .opening-hidden .col-wrapper:nth-child(2) .col-slide { transform: translateX(-100%); transition-delay: 0.1s; }
         .opening-hidden .col-wrapper:nth-child(3) .col-slide { transform: translateX(-100%); transition-delay: 0.2s; }
         .opening-hidden .col-wrapper:nth-child(4) .col-slide { transform: translateX(-100%); transition-delay: 0.3s; }
         .opening-hidden .col-wrapper:nth-child(5) .col-slide { transform: translateX(-100%); transition-delay: 0.4s; }
 
-        /* --- BUNGKUSAN KONTEN TENGAH (TEKS & RING) --- */
         .opening-content {
             position: relative;
             z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: opacity 0.3s ease; /* Konten akan memudar cepat saat opening selesai */
+            transition: opacity 0.3s ease; 
         }
 
         .opening-hidden .opening-content {
@@ -118,8 +111,7 @@
 
         .brand-opening-text span {
             display: inline-block;
-            color: #cbd5e1; /* Warna abu-abu awal (Standby) */
-            /* Animasi huruf akan muter 360 derajat */
+            color: #cbd5e1; 
             animation: text-muter 0.8s ease-in-out forwards;
         }
 
@@ -128,23 +120,22 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Keyframes untuk Teks Muter lalu menghitam */
+
         @keyframes text-muter {
             0% { 
                 transform: rotateY(0deg); 
                 color: #cbd5e1; 
             }
             50% { 
-                transform: rotateY(90deg); /* Miring 90 derajat */
+                transform: rotateY(90deg); 
                 color: #cbd5e1; 
             }
             100% { 
-                transform: rotateY(360deg); /* Selesai muter 1 putaran penuh */
-                color: var(--navy-deep); /* Berubah menjadi warna Hitam / Navy Pekat */
+                transform: rotateY(360deg); 
+                color: var(--navy-deep);
             }
         }
 
-        /* TAMBAHAN BARU: RESPONSIF KHUSUS UNTUK LAYAR HP (DISEMPURNAKAN AGAR PAS & GAGAH) */
         @media (max-width: 768px) {
             .ring-loader {
                 width: 60px;
@@ -152,7 +143,6 @@
                 margin-bottom: 25px;
             }
             .brand-opening-text {
-                /* clamp membuat ukuran elastis: min 1.4rem, ideal 6vw (ikut lebar layar HP), max 1.8rem */
                 font-size: clamp(1.4rem, 6vw, 1.8rem); 
                 letter-spacing: 5px; /* Spasi dilonggarkan sedikit agar tetap elegan */
                 gap: 2px;
@@ -192,9 +182,9 @@
             background: transparent !important; /* Menjamin transparan sebelum scroll */
         }
 
-        /* --- NAVBAR SCROLLED (Warna Seperti Footer) --- */
+        /* --- NAVBAR SCROLLED  --- */
         .navbar.scrolled {
-            background: var(--navy-deep) !important; /* Dirubah ke Navy Deep */
+            background: var(--navy-deep) !important; 
             backdrop-filter: blur(15px);
             box-shadow: var(--soft-shadow);
             padding: 10px 0;
@@ -205,7 +195,7 @@
             font-weight: 700; font-size: 0.95rem;
             transition: 0.3s; padding: 10px 18px !important;
             position: relative;
-            color: rgba(255,255,255,0.8) !important; /* Selalu Putih Lembut */
+            color: rgba(255,255,255,0.8) !important; 
         }
 
         .nav-link:hover,
@@ -218,7 +208,6 @@
             height: 3px; background: white; border-radius: 10px;
         }
 
-        /* Underline Biru saat di-scroll (Opsional, agar tetap ada aksen biru) */
         .navbar.scrolled .nav-link.active::after {
             background: var(--md-primary);
         }
@@ -433,7 +422,6 @@
             const opening = document.getElementById('opening-jambi');
             if (!sessionStorage.getItem('openingSudahTampil')) {
                 setTimeout(function() {
-                    // Memicu ke-5 tiang bergeser dan menghilang
                     opening.classList.add('opening-hidden');
                     sessionStorage.setItem('openingSudahTampil', 'true');
                     setTimeout(function() {

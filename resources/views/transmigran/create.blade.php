@@ -116,7 +116,6 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        // AJAX KECAMATAN (Sesuai rute UPTD yang sudah jalan)
         $('#kabupaten_id').on('change', function() {
             var kabID = $(this).val();
             $('#kecamatan_id').empty().append('<option value="">Memuat...</option>').prop('disabled', true);

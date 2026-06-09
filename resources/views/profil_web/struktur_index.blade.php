@@ -4,7 +4,6 @@
 
 @push('css')
 <style>
-    /* Konfigurasi Warna Tema Navy & Blue */
     :root {
         --blue-primary: #2563eb; 
         --blue-hover: #1d4ed8;
@@ -85,7 +84,6 @@
         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    /* TAMBAHAN: Tombol Edit (Warna Kuning) */
     .action-btn-edit {
         width: 34px; height: 34px; border-radius: 10px;
         display: inline-flex; align-items: center; justify-content: center;
@@ -280,10 +278,8 @@
 
     // 2. Validasi Anti-Duplikat saat form TAMBAH disubmit
     $('#formTambahStruktur').on('submit', function(e) {
-        // Ambil nilai yang diketik user
         let urutanDiketik = parseInt($('#inputUrutan').val());
 
-        // Cek apakah nilai tersebut ada di array urutanSudahAda
         if (urutanSudahAda.includes(urutanDiketik)) {
             // STOP form agar tidak terkirim
             e.preventDefault(); 
@@ -300,14 +296,10 @@
         }
     });
 
-    // TAMBAHAN: Validasi Anti-Duplikat saat form EDIT disubmit
     $('.formEditStruktur').on('submit', function(e) {
-        // Ambil urutan yang diketik di form edit ini
         let urutanDiketik = parseInt($(this).find('.edit-urutan').val());
-        // Ambil urutan asli (sebelum diedit)
         let urutanAsli = parseInt($(this).find('.edit-urutan').attr('data-original'));
 
-        // Jika user MENGGANTI angkanya, DAN angka barunya sudah ada di database
         if (urutanDiketik !== urutanAsli && urutanSudahAda.includes(urutanDiketik)) {
             e.preventDefault(); 
             Swal.fire({
@@ -321,7 +313,6 @@
         }
     });
 
-    // 3. Script Hapus (Bawaan Komandan sebelumnya)
     $('.btn-konfirmasi-hapus').on('click', function() {
         let form = $(this).closest('form');
         Swal.fire({

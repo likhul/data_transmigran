@@ -8,7 +8,7 @@
         @page { margin: 20px; }
         body { 
             font-family: Arial, Helvetica, sans-serif; 
-            font-size: 8px; /* Diperkecil agar 14 kolom muat di A4 */
+            font-size: 8px; 
             color: #000;
         }
         
@@ -34,15 +34,12 @@
             word-wrap: break-word;
         }
         
-        /* Pewarnaan Header seperti dokumen negara */
         th { background-color: #e5e7eb; font-weight: bold; }
         
-        /* Custom Alignment untuk teks panjang */
         .text-left { text-align: left; }
         .text-right { text-align: right; }
         .text-center { text-align: center; }
         
-        /* Footer Tabel untuk Jumlah */
         .row-jumlah td { font-weight: bold; }
 
         .kop-surat { text-align: center; border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px; }

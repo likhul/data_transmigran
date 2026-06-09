@@ -29,7 +29,6 @@ class GaleriController extends Controller
                 'foto' => $nama_foto
             ]);
 
-            // SANGAT PENTING: Hapus cache agar foto baru langsung muncul di Beranda!
             Cache::forget('galeri_terbaru');
         }
 
@@ -41,14 +40,12 @@ class GaleriController extends Controller
     {
         $galeri = Galeri::findOrFail($id);
 
-        // Hapus file fisik foto dari hardisk server agar tidak menumpuk
         if ($galeri->foto && File::exists(public_path('galeri/' . $galeri->foto))) {
             File::delete(public_path('galeri/' . $galeri->foto));
         }
 
         $galeri->delete();
 
-        // SANGAT PENTING: Hapus cache agar foto yang dihapus hilang dari Beranda!
         Cache::forget('galeri_terbaru');
 
         return redirect()->back()->with('success', 'Foto galeri berhasil dihapus!');
@@ -61,7 +58,6 @@ class GaleriController extends Controller
             'foto'  => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // Cari data galeri (sesuaikan dengan nama Model Anda, misal: Galeri::findOrFail)
         $galeri = \App\Models\Galeri::findOrFail($id);
         
         // Update Judul

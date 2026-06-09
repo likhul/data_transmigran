@@ -42,7 +42,7 @@ class StrukturController extends Controller
             'nama' => $request->nama,
             'gelar' => $request->gelar,
             'jabatan' => $request->jabatan,
-            'urutan' => $request->urutan, // Tidak perlu "?? 0" lagi karena sudah di-required di atas
+            'urutan' => $request->urutan,
             'foto' => $fileName
         ]);
 
@@ -67,7 +67,7 @@ class StrukturController extends Controller
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        $pengurus = Pengurus::findOrFail($id); // Sesuaikan dengan nama Model Komandan
+        $pengurus = Pengurus::findOrFail($id); 
         
         $pengurus->nama = $request->nama;
         $pengurus->gelar = $request->gelar;

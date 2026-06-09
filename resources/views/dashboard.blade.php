@@ -10,7 +10,6 @@
         --bg-surface: #ffffff;
     }
 
-    /* Card Statistik Modern */
     .card-stat {
         border-radius: 20px;
         border: 1px solid #f1f5f9;
@@ -194,10 +193,10 @@
         new Chart(document.getElementById('trendChart').getContext('2d'), {
             type: 'line',
             data: {
-                labels: {!! json_encode($labels) !!}, // Mengambil tahun asli dari DB
+                labels: {!! json_encode($labels) !!}, 
                 datasets: [{
                     label: 'Jumlah Jiwa',
-                    data: {!! json_encode($dataWarga) !!}, // Mengambil angka jiwa asli dari DB
+                    data: {!! json_encode($dataWarga) !!}, 
                     borderColor: '#2563eb',
                     backgroundColor: 'rgba(37, 99, 235, 0.1)',
                     fill: true,

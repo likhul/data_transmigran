@@ -16,16 +16,13 @@
 
     /* --- HERO SECTION --- */
     .hero-mini {
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(79, 70, 229, 0.6) 100%), 
-                    url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80&w=2000');
-        background-size: cover; 
-        background-position: center;
-        background-attachment: fixed;
-        padding: clamp(120px, 15vh, 150px) 0 clamp(60px, 10vh, 100px);
-        position: relative; 
-        color: white;
-        border-bottom-left-radius: 40px; 
-        border-bottom-right-radius: 40px;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(37, 99, 235, 0.75) 100%), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=2000');
+        background-size: cover; background-position: center;
+        padding-top: clamp(80px, 12vh, 120px);
+        padding-bottom: clamp(70px, 12vh, 110px); 
+        position: relative; color: white;
+        border-bottom-left-radius: clamp(16px, 4vw, 32px);
+        border-bottom-right-radius: clamp(16px, 4vw, 32px);
         box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
     }
     
@@ -79,10 +76,8 @@
         display: inline-flex; align-items: center; justify-content: center; margin-right: 15px; font-size: clamp(1.1rem, 2.5vw, 1.4rem); flex-shrink: 0;
     }
     
-    /* Area grafik diperbesar agar tidak terlihat kecil */
     .chart-wrapper { flex-grow: 1; min-height: clamp(350px, 45vh, 450px); position: relative; width: 100%; }
 
-    /* --- MOBILE OPTIMIZATION --- */
     @media (max-width: 767.98px) {
         .stat-card-modern { padding: 15px 10px; }
         .chart-box { padding: 15px; }
@@ -297,7 +292,6 @@
     });
 
     // --- 2. Doughnut Chart ---
-    // --- 2. Doughnut Chart ---
     const ctxDoughnut = document.getElementById('chartKabupaten').getContext('2d');
     new Chart(ctxDoughnut, {
         type: 'doughnut',
@@ -305,7 +299,6 @@
             labels: {!! json_encode($kabLabels ?? []) !!},
             datasets: [{ 
                 data: {!! json_encode($kabTotals ?? []) !!}, 
-                // PALET WARNA DIPERBANYAK MENJADI 12 WARNA UNIK
                 backgroundColor: [
                     '#3b82f6', // Biru
                     '#10b981', // Hijau Emerald
@@ -332,14 +325,13 @@
         }
     });
 
-    // --- 3. Grouped Bar Chart (DIBUAT LEBIH BESAR DAN TEBAL) ---
+    // --- 3. Grouped Bar Chart ---
     const ctxKkJiwa = document.getElementById('chartKkJiwa').getContext('2d');
     new Chart(ctxKkJiwa, {
         type: 'bar',
         data: {
             labels: {!! json_encode($kabLabels ?? []) !!},
             datasets: [
-                // Mengatur barPercentage menjadi 0.9 agar batangnya lebih tebal
                 { label: ' Total Keluarga', data: {!! json_encode($kabKkTotals ?? []) !!}, backgroundColor: createGradient(ctxKkJiwa, '#34d399', '#059669'), borderRadius: 8, barPercentage: 0.9, categoryPercentage: 0.8 },
                 { label: ' Total Jiwa', data: {!! json_encode($kabTotals ?? []) !!}, backgroundColor: createGradient(ctxKkJiwa, '#60a5fa', '#2563eb'), borderRadius: 8, barPercentage: 0.9, categoryPercentage: 0.8 }
             ]

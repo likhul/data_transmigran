@@ -26,7 +26,7 @@ class MasterUptdController extends Controller
             })
             ->orderBy('id', 'desc')
             ->paginate(15)
-            ->appends(['search' => $search]); // Agar saat pindah halaman (pagination) pencarian tidak hilang
+            ->appends(['search' => $search]); 
 
         $kecamatans = Kecamatan::with('kabupaten')->orderBy('nama_kecamatan', 'asc')->get();
 

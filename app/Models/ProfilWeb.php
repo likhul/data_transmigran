@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProfilWeb extends BaseModel
 {
-    use HasFactory; // Biasakan menaruh trait (use) di baris paling atas dalam class
+    use HasFactory; 
 
     protected $table = 'profil_webs';
 
@@ -19,9 +19,9 @@ class ProfilWeb extends BaseModel
         'favicon_website',
         'alamat_kantor',
         'nomor_telepon',
-        'link_facebook', // Pastikan ini ada
-        'link_instagram', // Pastikan ini ada
-        'link_youtube',   // Pastikan ini ada
+        'link_facebook', 
+        'link_instagram', 
+        'link_youtube',   
         'google_maps',
     ];
 }

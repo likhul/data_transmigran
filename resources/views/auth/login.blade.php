@@ -62,7 +62,6 @@
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        /* SISI KIRI: VISUAL BRANDING */
         .brand-side {
             flex: 1;
             background: var(--navy-dark);
@@ -88,7 +87,6 @@
         .brand-side h1 { font-weight: 800; font-size: 1.8rem; letter-spacing: -0.5px; margin-bottom: 10px; line-height: 1.2; }
         .brand-side p { font-size: 0.95rem; opacity: 0.8; font-weight: 400; line-height: 1.6; margin-bottom: 0;}
 
-        /* SISI KANAN: FORM LOGIN */
         .form-side {
             flex: 1.2;
             padding: 45px 50px;
@@ -102,10 +100,9 @@
         .form-label {
             font-weight: 700; font-size: 0.75rem; color: var(--navy-dark);
             text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
-            display: block; /* Pastikan label selalu di baris sendiri */
+            display: block; 
         }
 
-        /* --- KUNCI PRESISI IKON TENGAH --- */
         .input-box { margin-bottom: 20px; }
         .input-wrapper { position: relative; width: 100%; }
         
@@ -113,11 +110,11 @@
             position: absolute; 
             left: 16px; 
             top: 50%; 
-            transform: translateY(-50%); /* Menarik ikon presisi ke tengah vertikal */
+            transform: translateY(-50%); 
             color: var(--slate-400); 
             font-size: 1.1rem; 
             transition: 0.3s;
-            pointer-events: none; /* Mencegah ikon menghalangi klik kursor */
+            pointer-events: none; 
         }
 
         .form-control-premium {
@@ -155,7 +152,6 @@
         }
         .back-link a:hover { color: var(--blue-primary); }
 
-        /* RESPONSIF MOBILE EKSTREM */
         @media (max-width: 768px) {
             .login-card { 
                 flex-direction: column; 
@@ -171,7 +167,7 @@
                 width: 50px; height: 50px; font-size: 1.5rem; margin-bottom: 15px; 
             }
             .brand-side h1 { font-size: 1.5rem; margin-bottom: 5px; }
-            .brand-side p { display: none; } /* Menyembunyikan deskripsi di HP agar form langsung terlihat */
+            .brand-side p { display: none; } 
             
             .form-side { padding: 30px 25px 35px; }
             .form-side h2 { font-size: 1.6rem; text-align: center;}

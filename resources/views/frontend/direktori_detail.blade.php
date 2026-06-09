@@ -3,7 +3,6 @@
 
 @push('css')
 <style>
-    /* VARIABEL WARNA MATERIAL DESIGN 3 & NEUMORPHISM */
     :root {
         --md-surface: #ffffff;
         --md-background: #f8fafc;

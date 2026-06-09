@@ -35,7 +35,7 @@ class DashboardController extends Controller
         
         $label_kabupaten = $kabupatenStats->pluck('nama_kabupaten');
         $data_kabupaten  = $kabupatenStats->map(function($kab) {
-            return $kab->total_jiwa ?? 0; // Jika kosong kasih 0
+            return $kab->total_jiwa ?? 0; 
         });
 
         // 4. DATA TABEL TERBARU

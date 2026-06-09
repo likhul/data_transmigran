@@ -14,7 +14,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // 1. Setup Data Profil Website (Wajib agar tidak error di halaman depan)
         \App\Models\ProfilWeb::updateOrCreate(
             ['id' => 1],
             [
@@ -23,7 +22,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2. Setup Akun Super Admin (Bisa berulang kali dijalankan tanpa error)
         \App\Models\User::updateOrCreate(
             ['email' => 'admin@gmail.com'], 
             [
@@ -33,15 +31,12 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 3. Panggil File Seeder Wilayah (Sesuai Urutan Hierarki)
-        // Pastikan kamu sudah mengisi file-file ini sesuai kode yang saya berikan sebelumnya
         $this->call([
             KabupatenSeeder::class,
             KecamatanSeeder::class,
             MasterUptdSeeder::class,
         ]);
 
-        // Pesan sukses di terminal
         $this->command->info('Profil Web, Akun Admin, dan Data Master Wilayah Berhasil Ditanam! 🌱');
     }
 }

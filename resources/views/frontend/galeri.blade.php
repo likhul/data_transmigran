@@ -13,7 +13,6 @@
 
     body { background-color: var(--md-background); }
 
-    /* Hero Section (Konsisten dengan Arsip Berita) */
     .hero-mini {
         background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%), url('https://images.unsplash.com/photo-1492691523567-6170f0295dbd?auto=format&fit=crop&q=80&w=2000');
         background-size: cover; background-position: center;

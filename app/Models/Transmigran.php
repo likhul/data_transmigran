@@ -15,8 +15,8 @@ class Transmigran extends BaseModel
         'jumlah_anggota', 
         'asal_daerah', 
         'kabupaten_id', 
-        'kecamatan_id', // Cek apakah ini sudah ada?
-        'nama_desa',    // Cek apakah ini sudah ada?
+        'kecamatan_id', 
+        'nama_desa',    
         'tahun_penempatan', 
         'status'
     ];
